@@ -1,5 +1,5 @@
 export const GITHUB_OWNER = "tristan-reig";
-export const GITHUB_REPO = "ft_holy";
+export const GITHUB_REPO = "ft-holy";
 export const GITHUB_BRANCH = "main";
 
 export const PROGRESS_FILE_PATH = "public/progress.json";
