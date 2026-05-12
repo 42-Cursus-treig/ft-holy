@@ -6,7 +6,7 @@ export const PROGRESS_FILE_PATH = "public/progress.json";
 
 export const PROGRESS_PUBLIC_URL = `${import.meta.env.BASE_URL}progress.json`;
 
-export const GITHUB_CLIENT_ID = "Ov23livhUZycplPwQAjc";
+export const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 
 export const ADMIN_USERNAME = "tristan-reig";
 
