@@ -6,244 +6,242 @@ import {
   Panel,
   useNodesState,
   useEdgesState,
-  useReactFlow
+  useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+
 import FloatingEdge from "./FloatingEdge";
 import { SearchBar } from "./SearchBar";
-import { StatusNode, getIconUrl } from "./StatusNode";
-import { activeProjects } from "./projectList"; 
-import { projectDefinitions, generateId } from "./projectDB";
-import DownloadButton from './DownloadButton';
+import { StatusNode } from "./StatusNode";
+import { DetailPanel } from "./DetailPanel";
+import { Hud } from "./Hud";
+import { AuthModal } from "./AuthModal";
+import DownloadButton from "./DownloadButton";
 
-const getStyledEdges = (nodes, edges, currentGraph) => {
+import { activeProjects } from "./projectList";
+import { projectDefinitions, generateId } from "./projectDB";
+import { useProgress } from "./useProgress";
+import { useGitHubAuth, commitProgress } from "./useGitHubAuth";
+import { LS_POSITIONS_KEY } from "./config";
+
+const styleEdges = (nodes, edges, currentGraph) => {
   return edges.map((edge) => {
     const sourceNode = nodes.find((n) => n.id === edge.source);
     const status = sourceNode?.data?.status;
-
     const isPiscineModule = currentGraph !== "main";
 
-    const baseEdge = {
+    const color =
+      status === "validated" ? "#D4AF37" : status === "failed" ? "#A63D2A" : "#1C2030";
+
+    const base = {
       ...edge,
-      type: 'floating',
-      markerEnd: isPiscineModule ? {
-        type: 'arrowclosed',
-        width: 15,
-        height: 15,
-        color: status === 'validated' ? '#34d399' : (status === 'failed' ? '#ef4444' : '#475569'),
-      } : undefined
+      type: "floating",
+      markerEnd: isPiscineModule
+        ? { type: "arrowclosed", width: 14, height: 14, color }
+        : undefined,
     };
 
-    if (status === 'validated') {
-      return { 
-        ...baseEdge, 
-        animated: true, 
-        style: { stroke: '#34d399', strokeWidth: 2 } 
-      };
+    if (status === "validated") {
+      return { ...base, animated: true, style: { stroke: "#D4AF37", strokeWidth: 1.2, opacity: 0.85 } };
     }
-    if (status === 'failed') {
-      return { 
-        ...baseEdge, 
-        animated: false, 
-        style: { stroke: '#ef4444', strokeWidth: 2, strokeDasharray: '5,5' } 
-      };
+    if (status === "failed") {
+      return { ...base, animated: false, style: { stroke: "#A63D2A", strokeWidth: 1, strokeDasharray: "4,4", opacity: 0.8 } };
     }
-    
-    return { 
-      ...baseEdge, 
-      animated: false, 
-      style: { stroke: '#475569', strokeWidth: 1 } 
-    };
+    return { ...base, animated: false, style: { stroke: "#2A2F40", strokeWidth: 0.8, opacity: 0.55 } };
   });
+};
+
+const readPositions = () => {
+  try {
+    const raw = localStorage.getItem(LS_POSITIONS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+};
+const writePositions = (positions) => {
+  try {
+    localStorage.setItem(LS_POSITIONS_KEY, JSON.stringify(positions));
+  } catch {}
 };
 
 export default function App() {
   const [nodes, setNodes, onNodesChanges] = useNodesState([]);
   const [edges, setEdges, onEdgesChanges] = useEdgesState([]);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
-  
   const [currentGraph, setCurrentGraph] = useState("main");
-  const { fitView } = useReactFlow();
+  const [authOpen, setAuthOpen] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [syncError, setSyncError] = useState(null);
 
+  const { fitView } = useReactFlow();
   const edgeTypes = useMemo(() => ({ floating: FloatingEdge }), []);
   const nodeTypes = useMemo(() => ({ statusNode: StatusNode }), []);
 
-  const loadGraph = useCallback((graphId) => {
-    let freshNodes = [];
-    let freshEdges = [];
+  const progress = useProgress();
+  const auth = useGitHubAuth();
+  const isAdmin = auth.isAdmin;
 
-    if (graphId === "main") {
-      freshNodes = activeProjects.map((name) => {
-        const id = generateId(name);
-        const def = projectDefinitions[id] || {};
-        return {
-          id: id,
-          type: "statusNode",
-          position: def.position || { x: 0, y: 0 },
-          draggable: !def.locked,
-          data: {
-            label: name,
-            status: "available",
-            language: def.lang,
-            logoColor: def.logoColor,
-            description: def.desc,
-            size: def.size,
-            subProjects: def.subProjects,
-            linkID: def.linkID,
-            modules: def.modules,
-          }
-        };
-      });
+  const buildGraph = useCallback(
+    (graphId) => {
+      const customPositions = isAdmin ? readPositions() : {};
+      let freshNodes = [];
+      let freshEdges = [];
 
-      freshNodes.forEach(node => {
-        const def = projectDefinitions[node.id];
-        if (def && def.parents) {
-          def.parents.forEach(parentId => {
-            if (activeProjects.some(p => generateId(p) === parentId)) {
-              freshEdges.push({
-                id: `e-${parentId}-${node.id}`,
-                source: parentId,
-                target: node.id
-              });
-            }
-          });
-        }
-      });
-    } else {
-      const def = projectDefinitions[graphId];
-      if (def && def.modules) {
-        const radius = 300;
-        const centerX = 0;
-        const centerY = 0;
+      if (graphId === "main") {
+        freshNodes = activeProjects
+          .map((name) => {
+            const id = generateId(name);
+            const def = projectDefinitions[id];
+            if (!def) return null;
+            return {
+              id,
+              type: "statusNode",
+              position: customPositions[id] || def.position || { x: 0, y: 0 },
+              draggable: isAdmin && !def.locked,
+              data: {
+                label: name,
+                status: progress.getStatus(id),
+                language: def.lang,
+                logoColor: def.logoColor,
+                description: def.desc,
+                size: def.size,
+                subProjects: def.subProjects,
+                linkID: def.linkID,
+                modules: def.modules,
+                moduleStatuses: def.modules
+                  ? Object.fromEntries(def.modules.map((m) => [m.id, progress.getStatus(m.id)]))
+                  : undefined,
+              },
+            };
+          })
+          .filter(Boolean);
 
-        freshNodes = def.modules.map((mod, i) => {
-          const angle = (i / def.modules.length) * 2 * Math.PI;        
-          const x = centerX + radius * Math.cos(angle);
-          const y = centerY + radius * Math.sin(angle);
-
-          return {
-            id: mod.id,
-            type: "statusNode",
-            position: { x, y },
-            draggable: true,
-            data: { 
-              label: mod.label, 
-              status: "available", 
-              size: 75,
-              linkID: mod.linkID,
-              description: mod.description,
-              language: def.lang,
-              logoColor: def.logoColor
-            }
-          };
-        });
-
-        def.modules.forEach(mod => {
-          if (mod.parents) {
-            mod.parents.forEach(parentId => {
-              freshEdges.push({
-                id: `e-${parentId}-${mod.id}`,
-                source: parentId,
-                target: mod.id
-              });
+        freshNodes.forEach((node) => {
+          const def = projectDefinitions[node.id];
+          if (def?.parents) {
+            def.parents.forEach((pid) => {
+              if (activeProjects.some((p) => generateId(p) === pid)) {
+                freshEdges.push({ id: `e-${pid}-${node.id}`, source: pid, target: node.id });
+              }
             });
           }
         });
       } else {
-        freshNodes = [{
-          id: "wip",
-          type: "statusNode",
-          position: { x: 0, y: 0 },
-          data: { label: "Contenu à venir", status: "available", size: 80 }
-        }];
+        const def = projectDefinitions[graphId];
+        if (def?.modules?.length) {
+          const radius = 300;
+          freshNodes = def.modules.map((mod, i) => {
+            const angle = (i / def.modules.length) * 2 * Math.PI;
+            const x = customPositions[mod.id]?.x ?? radius * Math.cos(angle);
+            const y = customPositions[mod.id]?.y ?? radius * Math.sin(angle);
+            return {
+              id: mod.id,
+              type: "statusNode",
+              position: { x, y },
+              draggable: isAdmin,
+              data: {
+                label: mod.label,
+                status: progress.getStatus(mod.id),
+                size: 75,
+                linkID: mod.linkID,
+                description: mod.description,
+                language: def.lang,
+                logoColor: def.logoColor,
+              },
+            };
+          });
+          def.modules.forEach((mod) => {
+            (mod.parents || []).forEach((pid) => {
+              freshEdges.push({ id: `e-${pid}-${mod.id}`, source: pid, target: mod.id });
+            });
+          });
+        } else {
+          freshNodes = [
+            {
+              id: "wip",
+              type: "statusNode",
+              position: { x: 0, y: 0 },
+              data: { label: "Contenu à venir", status: "available", size: 80 },
+            },
+          ];
+        }
       }
-    }
 
-    const savedJSON = localStorage.getItem("holy-nodes");
-    const savedNodes = savedJSON ? JSON.parse(savedJSON) : [];
-    
-    const mergedNodes = freshNodes.map((freshNode) => {
-      const savedNode = savedNodes.find((n) => n.id === freshNode.id);
-      if (savedNode) {
-        return {
-          ...freshNode,
-          position: savedNode.position,
-          data: { ...freshNode.data, status: savedNode.data.status }
-        };
-      }
-      return freshNode;
-    });
+      setNodes(freshNodes);
+      setEdges(styleEdges(freshNodes, freshEdges, graphId));
+      setTimeout(() => fitView({ duration: 800, padding: 0.2 }), 50);
+    },
+    [progress, isAdmin, setNodes, setEdges, fitView]
+  );
 
-    const styledEdges = getStyledEdges(mergedNodes, freshEdges, graphId);
-    setNodes(mergedNodes);
-    setEdges(styledEdges);
-
-    setTimeout(() => {
-      fitView({ duration: 800, padding: 0.2 });
-    }, 50);
-
-  }, [setNodes, setEdges, fitView]);
-
+  // Rebuild quand la progression change ou quand on switche de graphe.
   useEffect(() => {
-    loadGraph(currentGraph);
-  }, [currentGraph, loadGraph]);
+    buildGraph(currentGraph);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentGraph, progress.data, isAdmin]);
 
-  const onNodeDoubleClick = useCallback((event, node) => {
-    if (node.data.label.toLowerCase().includes("piscine")) {
+  // -------------------------------------------------------------------------
+  // Interactions
+  // -------------------------------------------------------------------------
+  const onNodeDoubleClick = useCallback((_e, node) => {
+    if (node.data.label?.toLowerCase().includes("piscine") && projectDefinitions[node.id]?.modules) {
       setCurrentGraph(node.id);
       setSelectedProjectId(null);
     }
   }, []);
 
   const onPaneClick = useCallback(() => setSelectedProjectId(null), []);
-  
-  const onNodeClick = useCallback((event, node) => {
-    event.stopPropagation();
+
+  const onNodeClick = useCallback((e, node) => {
+    e.stopPropagation();
     setSelectedProjectId(node.id);
   }, []);
 
-  const selectedNode = nodes.find(n => n.id === selectedProjectId);
+  const selectedNode = nodes.find((n) => n.id === selectedProjectId);
 
   const updateStatus = (newStatus) => {
-    if (!selectedNode) return;
-
-    const updatedNodes = nodes.map((n) => {
-      if (n.id === selectedNode.id) {
-        return { ...n, data: { ...n.data, status: newStatus } };
-      }
-      return n;
-    });
-
-    setNodes(updatedNodes);
-
-    const savedJSON = localStorage.getItem("holy-nodes");
-    const allSavedNodes = savedJSON ? JSON.parse(savedJSON) : [];
-    const otherNodes = allSavedNodes.filter(n => n.id !== selectedNode.id);    
-    const nodeToSave = updatedNodes.find(n => n.id === selectedNode.id);
-
-    localStorage.setItem("holy-nodes", JSON.stringify([...otherNodes, nodeToSave]));
-
-    const newEdges = getStyledEdges(updatedNodes, edges, currentGraph);
-    setEdges(newEdges);
+    if (!selectedNode || !isAdmin) return;
+    progress.setStatus(selectedNode.id, newStatus);
   };
 
-  const onNodesChangeWithSave = useCallback((changes) => {
-    onNodesChanges(changes);
+  // Sauvegarde des positions quand l'admin drag les nodes.
+  const onNodesChangeWithSave = useCallback(
+    (changes) => {
+      onNodesChanges(changes);
+      if (!isAdmin) return;
+      const positionChanges = changes.filter((c) => c.type === "position" && c.position);
+      if (positionChanges.length === 0) return;
+      const stored = readPositions();
+      positionChanges.forEach((c) => {
+        stored[c.id] = c.position;
+      });
+      writePositions(stored);
+    },
+    [onNodesChanges, isAdmin]
+  );
 
-    setNodes((nds) => {
-        const savedJSON = localStorage.getItem("holy-nodes");
-        const allSavedNodes = savedJSON ? JSON.parse(savedJSON) : [];
-        const currentIds = new Set(nds.map(n => n.id));
-        const nodesToKeep = allSavedNodes.filter(n => !currentIds.has(n.id));
-        const mergedDB = [...nodesToKeep, ...nds];
-        localStorage.setItem("holy-nodes", JSON.stringify(mergedDB));
-
-        return nds;
-    });
-  }, [onNodesChanges, setNodes]);
+  // -------------------------------------------------------------------------
+  // Push vers GitHub
+  // -------------------------------------------------------------------------
+  const handleSync = async () => {
+    if (!auth.user?.token) return;
+    setSyncing(true);
+    setSyncError(null);
+    try {
+      await commitProgress(auth.user.token, progress.data);
+      progress.markSynced(progress.data);
+    } catch (e) {
+      setSyncError(e.message || String(e));
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   return (
-    <div className="w-screen h-screen bg-slate-950 relative">
+    <div className="w-screen h-screen relative bg-ink-deep parchment-vignette">
+      <div className="starfield" />
+
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -255,17 +253,26 @@ export default function App() {
         onNodeDoubleClick={onNodeDoubleClick}
         onPaneClick={onPaneClick}
         fitView
+        minZoom={0.15}
+        maxZoom={2.5}
+        proOptions={{ hideAttribution: true }}
+        style={{ zIndex: 2 }}
       >
-        <Background color="#334155" gap={30} size={1} />
-        <Controls className="fill-slate-500" />
+        <Background color="#1C2030" gap={40} size={1} />
+        <Controls showInteractive={false} />
 
         {currentGraph !== "main" && (
           <Panel position="top-center">
             <button
               onClick={() => setCurrentGraph("main")}
-              className="mt-5 px-6 py-2 bg-slate-800/90 text-sky-400 font-bold rounded-lg border border-slate-600 shadow-xl backdrop-blur-md hover:bg-slate-700 hover:text-white transition-colors"
+              className="mt-4 px-4 py-2 smallcaps text-[10px] text-vellum-dim hover:text-gold transition-colors backdrop-blur-md"
+              style={{
+                background: "rgba(10, 12, 20, 0.85)",
+                border: "1px solid var(--ink-line)",
+                borderRadius: 2,
+              }}
             >
-              ← Retour au Tronc Commun
+              ← retour à la carte principale
             </button>
           </Panel>
         )}
@@ -273,65 +280,56 @@ export default function App() {
         <Panel position="top-left">
           <SearchBar nodes={nodes} onSelectNode={setSelectedProjectId} />
         </Panel>
+
         <DownloadButton />
       </ReactFlow>
 
       {selectedNode && (
-        <div className="absolute top-5 right-5 w-[300px] p-5 bg-slate-800/90 text-white rounded-xl backdrop-blur-lg border border-slate-600 shadow-2xl z-10 transition-all duration-300">
-          <div className="flex justify-between items-start mb-2">
-            <h2 className="text-lg font-bold">{selectedNode.data.label}</h2>
-            
-            {selectedNode.data.language && (
-               <img 
-                 src={getIconUrl(selectedNode.data.language, selectedNode.data.logoColor)} 
-                 className="w-6 h-6 opacity-90" 
-                 alt="" 
-               />
-            )}
-          </div>
+        <DetailPanel
+          node={selectedNode}
+          isAdmin={isAdmin}
+          onUpdateStatus={updateStatus}
+          onClose={() => setSelectedProjectId(null)}
+        />
+      )}
 
-          <div className="bg-slate-950/50 p-2 rounded mb-4 font-mono text-xs text-sky-400 border border-slate-700/50 flex justify-between">
-            <span>x: <span className="text-white">{Math.round(selectedNode.position.x)}</span></span>
-            <span>y: <span className="text-white">{Math.round(selectedNode.position.y)}</span></span>
-          </div>
+      <Hud
+        progress={progress.data}
+        definitions={projectDefinitions}
+        isAdmin={isAdmin}
+        user={auth.user}
+        hasLocalDraft={progress.hasLocalDraft}
+        onOpenAuth={() => setAuthOpen(true)}
+        onSync={handleSync}
+        syncing={syncing}
+        onLogout={auth.logout}
+      />
 
-          <p className="text-slate-300 text-sm mb-4">
-            {selectedNode.data.description || "Pas de description."}
-          </p>
-          
-          {selectedNode.data.linkID && (
-            <a
-              href={"https://cdn.intra.42.fr/pdf/pdf/" + selectedNode.data.linkID + "/en.subject.pdf"}
-              target="_blank"
-              rel="noreferrer"
-              className="block mb-6 text-sky-400 hover:text-sky-300 transition text-sm font-medium"
-            >
-              Lien vers le sujet
-            </a>
-          )}
-
-          <div className="flex gap-2.5">
-            <button
-              onClick={() => updateStatus("validated")}
-              className="flex-1 py-2 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold transition shadow-lg shadow-emerald-900/20"
-            >
-              Valider
-            </button>
-            <button
-              onClick={() => updateStatus("failed")}
-              className="flex-1 py-2 rounded-md bg-red-500 hover:bg-red-400 text-white text-sm font-bold transition shadow-lg shadow-red-900/20"
-            >
-              Invalider
-            </button>
-            <button
-              onClick={() => updateStatus("available")}
-              className="py-2 px-3 rounded-md border border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 hover:bg-slate-700 transition"
-            >
-              ↺
-            </button>
-          </div>
+      {syncError && (
+        <div
+          className="absolute bottom-20 left-5 max-w-md px-4 py-2 text-xs font-mono text-rust z-20"
+          style={{
+            background: "rgba(10, 12, 20, 0.95)",
+            border: "1px solid var(--rust-soft)",
+            borderRadius: 2,
+          }}
+        >
+          {syncError}
         </div>
       )}
+
+      {authOpen && !isAdmin && (
+        <AuthModal auth={auth} onClose={() => setAuthOpen(false)} />
+      )}
+
+      {/* Titre discret en haut à droite, signature de la carte */}
+      <div
+        className="absolute top-5 left-1/2 -translate-x-1/2 z-0 pointer-events-none text-center"
+        style={{ opacity: 0.5 }}
+      >
+        <div className="smallcaps text-[9px] text-vellum-mute">CHARTA STELLARUM</div>
+        <div className="font-serif italic text-vellum-dim text-sm">ft_holy</div>
+      </div>
     </div>
   );
 }

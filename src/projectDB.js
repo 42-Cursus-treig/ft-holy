@@ -604,7 +604,7 @@ export const projectDefinitions = {
     "learn2slither": {
         parents: ["dslr"],
         position: { x: -139, y: 360 },
-        linkID: "144416"
+        linkID: "202349"
     },
     "leaffliction": {
         parents: ["dslr"],
