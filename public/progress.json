@@ -1,5 +1,7 @@
 {
   "version": 1,
-  "updatedAt": null,
-  "statuses": {}
+  "updatedAt": "2026-05-12T22:46:01.411Z",
+  "statuses": {
+    "open-project": "validated"
+  }
 }
