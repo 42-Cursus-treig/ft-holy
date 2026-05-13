@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-13T10:09:03.360Z",
+  "updatedAt": "2026-05-13T11:27:53.456Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -13,6 +13,23 @@
     "mobile-1": "validated",
     "mobile-2": "validated",
     "ft-ping": "validated",
-    "expert-system": "validated"
+    "expert-system": "validated",
+    "scop": "validated",
+    "ft-vox": "validated",
+    "mod1": "validated",
+    "ft-turing": "validated",
+    "h42n42": "validated",
+    "ft-ality": "validated",
+    "piscine-ocaml": "validated",
+    "humangl": "validated",
+    "avaj-launcher": "validated",
+    "abstract-data": "validated",
+    "ft-select": "validated",
+    "ft-ls": "validated",
+    "malloc": "validated",
+    "ft-minecraft": "failed",
+    "doom-nukem": "failed",
+    "libasm": "validated",
+    "n-puzzle": "validated"
   }
 }
