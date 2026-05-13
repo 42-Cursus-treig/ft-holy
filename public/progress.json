@@ -1,7 +1,18 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-12T22:46:01.411Z",
+  "updatedAt": "2026-05-13T10:09:03.360Z",
   "statuses": {
-    "open-project": "validated"
+    "open-project": "validated",
+    "matrix": "validated",
+    "computorv1": "validated",
+    "piscine-mobile": "validated",
+    "mobile-5": "validated",
+    "mobile-4": "validated",
+    "mobile-0": "validated",
+    "mobile-3": "validated",
+    "mobile-1": "validated",
+    "mobile-2": "validated",
+    "ft-ping": "validated",
+    "expert-system": "validated"
   }
 }
