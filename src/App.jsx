@@ -175,15 +175,10 @@ export default function App() {
     [progress, isAdmin, setNodes, setEdges, fitView]
   );
 
-  // Rebuild quand la progression change ou quand on switche de graphe.
   useEffect(() => {
     buildGraph(currentGraph);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentGraph, progress.data, isAdmin]);
 
-  // -------------------------------------------------------------------------
-  // Interactions
-  // -------------------------------------------------------------------------
   const onNodeDoubleClick = useCallback((_e, node) => {
     if (node.data.label?.toLowerCase().includes("piscine") && projectDefinitions[node.id]?.modules) {
       setCurrentGraph(node.id);
@@ -205,7 +200,6 @@ export default function App() {
     progress.setStatus(selectedNode.id, newStatus);
   };
 
-  // Sauvegarde des positions quand l'admin drag les nodes.
   const onNodesChangeWithSave = useCallback(
     (changes) => {
       onNodesChanges(changes);
@@ -221,9 +215,6 @@ export default function App() {
     [onNodesChanges, isAdmin]
   );
 
-  // -------------------------------------------------------------------------
-  // Push vers GitHub
-  // -------------------------------------------------------------------------
   const handleSync = async () => {
     if (!auth.user?.token) return;
     setSyncing(true);
@@ -322,12 +313,10 @@ export default function App() {
         <AuthModal auth={auth} onClose={() => setAuthOpen(false)} />
       )}
 
-      {/* Titre discret en haut à droite, signature de la carte */}
       <div
         className="absolute top-5 left-1/2 -translate-x-1/2 z-0 pointer-events-none text-center"
         style={{ opacity: 0.5 }}
       >
-        <div className="smallcaps text-[9px] text-vellum-mute">CHARTA STELLARUM</div>
         <div className="font-serif italic text-vellum-dim text-sm">ft_holy</div>
       </div>
     </div>

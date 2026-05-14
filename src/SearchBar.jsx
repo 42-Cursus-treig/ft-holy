@@ -55,7 +55,10 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
           onChange={(e) => setTerm(e.target.value)}
           className="flex-1 bg-transparent text-vellum font-serif italic text-sm placeholder:text-vellum-mute focus:outline-none"
         />
-        <kbd className="text-[9px] font-mono text-vellum-mute px-1 py-0.5 border border-ink-line rounded-sm">⌘K</kbd>
+        <div className="flex items-center gap-1">
+          <kbd className="font-mono text-[9px] px-1.5 py-0.5 text-vellum-mute bg-ink-deep border border-ink-line rounded-sm">CTRL</kbd>
+          <kbd className="font-mono text-[9px] px-1.5 py-0.5 text-vellum-mute bg-ink-deep border border-ink-line rounded-sm">K</kbd>
+        </div>
       </div>
 
       {results.length > 0 && (

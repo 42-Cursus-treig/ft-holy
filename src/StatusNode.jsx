@@ -1,6 +1,5 @@
 import { Handle, Position } from "@xyflow/react";
 
-// -- Palette en hex direct, indépendante de Tailwind --
 const C = {
   inkDeep: "#05060A",
   ink: "#0A0C14",
@@ -255,7 +254,6 @@ export const StatusNode = ({ data, selected }) => {
       >
         <Handle type="target" position={Position.Top} style={{ opacity: 0, pointerEvents: "none" }} />
 
-        {/* Coins décoratifs */}
         <span style={{ position: "absolute", top: 0, left: 0, width: 8, height: 8, borderTop: `1px solid ${palette.border}`, borderLeft: `1px solid ${palette.border}` }} />
         <span style={{ position: "absolute", top: 0, right: 0, width: 8, height: 8, borderTop: `1px solid ${palette.border}`, borderRight: `1px solid ${palette.border}` }} />
         <span style={{ position: "absolute", bottom: 0, left: 0, width: 8, height: 8, borderBottom: `1px solid ${palette.border}`, borderLeft: `1px solid ${palette.border}` }} />
