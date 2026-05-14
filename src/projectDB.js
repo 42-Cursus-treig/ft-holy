@@ -43,8 +43,9 @@ export const projectDefinitions = {
     },
     "expert-system": {
         parents: ["n-puzzle"],
-        position: { x: -208, y: 647 },
-        linkID: "149318"
+        position: { x: -215, y: 652 },
+        linkID: "149318",
+        lang: "rust",
     },
     "cloud-1": {
         parents: ["tronc-commun"],
@@ -53,7 +54,7 @@ export const projectDefinitions = {
     },
     "hypertube": {
         parents: ["matcha"],
-        position: { x: -313, y: 695 },
+        position: { x: -316, y: 706 },
         linkID: "188588"
     },
     "in-the-shadows": {
@@ -85,12 +86,13 @@ export const projectDefinitions = {
     },
     "matrix": {
         parents: ["tronc-commun"],
-        position: { x: -30, y: 548 },
-        linkID: "187935"
+        position: { x: -35, y: 561 },
+        linkID: "187935",
+        lang: "rust",
     },
     "lem-in": {
         parents: ["n-puzzle"],
-        position: { x: -172, y: 525 },
+        position: { x: -170, y: 512 },
         linkID: "67419"
     },
     "dr-quine": {
@@ -105,7 +107,7 @@ export const projectDefinitions = {
     },
     "matcha": {
         parents: ["piscine-web"],
-        position: { x: -214, y: 717 },
+        position: { x: -214, y: 726 },
         linkID: "196067"
     },
     "camagru": {
@@ -126,11 +128,13 @@ export const projectDefinitions = {
     "doom-nukem": {
         parents: ["scop"],
         position: { x: 478, y: 1060 },
-        linkID: "164309"
+        linkID: "164309",
+        lang: "c",
+        logoColor: "marine",
     },
     "corewar": {
         parents: ["abstract-vm"],
-        position: { x: 1119, y: 875 },
+        position: { x: 1115, y: 898 },
         linkID: "60869"
     },
     "ft-linear-regression": {
@@ -151,11 +155,11 @@ export const projectDefinitions = {
         linkID: "176883",
     },
     "scop": {
-        lang: "opengl",
-        logoColor: "teal",
         parents: ["tronc-commun"],
         position: { x: 554, y: 1085 },
         linkID: "164248",
+        lang: "opengl",
+        logoColor: "teal",
     },
     "war": {
         parents: ["pestilence"],
@@ -164,7 +168,7 @@ export const projectDefinitions = {
     },
     "snow-crash": {
         parents: ["piscine-cybersecurite"],
-        position: { x: 862, y: 221 },
+        position: { x: 872, y: 211 },
         linkID: "158896"
     },
     "taskmaster": {
@@ -174,7 +178,7 @@ export const projectDefinitions = {
     },
     "rubik": {
         parents: ["n-puzzle"],
-        position: { x: -145, y: 674 },
+        position: { x: -143, y: 685 },
         linkID: "169923"
     },
     "shaderpixel": {
@@ -194,7 +198,7 @@ export const projectDefinitions = {
     },
     "strace": {
         parents: ["lem-ipc"],
-        position: { x: 1201, y: 812 },
+        position: { x: 1207, y: 796 },
         linkID: "65612"
     },
     "swifty-proteins": {
@@ -215,7 +219,9 @@ export const projectDefinitions = {
     "ft-ping": {
         parents: ["tronc-commun"],
         position: { x: 364, y: 64 },
-        linkID: "164068"
+        linkID: "164068",
+        lang: "c",
+        logoColor: "6e7ccb",
     },
     "ft-nmap": {
         parents: ["ft-traceroute"],
@@ -234,7 +240,7 @@ export const projectDefinitions = {
     },
     "nibbler": {
         parents: ["lem-ipc"],
-        position: { x: 1219, y: 733 },
+        position: { x: 1231, y: 725 },
         linkID: "60850"
     },
     "abstract-vm": {
@@ -245,7 +251,9 @@ export const projectDefinitions = {
     "abstract-data": {
         parents: ["libftpp"],
         position: { x: 1037, y: 930 },
-        linkID: "147612"
+        linkID: "147612",
+        lang: "c++",
+        logoColor: "marine",
     },
     "avaj-launcher": {
         parents: ["tronc-commun"],
@@ -260,7 +268,7 @@ export const projectDefinitions = {
     },
     "krpsim": {
         parents: ["n-puzzle"],
-        position: { x: -250, y: 599 },
+        position: { x: -257, y: 585 },
         linkID: "60875"
     },
     "total-perspective-vortex": {
@@ -280,18 +288,22 @@ export const projectDefinitions = {
     },
     "computorv2": {
         parents: ["computorv1"],
-        position: { x: -183, y: 425 },
+        position: { x: -187, y: 438 },
         linkID: "188792"
     },
     "ft-select": {
         parents: ["ft-ls"],
-        position: { x: 1135, y: 798 },
-        linkID: "188785"
+        position: { x: 1143, y: 824 },
+        linkID: "188785",
+        lang: "c",
+        logoColor: "#2a6bcc"
     },
     "computorv1": {
         parents: ["tronc-commun"],
         position: { x: -110, y: 439 },
-        linkID: "175880"
+        linkID: "175880",
+        lang: "go",
+        logoColor: "teal"
     },
     "ft-ssl-rsa": {
         parents: ["ft-ssl-des"],
@@ -301,9 +313,9 @@ export const projectDefinitions = {
     "ft-vox": {
         parents: ["scop"],
         position: { x: 641, y: 1098 },
+        linkID: "176882",
         lang: "c++",
         logoColor: "marine",
-        linkID: "176882"
     },
     "override": {
         parents: ["rainfall"],
@@ -352,17 +364,17 @@ export const projectDefinitions = {
     },
     "fix-me": {
         parents: ["swingy"],
-        position: { x: 969, y: 956 },
+        position: { x: 983, y: 974 },
         linkID: "163437"
     },
     "swingy": {
         parents: ["avaj-launcher"],
-        position: { x: 894, y: 906 },
+        position: { x: 910, y: 922 },
         linkID: "147108"
     },
     "gomoku": {
         parents: ["n-puzzle"],
-        position: { x: -235, y: 540 },
+        position: { x: -231, y: 527 },
         linkID: "162538"
     },
     "n-puzzle": {
@@ -425,11 +437,11 @@ export const projectDefinitions = {
         linkID: "188670"
     },
     "ft-turing": {
-        lang: "ocaml",
-        logoColor: "orange",
         parents: ["piscine-ocaml"],
         position: { x: 864, y: 995 },
-        linkID: "163926"
+        linkID: "163926",
+        lang: "ocaml",
+        logoColor: "orange",
     },
     "humangl": {
         parents: ["scop"],
@@ -440,7 +452,7 @@ export const projectDefinitions = {
     },
     "ft-hangouts": {
         parents: ["piscine-mobile"],
-        position: { x: 52, y: 985 },
+        position: { x: 68, y: 1025 },
         linkID: "158895"
     },
     "lem-ipc": {
@@ -456,13 +468,17 @@ export const projectDefinitions = {
     "h42n42": {
         parents: ["ft-turing"],
         position: { x: 955, y: 1039 },
-        linkID: "196674"
+        linkID: "196674",
+        lang: "ocaml",
+        logoColor: "orange",
     },
     "open-project": {
         parents: ["tronc-commun"],
         position: { x: 211, y: 998 },
         lang: "42",
-        linkID: "128727"
+        linkID: "128727",
+        lang: "react",
+        logoColor: "#61dbfb",
     },
     "piscine-web": {
         subProjects: ["Piscine Django", "Piscine RoR", "Piscine Symfony"],
@@ -471,7 +487,7 @@ export const projectDefinitions = {
     },
     "piscine-mobile": {
         parents: ["tronc-commun"],
-        position: { x: -3, y: 911 },
+        position: { x: 5, y: 943 },
         lang: "dart",
         logoColor: "darkturquoise",
         linkID: "95370",
@@ -485,22 +501,22 @@ export const projectDefinitions = {
         ]
     },
     "piscine-ocaml": {
+        parents: ["tronc-commun"],
+        position: { x: 730, y: 928 },
+        linkID: "143947",
         lang: "ocaml",
         logoColor: "orange",
-        parents: ["tronc-commun"],
-        position: { x: 794, y: 925 },
-        linkID: "143947",
-        // modules : [
-        //     { id: "ocaml-0", label: "Basic syntax and semantics", parents: [], linkID: "144426" },
-        //     { id: "ocaml-1", label: "Recursion and higher-order functions", parents: ["ocaml-0"], linkID: "144419" },
-        //     { id: "ocaml-2", label: "Pattern matching and data type", parents: ["ocaml-1"], linkID: "144531" },
-        //     { id: "ocaml-3", label: "Ocaml's modules language", parents: ["ocaml-2"], linkID: "144421" },
-        //     { id: "ocaml-4", label: "Imperative features", parents: ["ocaml-3"], linkID: "144424" },
-        //     { id: "ocaml-5", label: "Functor", parents: ["ocaml-4"], linkID: "144533" },
-        //     { id: "ocaml-6", label: "OOP 1", parents: ["ocaml-5"], linkID: "144423" },
-        //     { id: "ocaml-7", label: "OOP 2", parents: ["ocaml-6"], linkID: "144535" },
-        //     { id: "ocaml-8", label: "Monoids and Monads", parents: ["ocaml-7"], linkID: "176269" },
-        // ]
+        modules : [
+            { id: "ocaml-0", label: "Basic syntax and semantics", parents: [], linkID: "144426" },
+            { id: "ocaml-1", label: "Recursion and higher-order functions", parents: ["ocaml-0"], linkID: "144419" },
+            { id: "ocaml-2", label: "Pattern matching and data type", parents: ["ocaml-1"], linkID: "144531" },
+            { id: "ocaml-3", label: "Ocaml's modules language", parents: ["ocaml-2"], linkID: "144421" },
+            { id: "ocaml-4", label: "Imperative features", parents: ["ocaml-3"], linkID: "144424" },
+            { id: "ocaml-5", label: "Functor", parents: ["ocaml-4"], linkID: "144533" },
+            { id: "ocaml-6", label: "OOP 1", parents: ["ocaml-5"], linkID: "144423" },
+            { id: "ocaml-7", label: "OOP 2", parents: ["ocaml-6"], linkID: "144535" },
+            { id: "ocaml-8", label: "Monoids and Monads", parents: ["ocaml-7"], linkID: "176269" },
+        ]
     },
     "piscine-unity": {
         parents: ["tronc-commun"],
@@ -513,7 +529,16 @@ export const projectDefinitions = {
         parents: ["tronc-commun"],
         position: { x: 770, y: 274 },
         lang: "nextdns",
-        linkID: "83768"
+        linkID: "83768",
+        modules: [
+            { id: "cyber-0", label: "Arachnida", parents: [] },
+            { id: "cyber-1", label: "ft_otp", parents: ["cyber-0"] },
+            { id: "cyber-2", label: "ft_onion", parents: ["cyber-1"] },
+            { id: "cyber-3", label: "Reverse me", parents: ["cyber-2"] },
+            { id: "cyber-4", label: "Stockholm", parents: ["cyber-3"] },
+            { id: "cyber-5", label: "Inquisitor", parents: ["cyber-4"] },
+            { id: "cyber-6", label: "Vaccine", parents: ["cyber-5"] }
+        ]
     },
     "piscine-objet": {
         parents: ["tronc-commun"],
@@ -540,6 +565,7 @@ export const projectDefinitions = {
         parents: ["ft-vox"],
         position: { x: 733, y: 1187 },
         linkID: "164015",
+        lang: "java",
     },
     "libftpp": {
         parents: ["piscine-objet"],
@@ -613,22 +639,22 @@ export const projectDefinitions = {
     },
     "tokenizer": {
         parents: ["tronc-commun"],
-        position: { x: -14, y: 678 },
+        position: { x: -10, y: 674 },
         linkID: "144411"
     },
     "tokenizeart": {
         parents: ["tokenizer"],
-        position: { x: -80, y: 705 },
+        position: { x: -74, y: 706 },
         linkID: "144427"
     },
     "ft-kalman": {
         parents: ["matrix"],
-        position: { x: -94, y: 545 },
+        position: { x: -106, y: 542 },
         linkID: "127291"
     },
     "ready-set-boole": {
         parents: ["tronc-commun"],
-        position: { x: -40, y: 491 },
+        position: { x: -40, y: 495 },
         linkID: "179422"
     },
     "tinky-winkey": {
