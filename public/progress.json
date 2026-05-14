@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-13T11:27:53.456Z",
+  "updatedAt": "2026-05-14T21:55:14.961Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -30,6 +30,23 @@
     "ft-minecraft": "failed",
     "doom-nukem": "failed",
     "libasm": "validated",
-    "n-puzzle": "validated"
+    "n-puzzle": "validated",
+    "cyber-6": "validated",
+    "cyber-0": "validated",
+    "cyber-1": "validated",
+    "cyber-2": "validated",
+    "cyber-3": "validated",
+    "cyber-4": "validated",
+    "cyber-5": "validated",
+    "ocaml-0": "validated",
+    "ocaml-1": "validated",
+    "ocaml-3": "validated",
+    "ocaml-4": "validated",
+    "ocaml-5": "validated",
+    "ocaml-6": "validated",
+    "ocaml-8": "validated",
+    "ocaml-7": "validated",
+    "ocaml-2": "validated",
+    "piscine-cybersecurite": "validated"
   }
 }
