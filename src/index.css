@@ -7,3 +7,13 @@
 body {
   @apply bg-slate-950 text-white overflow-hidden;
 }
+
+:root {
+  --gold: #D4AF37;
+  --rust: #A63D2A;
+  --ink-deep: #1C2030;
+  --ink-line: #4A5270;
+  --vellum: #F0EAD6;
+  --vellum-dim: #C5C1B1;
+  --vellum-mute: #6D6A5C;
+}

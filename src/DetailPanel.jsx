@@ -1,18 +1,5 @@
 import { getIconUrl } from "./StatusNode";
 
-const formatRA = (x) => {
-  const h = Math.floor(Math.abs(x) / 60) % 24;
-  const m = Math.floor(Math.abs(x) % 60);
-  const s = Math.abs(Math.floor((x * 10) % 60));
-  return `${String(h).padStart(2, "0")}ʰ ${String(m).padStart(2, "0")}ᵐ ${String(s).padStart(2, "0")}ˢ`;
-};
-const formatDec = (y) => {
-  const sign = y < 0 ? "−" : "+";
-  const d = Math.floor(Math.abs(y) / 10);
-  const m = Math.floor(Math.abs(y) % 10) * 6;
-  return `${sign}${String(d).padStart(2, "0")}° ${String(m).padStart(2, "0")}′`;
-};
-
 const STATUS_LABEL = {
   validated: "VALIDÉ",
   failed: "INVALIDÉ",
@@ -25,6 +12,18 @@ const STATUS_COLOR = {
   available: "var(--vellum-dim)",
 };
 
+const STATUS_BG = {
+  validated: "rgba(212, 175, 55, 0.08)",
+  failed: "rgba(166, 61, 42, 0.08)",
+  available: "rgba(28, 32, 48, 0.6)",
+};
+
+const STATUS_BORDER = {
+  validated: "rgba(212, 175, 55, 0.25)",
+  failed: "rgba(166, 61, 42, 0.25)",
+  available: "rgba(109, 106, 92, 0.2)",
+};
+
 export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
   if (!node) return null;
 
@@ -34,20 +33,22 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
     <div
       className="absolute top-5 right-5 w-[340px] p-0 z-10 fade-in overflow-hidden"
       style={{
-        background: "rgba(10, 12, 20, 0.92)",
-        border: "1px solid var(--ink-line)",
+        background: "rgba(10, 12, 20, 0.95)",
+        border: `1px solid ${STATUS_BORDER[status]}`,
         borderRadius: 2,
         backdropFilter: "blur(12px)",
-        boxShadow: "0 12px 48px rgba(0, 0, 0, 0.6)",
+        boxShadow: `0 12px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px ${STATUS_BORDER[status]}`,
       }}
     >
+      <div style={{ height: 2, background: STATUS_COLOR[status], opacity: 0.7 }} />
+
       <div className="px-5 pt-4 pb-3 border-b border-ink-line">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <div className="smallcaps text-[9px] text-vellum-mute mb-1">FICHE D'OBSERVATION</div>
             <h2
-              className="font-serif text-2xl text-vellum leading-tight truncate"
-              style={{ fontWeight: 600 }}
+              className="font-serif text-2xl leading-tight truncate"
+              style={{ fontWeight: 600, color: STATUS_COLOR[status] }}
               title={node.data.label}
             >
               {node.data.label}
@@ -62,13 +63,13 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
           </button>
         </div>
 
-        <div className="flex items-center gap-2 mt-2">
+        <div className="flex items-center gap-2 mt-3">
           <span
-            className="smallcaps text-[10px] px-2 py-0.5"
+            className="smallcaps text-[10px] px-2 py-1"
             style={{
               color: STATUS_COLOR[status],
               border: `1px solid ${STATUS_COLOR[status]}`,
-              background: `${STATUS_COLOR[status]}10`,
+              background: STATUS_BG[status],
               borderRadius: 1,
             }}
           >
@@ -85,21 +86,11 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
         </div>
       </div>
 
-      <div className="px-5 py-3 border-b border-ink-line">
-        <div className="grid grid-cols-2 gap-3 text-[10px]">
-          <div>
-            <div className="smallcaps text-vellum-mute mb-1">ASC. DROITE</div>
-            <div className="font-mono text-vellum">{formatRA(node.position.x)}</div>
-          </div>
-          <div>
-            <div className="smallcaps text-vellum-mute mb-1">DÉCLINAISON</div>
-            <div className="font-mono text-vellum">{formatDec(node.position.y)}</div>
-          </div>
-        </div>
-      </div>
-
       {(node.data.description || node.data.linkID) && (
-        <div className="px-5 py-3 border-b border-ink-line">
+        <div
+          className="px-5 py-4 border-b border-ink-line"
+          style={{ background: STATUS_BG[status] }}
+        >
           {node.data.description && (
             <p className="font-serif italic text-sm text-vellum-dim leading-relaxed mb-3">
               {node.data.description}
@@ -110,7 +101,8 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
               href={`https://cdn.intra.42.fr/pdf/pdf/${node.data.linkID}/en.subject.pdf`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-azure text-xs font-mono hover:text-vellum transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-mono hover:text-vellum transition-colors"
+              style={{ color: STATUS_COLOR[status] }}
             >
               <span className="smallcaps">CONSULTER LE SUJET</span>
               <span>↗</span>

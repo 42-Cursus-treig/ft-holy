@@ -27,7 +27,18 @@ import { LS_POSITIONS_KEY } from "./config";
 const styleEdges = (nodes, edges, currentGraph) => {
   return edges.map((edge) => {
     const sourceNode = nodes.find((n) => n.id === edge.source);
-    const status = sourceNode?.data?.status;
+    let status = sourceNode?.data?.status;
+
+    if (sourceNode?.data?.subProjects && sourceNode.data.subProjectStatuses) {
+      const isGroupValidated = sourceNode.data.subProjects.some((sub) => {
+        const subId = sub.id || sub;
+        return sourceNode.data.subProjectStatuses[subId] === "validated";
+      });
+      if (isGroupValidated) {
+        status = "validated";
+      }
+    }
+
     const isPiscineModule = currentGraph !== "main";
 
     const color =
@@ -47,7 +58,7 @@ const styleEdges = (nodes, edges, currentGraph) => {
     if (status === "failed") {
       return { ...base, animated: false, style: { stroke: "#A63D2A", strokeWidth: 1, strokeDasharray: "4,4", opacity: 0.8 } };
     }
-    return { ...base, animated: false, style: { stroke: "#2A2F40", strokeWidth: 0.8, opacity: 0.55 } };
+    return { ...base, animated: false, style: { stroke: "#4A5270", strokeWidth: 1.4, opacity: 0.8 } };
   });
 };
 
@@ -107,6 +118,27 @@ export default function App() {
                 description: def.desc,
                 size: def.size,
                 subProjects: def.subProjects,
+                subProjectStatuses: def.subProjects
+                  ? Object.fromEntries(def.subProjects.map((sub) => [sub.id, progress.getStatus(sub.id)]))
+                  : undefined,
+                subProjectModules: def.subProjects
+                  ? Object.fromEntries(def.subProjects.map((sub) => {
+                      const subId = sub.id || sub;
+                      const subDef = projectDefinitions[subId];
+                      if (subDef && subDef.modules) {
+                        const valCount = subDef.modules.filter(m => progress.getStatus(m.id) === "validated").length;
+                        return [subId, `${valCount}/${subDef.modules.length}`];
+                      }
+                      return [subId, null];
+                    }))
+                  : undefined,
+                onSubClick: (subId) => setSelectedProjectId(subId),
+                onSubDoubleClick: (subId) => {
+                  if (projectDefinitions[subId]?.modules) {
+                    setCurrentGraph(subId);
+                    setSelectedProjectId(null);
+                  }
+                },
                 linkID: def.linkID,
                 modules: def.modules,
                 moduleStatuses: def.modules
@@ -193,7 +225,22 @@ export default function App() {
     setSelectedProjectId(node.id);
   }, []);
 
-  const selectedNode = nodes.find((n) => n.id === selectedProjectId);
+  let selectedNode = nodes.find((n) => n.id === selectedProjectId);
+
+  if (!selectedNode && selectedProjectId) {
+    for (const n of nodes) {
+      if (n.data.subProjects) {
+        const sub = n.data.subProjects.find(s => s.id === selectedProjectId);
+        if (sub) {
+          selectedNode = {
+            id: sub.id,
+            data: { label: sub.label, status: progress.getStatus(sub.id) }
+          };
+          break;
+        }
+      }
+    }
+  }
 
   const updateStatus = (newStatus) => {
     if (!selectedNode || !isAdmin) return;

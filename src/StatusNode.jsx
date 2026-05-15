@@ -21,7 +21,6 @@ export const getIconUrl = (language, color) => {
   return `https://cdn.simpleicons.org/${language}/${safeColor}`;
 };
 
-// Halo doux centré sur la node
 const Halo = ({ size, color, opacity }) => {
   const haloSize = size * 2.4;
   const offset = (haloSize - size) / 2;
@@ -51,9 +50,8 @@ const Halo = ({ size, color, opacity }) => {
   );
 };
 
-// Croix de diffraction pour les étoiles validées
 const StarCross = ({ size, color }) => {
-  const s = size * 3;
+  const s = size * 1.8;
   const offset = (s - size) / 2;
   return (
     <svg
@@ -68,8 +66,8 @@ const StarCross = ({ size, color }) => {
         pointerEvents: "none",
       }}
     >
-      <line x1="50" y1="2" x2="50" y2="98" stroke={color} strokeWidth="0.4" opacity="0.55" />
-      <line x1="2" y1="50" x2="98" y2="50" stroke={color} strokeWidth="0.4" opacity="0.55" />
+      <line x1="50" y1="15" x2="50" y2="85" stroke={color} strokeWidth="0.5" opacity="0.4" />
+      <line x1="15" y1="50" x2="85" y2="50" stroke={color} strokeWidth="0.5" opacity="0.4" />
     </svg>
   );
 };
@@ -82,7 +80,6 @@ export const StatusNode = ({ data, selected }) => {
     !isLocked && data.label && data.label.toLowerCase().includes("piscine");
   const status = data.status || "available";
 
-  // ---- Tronc commun : anneau décoratif fin ----
   if (isLocked) {
     return (
       <div
@@ -117,18 +114,6 @@ export const StatusNode = ({ data, selected }) => {
             stroke={C.goldSoft}
             strokeWidth="0.08"
           />
-          {[0, 90, 180, 270].map((deg) => (
-            <line
-              key={deg}
-              x1="50"
-              y1="2"
-              x2="50"
-              y2="6"
-              stroke={C.vellumDim}
-              strokeWidth="0.2"
-              transform={`rotate(${deg} 50 50)`}
-            />
-          ))}
         </svg>
         <div
           style={{
@@ -155,64 +140,135 @@ export const StatusNode = ({ data, selected }) => {
 
   // ---- Groupe (section avec sous-projets) ----
   if (isGroup) {
+    // 1. Calcul de la progression et de la validation globale du groupe
+    let progressText = null;
+    let isGroupValidated = false;
+
+    if (data.subProjects && data.subProjects.length > 0 && data.subProjectStatuses) {
+      const validatedCount = data.subProjects.filter((sub) => {
+        const subId = sub.id || sub;
+        return data.subProjectStatuses[subId] === "validated";
+      }).length;
+      
+      progressText = `${validatedCount} / ${data.subProjects.length}`;
+      isGroupValidated = validatedCount > 0; // Validé si au moins 1 sous-projet l'est
+    }
+
     return (
       <div
         style={{
           position: "relative",
           minWidth: size * 1.5,
           background: "rgba(17, 20, 30, 0.92)",
-          border: `1px solid ${selected ? C.gold : C.vellumMute}`,
+          // La bordure globale du bloc devient dorée si le groupe est validé
+          border: `1px solid ${selected ? C.gold : isGroupValidated ? C.goldSoft : C.vellumMute}`,
           borderRadius: 2,
-          overflow: "hidden",
-          boxShadow: selected ? `0 0 0 1px ${C.goldSoft}, 0 0 16px ${C.goldSoft}80` : "none",
+          overflow: "visible",
+          boxShadow: selected ? `0 0 0 1px ${C.goldSoft}, 0 0 16px ${C.goldSoft}80` : isGroupValidated ? `0 0 12px ${C.gold}30` : "none",
           backdropFilter: "blur(4px)",
         }}
       >
         <Handle type="target" position={Position.Top} style={{ opacity: 0, pointerEvents: "none" }} />
-        <div style={{ padding: "8px 12px", borderBottom: `1px solid ${C.inkLine}` }}>
+        
+        {progressText && (
           <div
             style={{
+              position: "absolute",
+              top: -12,
+              left: "50%",
+              transform: "translateX(-50%)",
+              padding: "2px 6px",
+              fontSize: 10,
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: 9,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: C.vellumMute,
-              marginBottom: 2,
+              background: C.inkDeep,
+              color: isGroupValidated ? C.gold : C.vellumDim,
+              border: `1px solid ${isGroupValidated ? C.goldSoft : C.inkLine}`,
+              borderRadius: 1,
+              whiteSpace: "nowrap",
+              zIndex: 10,
             }}
           >
-            Section
+            {progressText}
           </div>
+        )}
+
+        <div style={{ padding: "8px 12px", borderBottom: `1px solid ${C.inkLine}` }}>
           <div
             style={{
               fontFamily: '"Cormorant Garamond", serif',
               fontSize: 16,
               fontWeight: 600,
-              color: C.vellum,
+              color: isGroupValidated ? C.gold : C.vellum,
             }}
           >
             {data.label}
           </div>
         </div>
-        {data.subProjects.map((label, i) => (
-          <div
-            key={i}
-            style={{
-              padding: "6px 12px",
-              fontSize: 12,
-              fontFamily: '"JetBrains Mono", monospace',
-              color: C.vellum,
-              borderBottom: i < data.subProjects.length - 1 ? `1px solid ${C.inkLine}` : "none",
-            }}
-          >
-            {label}
-          </div>
-        ))}
+        
+        {data.subProjects.map((sub, i) => {
+          const subId = sub.id || sub;
+          const subLabel = sub.label || sub;
+          const subStatus = data.subProjectStatuses?.[subId] || "available";
+          const moduleProgress = data.subProjectModules?.[subId];
+          
+          const isSubValidated = subStatus === "validated";
+          const isSubFailed = subStatus === "failed";
+          const color = isSubValidated ? C.gold : isSubFailed ? C.rust : C.vellum;
+
+          return (
+            <div
+              key={subId}
+              onClick={(e) => {
+                if (data.onSubClick) {
+                  e.stopPropagation();
+                  data.onSubClick(subId);
+                }
+              }}
+              onDoubleClick={(e) => {
+                if (data.onSubDoubleClick) {
+                  e.stopPropagation();
+                  data.onSubDoubleClick(subId);
+                }
+              }}
+              style={{
+                padding: "6px 12px",
+                margin: "4px 8px", // Ajoute un peu d'espace pour la bordure autour
+                borderRadius: "2px",
+                fontSize: 12,
+                fontFamily: '"JetBrains Mono", monospace',
+                color: color,
+                // --- La ligne est encadrée en jaune si validée ---
+                border: isSubValidated ? `1px solid ${C.gold}` : "1px solid transparent",
+                borderBottom: !isSubValidated && i < data.subProjects.length - 1 ? `1px solid ${C.inkLine}` : isSubValidated ? `1px solid ${C.gold}` : "1px solid transparent",
+                background: isSubValidated ? "rgba(212, 175, 55, 0.08)" : "transparent",
+                // ---------------------------------------------------
+                cursor: "pointer",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+              className="hover:bg-slate-800/50 transition-colors"
+            >
+              <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
+                <span>{subLabel}</span>
+                {moduleProgress && (
+                  <span style={{ fontSize: 10, color: C.vellumDim }}>
+                    [{moduleProgress}]
+                  </span>
+                )}
+              </div>
+              
+              <div>
+                {isSubFailed && <span style={{ fontSize: 10, color: C.rust }}>✗</span>}
+              </div>
+            </div>
+          );
+        })}
         <Handle type="source" position={Position.Bottom} style={{ opacity: 0, pointerEvents: "none" }} />
       </div>
     );
   }
 
-  // ---- Piscine : amas rectangulaire ----
   if (isPiscine) {
     const w = size * 1.9;
     const h = size * 0.95;
@@ -319,7 +375,6 @@ export const StatusNode = ({ data, selected }) => {
     );
   }
 
-  // ---- Étoile classique ----
   const isValidated = status === "validated";
   const isFailed = status === "failed";
 
