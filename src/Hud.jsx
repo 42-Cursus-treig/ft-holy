@@ -9,18 +9,33 @@ export const Hud = ({ progress, definitions, isAdmin, user, hasLocalDraft, onOpe
     let piscinesDone = 0;
 
     Object.entries(definitions).forEach(([id, def]) => {
-      if (def.subProjects && def.subProjects.length > 0) return;
-      if (def.locked) return;
-      const isPiscine = id.startsWith("piscine-");
+    if (def.locked) return;
+
+    if (def.subProjects && def.subProjects.length > 0) {
       total++;
-      const s = progress.statuses[id];
-      if (s === "validated") validated++;
-      else if (s === "failed") failed++;
-      if (isPiscine) {
-        piscines++;
-        if (s === "validated") piscinesDone++;
+
+      const isGroupValidated = def.subProjects.some((sub) => {
+        const subId = sub.id || sub;
+        return progress.statuses[subId] === "validated";
+      });
+
+      if (isGroupValidated) {
+        validated++;
+        if (id.startsWith("piscine-")) piscinesDone++;
       }
-    });
+      return;
+    }
+
+    const isPiscine = id.startsWith("piscine-");
+    total++;
+    const s = progress.statuses[id];
+    if (s === "validated") validated++;
+    else if (s === "failed") failed++;
+    if (isPiscine) {
+      piscines++;
+      if (s === "validated") piscinesDone++;
+    }
+  });
 
     return { total, validated, failed, piscines, piscinesDone };
   }, [progress, definitions]);

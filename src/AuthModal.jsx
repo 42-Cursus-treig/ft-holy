@@ -75,6 +75,7 @@ export const AuthModal = ({ onClose, auth }) => {
                 <input
                   type="password"
                   value={pat}
+                  autoComplete="false"
                   onChange={(e) => setPat(e.target.value)}
                   placeholder="ghp_…"
                   className="w-full px-3 py-2 bg-slate-900 text-white font-mono text-sm border border-slate-600 rounded-sm focus:border-yellow-500 focus:outline-none"                  autoFocus
