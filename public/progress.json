@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-14T21:55:14.961Z",
+  "updatedAt": "2026-05-16T21:23:55.350Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -47,6 +47,14 @@
     "ocaml-8": "validated",
     "ocaml-7": "validated",
     "ocaml-2": "validated",
-    "piscine-cybersecurite": "validated"
+    "piscine-cybersecurite": "validated",
+    "django-0": "validated",
+    "django-1": "validated",
+    "django-2": "validated",
+    "django-3": "validated",
+    "django-4": "validated",
+    "django-5": "validated",
+    "django-6": "validated",
+    "django-7": "validated"
   }
 }
