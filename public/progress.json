@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-16T21:23:55.350Z",
+  "updatedAt": "2026-05-17T15:31:41.048Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -20,7 +20,6 @@
     "ft-turing": "validated",
     "h42n42": "validated",
     "ft-ality": "validated",
-    "piscine-ocaml": "validated",
     "humangl": "validated",
     "avaj-launcher": "validated",
     "abstract-data": "validated",
@@ -55,6 +54,9 @@
     "django-4": "validated",
     "django-5": "validated",
     "django-6": "validated",
-    "django-7": "validated"
+    "django-7": "validated",
+    "django-8": "validated",
+    "piscine-django": "validated",
+    "piscine-ocaml": "validated"
   }
 }
