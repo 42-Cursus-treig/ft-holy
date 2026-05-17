@@ -9,33 +9,39 @@ export const Hud = ({ progress, definitions, isAdmin, user, hasLocalDraft, onOpe
     let piscinesDone = 0;
 
     Object.entries(definitions).forEach(([id, def]) => {
-    if (def.locked) return;
+      if (def.locked) return;
 
-    if (def.subProjects && def.subProjects.length > 0) {
-      total++;
+      // 1. Gestion des groupes
+      if (def.subProjects && def.subProjects.length > 0) {
+        total++;
 
-      const isGroupValidated = def.subProjects.some((sub) => {
-        const subId = sub.id || sub;
-        return progress.statuses[subId] === "validated";
-      });
+        const isGroupValidated = def.subProjects.some((sub) => {
+          const subId = sub.id || sub;
+          return progress.statuses[subId] === "validated";
+        });
 
-      if (isGroupValidated) {
-        validated++;
-        if (id.startsWith("piscine-")) piscinesDone++;
+        if (isGroupValidated) {
+          validated++;
+        }
+        return;
       }
-      return;
-    }
 
-    const isPiscine = id.startsWith("piscine-");
-    total++;
-    const s = progress.statuses[id];
-    if (s === "validated") validated++;
-    else if (s === "failed") failed++;
-    if (isPiscine) {
-      piscines++;
-      if (s === "validated") piscinesDone++;
-    }
-  });
+      // 2. Gestion des projets classiques et des sous-projets
+      const isPiscine = id.startsWith("piscine-");
+      total++;
+      
+      const s = progress.statuses[id];
+      if (s === "validated") {
+        validated++;
+        if (isPiscine) piscinesDone++; // Chaque sous-piscine validée ajoute 1 ici
+      } else if (s === "failed") {
+        failed++;
+      }
+
+      if (isPiscine) {
+        piscines++; // Le dénominateur monte de 1 pour chaque sous-piscine
+      }
+    });
 
     return { total, validated, failed, piscines, piscinesDone };
   }, [progress, definitions]);

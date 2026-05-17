@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import {
   ReactFlow,
   Background,
@@ -94,7 +94,7 @@ export default function App() {
   const isAdmin = auth.isAdmin;
 
   const buildGraph = useCallback(
-    (graphId) => {
+    (graphId, shouldFitView = false) => {
       const customPositions = isAdmin ? readPositions() : {};
       let freshNodes = [];
       let freshEdges = [];
@@ -109,7 +109,7 @@ export default function App() {
               id,
               type: "statusNode",
               position: customPositions[id] || def.position || { x: 0, y: 0 },
-              draggable: isAdmin && !def.locked,
+              draggable: !def.locked,
               data: {
                 label: name,
                 status: progress.getStatus(id),
@@ -171,7 +171,7 @@ export default function App() {
               id: mod.id,
               type: "statusNode",
               position: { x, y },
-              draggable: isAdmin,
+              draggable: true,
               data: {
                 label: mod.label,
                 status: progress.getStatus(mod.id),
@@ -202,13 +202,20 @@ export default function App() {
 
       setNodes(freshNodes);
       setEdges(styleEdges(freshNodes, freshEdges, graphId));
-      setTimeout(() => fitView({ duration: 800, padding: 0.2 }), 50);
+
+      if (shouldFitView) {
+        setTimeout(() => fitView({ duration: 800, padding: 0.2 }), 50);
+      }
     },
     [progress, isAdmin, setNodes, setEdges, fitView]
   );
 
+  const lastGraph = useRef(null);
+
   useEffect(() => {
-    buildGraph(currentGraph);
+    const isNewGraph = lastGraph.current !== currentGraph;
+    buildGraph(currentGraph, isNewGraph);
+    lastGraph.current = currentGraph;
   }, [currentGraph, progress.data, isAdmin]);
 
   const onNodeDoubleClick = useCallback((_e, node) => {
