@@ -50,28 +50,6 @@ const Halo = ({ size, color, opacity }) => {
   );
 };
 
-const StarCross = ({ size, color }) => {
-  const s = size * 1.8;
-  const offset = (s - size) / 2;
-  return (
-    <svg
-      width={s}
-      height={s}
-      viewBox="0 0 100 100"
-      style={{
-        position: "absolute",
-        left: -offset,
-        top: -offset,
-        zIndex: 1,
-        pointerEvents: "none",
-      }}
-    >
-      <line x1="50" y1="15" x2="50" y2="85" stroke={color} strokeWidth="0.5" opacity="0.4" />
-      <line x1="15" y1="50" x2="85" y2="50" stroke={color} strokeWidth="0.5" opacity="0.4" />
-    </svg>
-  );
-};
-
 export const StatusNode = ({ data, selected }) => {
   const size = data.size || 60;
   const isLocked = data.locked === true;
@@ -138,9 +116,7 @@ export const StatusNode = ({ data, selected }) => {
     );
   }
 
-  // ---- Groupe (section avec sous-projets) ----
   if (isGroup) {
-    // 1. Calcul de la progression et de la validation globale du groupe
     let progressText = null;
     let isGroupValidated = false;
 
@@ -151,7 +127,7 @@ export const StatusNode = ({ data, selected }) => {
       }).length;
       
       progressText = `${validatedCount} / ${data.subProjects.length}`;
-      isGroupValidated = validatedCount > 0; // Validé si au moins 1 sous-projet l'est
+      isGroupValidated = validatedCount > 0;
     }
 
     return (
@@ -160,7 +136,6 @@ export const StatusNode = ({ data, selected }) => {
           position: "relative",
           minWidth: size * 1.5,
           background: "rgba(17, 20, 30, 0.92)",
-          // La bordure globale du bloc devient dorée si le groupe est validé
           border: `1px solid ${selected ? C.gold : isGroupValidated ? C.goldSoft : C.vellumMute}`,
           borderRadius: 2,
           overflow: "visible",
@@ -232,16 +207,14 @@ export const StatusNode = ({ data, selected }) => {
               }}
               style={{
                 padding: "6px 12px",
-                margin: "4px 8px", // Ajoute un peu d'espace pour la bordure autour
+                margin: "4px 8px",
                 borderRadius: "2px",
                 fontSize: 12,
                 fontFamily: '"JetBrains Mono", monospace',
                 color: color,
-                // --- La ligne est encadrée en jaune si validée ---
                 border: isSubValidated ? `1px solid ${C.gold}` : "1px solid transparent",
                 borderBottom: !isSubValidated && i < data.subProjects.length - 1 ? `1px solid ${C.inkLine}` : isSubValidated ? `1px solid ${C.gold}` : "1px solid transparent",
                 background: isSubValidated ? "rgba(212, 175, 55, 0.08)" : "transparent",
-                // ---------------------------------------------------
                 cursor: "pointer",
                 display: "flex",
                 justifyContent: "space-between",
@@ -397,7 +370,6 @@ export const StatusNode = ({ data, selected }) => {
     >
       {isValidated && <Halo size={size} color={C.gold} opacity={0.55} />}
       {isFailed && <Halo size={size} color={C.rust} opacity={0.4} />}
-      {isValidated && <StarCross size={size} color={C.gold} />}
 
       <Handle type="target" position={Position.Top} style={{ opacity: 0, pointerEvents: "none" }} />
 
