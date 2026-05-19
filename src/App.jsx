@@ -16,7 +16,7 @@ import { StatusNode } from "./StatusNode";
 import { DetailPanel } from "./DetailPanel";
 import { Hud } from "./Hud";
 import { AuthModal } from "./AuthModal";
-import DownloadButton from "./DownloadButton";
+import DevToolbar from "./DevToolbar";
 
 import { activeProjects } from "./projectList";
 import { projectDefinitions, generateId } from "./projectDB";
@@ -140,6 +140,7 @@ export default function App() {
                   }
                 },
                 linkID: def.linkID,
+                langPdf: def.langPdf,
                 modules: def.modules,
                 moduleStatuses: def.modules
                   ? Object.fromEntries(def.modules.map((m) => [m.id, progress.getStatus(m.id)]))
@@ -177,6 +178,7 @@ export default function App() {
                 status: progress.getStatus(mod.id),
                 size: 75,
                 linkID: mod.linkID,
+                langPdf: mod.langPdf,
                 description: mod.description,
                 language: def.lang,
                 logoColor: def.logoColor,
@@ -326,7 +328,7 @@ export default function App() {
           <SearchBar nodes={nodes} onSelectNode={setSelectedProjectId} />
         </Panel>
 
-        <DownloadButton />
+        <DevToolbar />
       </ReactFlow>
 
       {selectedNode && (

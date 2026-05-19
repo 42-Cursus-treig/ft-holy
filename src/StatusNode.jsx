@@ -140,7 +140,6 @@ export const StatusNode = ({ data, selected }) => {
           borderRadius: 2,
           overflow: "visible",
           boxShadow: selected ? `0 0 0 1px ${C.goldSoft}, 0 0 16px ${C.goldSoft}80` : isGroupValidated ? `0 0 12px ${C.gold}30` : "none",
-          backdropFilter: "blur(4px)",
         }}
       >
         <Handle type="target" position={Position.Top} style={{ opacity: 0, pointerEvents: "none" }} />
@@ -270,7 +269,6 @@ export const StatusNode = ({ data, selected }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backdropFilter: "blur(4px)",
           color: palette.text,
           fontFamily: '"JetBrains Mono", monospace',
           fontSize: Math.max(11, size / 4.5),
@@ -279,6 +277,7 @@ export const StatusNode = ({ data, selected }) => {
           textTransform: "uppercase",
           transition: "all 0.3s",
           boxShadow: selected ? `0 0 0 1px ${palette.border}, 0 0 24px ${palette.border}60` : "none",
+          overflow: "visible",
         }}
       >
         <Handle type="target" position={Position.Top} style={{ opacity: 0, pointerEvents: "none" }} />
@@ -293,23 +292,22 @@ export const StatusNode = ({ data, selected }) => {
         </span>
 
         {progressText && (
-          <div
-            style={{
-              position: "absolute",
-              top: -12,
-              left: "50%",
-              transform: "translateX(-50%)",
-              padding: "2px 6px",
-              fontSize: 10,
-              fontFamily: '"JetBrains Mono", monospace',
-              background: C.inkDeep,
-              color: C.vellumDim,
-              border: `1px solid ${C.inkLine}`,
-              borderRadius: 1,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {progressText}
+          <div style={{ position: "absolute", top: -14, left: 0, width: "100%", display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 10 }}>
+            <div
+              style={{
+                padding: "2px 6px",
+                fontSize: 10,
+                fontFamily: '"JetBrains Mono", monospace',
+                background: C.inkDeep,
+                color: C.vellumDim,
+                border: `1px solid ${C.inkLine}`,
+                borderRadius: 1,
+                whiteSpace: "nowrap",
+                pointerEvents: "auto",
+              }}
+            >
+              {progressText}
+            </div>
           </div>
         )}
 
@@ -348,6 +346,7 @@ export const StatusNode = ({ data, selected }) => {
     );
   }
 
+  const isMainNode = data.label && data.label.toUpperCase() === "TRONC COMMUN";
   const isValidated = status === "validated";
   const isFailed = status === "failed";
 
@@ -368,8 +367,8 @@ export const StatusNode = ({ data, selected }) => {
         transition: "all 0.3s",
       }}
     >
-      {isValidated && <Halo size={size} color={C.gold} opacity={0.55} />}
-      {isFailed && <Halo size={size} color={C.rust} opacity={0.4} />}
+      {isValidated && !isMainNode && <Halo size={size} color={C.gold} opacity={0.55} />}
+      {isFailed && !isMainNode && <Halo size={size} color={C.rust} opacity={0.4} />}
 
       <Handle type="target" position={Position.Top} style={{ opacity: 0, pointerEvents: "none" }} />
 
@@ -395,7 +394,9 @@ export const StatusNode = ({ data, selected }) => {
             : isFailed
             ? "star-flicker 5s linear infinite"
             : "none",
-          boxShadow: selected
+          boxShadow: isMainNode 
+            ? "none" 
+            : selected
             ? `0 0 0 1.5px ${selectionGlow}, 0 0 24px ${selectionGlow}90`
             : isValidated
             ? `0 0 12px ${C.gold}30`

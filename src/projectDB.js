@@ -57,7 +57,7 @@ export const projectDefinitions = {
     "cloud-1": {
         parents: ["tronc-commun"],
         position: { x: 48, y: 228 },
-        linkID: "198305",
+        linkID: "202197",
         desc: "Introduction à la gestion et au déploiement de serveurs dans le cloud.",
     },
     "hypertube": {
@@ -747,6 +747,8 @@ export const projectDefinitions = {
         parents: ["tronc-commun"],
         position: { x: 852, y: 359 },
         linkID: "183541",
+        lang: "C",
+        logoColor: "#2a6bcc",
         desc: "Un projet sur l'analyse lexicale et les automates finis. Dans le cadre de ce projet, vous devrez mettre en œuvre un puissant moteur d'expressions régulières"
     },
     "ft-yacc": {
@@ -776,7 +778,9 @@ export const projectDefinitions = {
     "ftl-quantum": {
         parents: ["tronc-commun"],
         position: { x: -56, y: 396 },
-        linkID: "191294",
+        linkID: "204750",
+        lang: "python",
+        logoColor: "marine",
         desc: "Ce projet est une introduction à la programmation quantique. Il vous mettra au défi de créer différents programmes quantiques et de les exécuter sur un véritable ordinateur quantique.",
     },
     "unleashthebox": {
@@ -831,7 +835,8 @@ export const projectDefinitions = {
         parents: ["matrix"],
         position: { x: -106, y: 542 },
         linkID: "127291",
-        desc: "Implémentez un filtre de Kalman pour suivre les coordonnées d'un véhicule équipé de capteurs défectueux — une introduction au filtrage de signaux et aux opérations matricielles."
+        desc: "Implémentez un filtre de Kalman pour suivre les coordonnées d'un véhicule équipé de capteurs défectueux — une introduction au filtrage de signaux et aux opérations matricielles.",
+        langPdf: "fr",
     },
     "ready-set-boole": {
         parents: ["tronc-commun"],
