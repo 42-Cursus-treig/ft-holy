@@ -28,6 +28,7 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
   if (!node) return null;
 
   const status = node.data.status || "available";
+  const pdfLang = node.data.langPdf || "en";
 
   return (
     <div
@@ -98,7 +99,7 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
           )}
           {node.data.linkID && (
             <a
-              href={`https://cdn.intra.42.fr/pdf/pdf/${node.data.linkID}/en.subject.pdf`}
+              href={`https://cdn.intra.42.fr/pdf/pdf/${node.data.linkID}/${pdfLang}.subject.pdf`}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1.5 text-xs font-mono hover:text-vellum transition-colors"
