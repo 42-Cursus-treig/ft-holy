@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-19T12:54:47.369Z",
+  "updatedAt": "2026-05-22T21:15:41.097Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -60,6 +60,9 @@
     "ft-lex": "validated",
     "ftl-quantum": "validated",
     "piscine-django": "validated",
-    "django-8": "validated"
+    "django-8": "validated",
+    "swifty-companion": "validated",
+    "matcha": "validated",
+    "dslr": "validated"
   }
 }
