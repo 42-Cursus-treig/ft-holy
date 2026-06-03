@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-27T20:07:03.821Z",
+  "updatedAt": "2026-06-03T19:03:05.270Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -68,6 +68,9 @@
     "swifty-proteins": "validated",
     "object-2": "validated",
     "object-1": "validated",
-    "object-0": "validated"
+    "object-0": "validated",
+    "camagru": "validated",
+    "music-room": "validated",
+    "swingy": "validated"
   }
 }
