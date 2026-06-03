@@ -56,7 +56,7 @@ export const projectDefinitions = {
     },
     "cloud-1": {
         parents: ["tronc-commun"],
-        position: { x: 48, y: 228 },
+        position: { x: 48, y: 218 },
         linkID: "202197",
         desc: "Introduction à la gestion et au déploiement de serveurs dans le cloud.",
     },
@@ -76,7 +76,7 @@ export const projectDefinitions = {
         parents: ["piscine-mobile"],
         position: { x: -74, y: 997 },
         linkID: "127182",
-        desc: "Créez en Swift une application iOS qui récupère et affiche les informations des élèves de 42 via l'API de l'intranet.",
+        desc: "Développer une application mobile qui récupère et affiche les informations des utilisateurs de l’API 42 avec une interface interactive.",
     },
     "kfs-1": {
         parents: ["little-penguin-1"],
@@ -128,17 +128,22 @@ export const projectDefinitions = {
         position: { x: -214, y: 726 },
         linkID: "196067",
         desc: "Créez un site de rencontres avec un micro-framework de votre choix, en mettant les interactions entre utilisateurs au cœur du projet.",
+        langPdf: "fr",
     },
     "camagru": {
         parents: ["piscine-web"],
         position: { x: -164, y: 947 },
         linkID: "196064",
+        lang: "php",
+        logoColor: "#474A8A",
         desc: "Réalisez en PHP pur (sans framework) un mini site Instagram-like permettant aux utilisateurs de créer et partager des photo-montages.",
     },
     "dslr": {
         parents: ["piscine-data-science"],
         position: { x: -103, y: 295 },
         linkID: "169568",
+        lang: "python",
+        logoColor: "marine",
         desc: "Initiez-vous à la Data Science en recréant le Choixpeau Magique de Poudlard, un sujet proposé par l'association 42AI."
     },
     "multilayer-perceptron": {
@@ -163,7 +168,7 @@ export const projectDefinitions = {
     },
     "ft-linear-regression": {
         parents: ["dslr"],
-        position: { x: -100, y: 201 },
+        position: { x: -83, y: 161 },
         linkID: "191256",
         desc: "Premiers pas en IA et Machine Learning : créez un programme qui prédit le prix d'une voiture via une régression linéaire entraînée par descente de gradient."
     },
@@ -171,6 +176,8 @@ export const projectDefinitions = {
         parents: ["piscine-web"],
         position: { x: -324, y: 862 },
         linkID: "191956",
+        lang: "go",
+        logoColor: "teal",
         desc: "En partenariat avec Deezer, créez en groupe une application mobile de playlist collaborative intégrant les SDK et API de Deezer."
     },
     "libasm": {
@@ -438,6 +445,7 @@ export const projectDefinitions = {
         parents: ["avaj-launcher"],
         position: { x: 910, y: 922 },
         linkID: "147108",
+        lang: "java",
         desc: "Créez un jeu RPG en Java avec le framework SWING pour apprendre le développement d'applications GUI.",
     },
     "gomoku": {
@@ -609,8 +617,9 @@ export const projectDefinitions = {
         ],
     },
     "piscine-symfony": {
-        lang: "php",
         linkID: "147157",
+        lang: "php",
+        logoColor: "#474A8A",
         modules: [
             { id: "symfony-0", label: "Initiation", parents: [] },
             { id: "symfony-1", label: "Starting", parents: ["symfony-0"] },
@@ -799,7 +808,7 @@ export const projectDefinitions = {
         parents: ["humangl"],
         position: { x: 670, y: 1317 },
         linkID: "188672",
-        desc: "Codez un moteur physique basique from scratch, illustré par un jeu inspiré d'Angry Birds, avec détection de collisions, corps rigides et gravité."
+        desc: "Codez un moteur physique basique from scratch, illustré par un jeu inspiré d'Angry Birds, avec détection de collisions, corps rigides et gravité.",
     },
     "very-real-engine": {
         parents: ["ft-minecraft","ft-newton"],
@@ -811,7 +820,7 @@ export const projectDefinitions = {
         parents: ["dslr"],
         position: { x: -139, y: 360 },
         linkID: "202349",
-        //
+        desc: "Créer une intelligence artificielle utilisant le reinforcement learning pour entraîner un serpent à survivre et maximiser ses récompenses sur une grille de jeu.",
     },
     "leaffliction": {
         parents: ["dslr"],
@@ -882,7 +891,7 @@ export const projectDefinitions = {
     },
     "inception-of-things": {
         parents: ["cloud-1"],
-        position: { x: 7, y: 191 },
+        position: { x: 8, y: 218 },
         linkID: "188852",
         desc: "Découvrez Kubernetes côté développeur en déployant des clusters dans Docker et en mettant en place une pipeline d'intégration continue pour vos applications.",
     },
