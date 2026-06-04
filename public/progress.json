@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-03T19:03:05.270Z",
+  "updatedAt": "2026-06-04T12:59:15.343Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -71,6 +71,10 @@
     "object-0": "validated",
     "camagru": "validated",
     "music-room": "validated",
-    "swingy": "validated"
+    "swingy": "validated",
+    "object-5": "validated",
+    "object-4": "validated",
+    "object-3": "validated",
+    "piscine-objet": "validated"
   }
 }
