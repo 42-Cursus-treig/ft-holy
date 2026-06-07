@@ -15,8 +15,19 @@ const C = {
 };
 
 export const getIconUrl = (language, color) => {
-  if (language && language.toLowerCase() === "java")
-    return "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg";
+  const customIcons = {
+    java: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg",
+    flutter: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg",
+    dart: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg",
+    kotlin: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kotlin/kotlin-original.svg",
+  };
+
+  const key = language?.toLowerCase();
+
+  if (customIcons[key]) {
+    return customIcons[key];
+  }
+
   const safeColor = color ? color.replace("#", "") : "F4F1E8";
   return `https://cdn.simpleicons.org/${language}/${safeColor}`;
 };

@@ -76,6 +76,7 @@ export const projectDefinitions = {
         parents: ["piscine-mobile"],
         position: { x: -74, y: 997 },
         linkID: "127182",
+        lang: "flutter",
         desc: "Développer une application mobile qui récupère et affiche les informations des utilisateurs de l’API 42 avec une interface interactive.",
     },
     "kfs-1": {
@@ -127,6 +128,8 @@ export const projectDefinitions = {
         parents: ["piscine-web"],
         position: { x: -214, y: 726 },
         linkID: "196067",
+        lang: "react",
+        logoColor: "#61dbfb",
         desc: "Créez un site de rencontres avec un micro-framework de votre choix, en mettant les interactions entre utilisateurs au cœur du projet.",
         langPdf: "fr",
     },
@@ -248,6 +251,7 @@ export const projectDefinitions = {
         parents: ["swifty-companion"],
         position: { x: -135, y: 1063 },
         linkID: "199713",
+        lang: "flutter",
         desc: "Initiez-vous à SceneKit en créant une application iOS qui modélise des ligands en 3D, avec Touch ID, gestures et recherche."
     },
     "woody-woodpacker": {
@@ -297,7 +301,7 @@ export const projectDefinitions = {
     "abstract-vm": {
         parents: ["libftpp"],
         position: { x: 1045, y: 854 },
-        linkID: "176920",
+        linkID: "204684",
         desc: "Réalisez une machine virtuelle capable d'exécuter du pseudo-ASM en utilisant une stack pour effectuer des opérations arithmétiques."
     },
     "abstract-data": {
@@ -544,6 +548,7 @@ export const projectDefinitions = {
         parents: ["piscine-mobile"],
         position: { x: 70, y: 1041 },
         linkID: "158895",
+        lang: "kotlin",
         desc: "Créez une application Android de gestion de contacts en Java pour comprendre le cycle de vie d'une app et l'utilisation du SDK Android."
     },
     "lem-ipc": {
@@ -776,7 +781,7 @@ export const projectDefinitions = {
         parents: ["libasm"],
         position: { x: 963, y: 397 },
         linkID: "174908",
-        desc: "La lettre qui précédant C",
+        desc: "La lettre qui précéde C",
     },
     "darkly": {
         parents: ["piscine-web"],
@@ -851,6 +856,7 @@ export const projectDefinitions = {
         parents: ["tronc-commun"],
         position: { x: -40, y: 495 },
         linkID: "179422",
+        lang: "rust",
         desc: "Découvrez les bases des mathématiques appliquées à l'informatique grâce à l'algèbre booléenne et à la théorie des ensembles !",
     },
     "tinky-winkey": {
