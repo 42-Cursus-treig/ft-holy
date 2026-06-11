@@ -178,7 +178,7 @@ export default function App() {
                 status: progress.getStatus(mod.id),
                 size: 75,
                 linkID: mod.linkID,
-                langPdf: mod.langPdf,
+                langPdf: mod.langPdf ?? def.langPdf,
                 description: mod.description,
                 language: def.lang,
                 logoColor: def.logoColor,
