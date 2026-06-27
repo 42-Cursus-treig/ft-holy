@@ -19,7 +19,7 @@ import { AuthModal } from "./AuthModal";
 import DevToolbar from "./DevToolbar";
 
 import { activeProjects } from "./projectList";
-import { projectDefinitions, generateId } from "./projectDB";
+import { projectDefinitions, generateId, rushList } from "./projectDB";
 import { useProgress } from "./useProgress";
 import { useGitHubAuth, commitProgress } from "./useGitHubAuth";
 import { LS_POSITIONS_KEY } from "./config";
@@ -158,6 +158,48 @@ export default function App() {
                 freshEdges.push({ id: `e-${pid}-${node.id}`, source: pid, target: node.id });
               }
             });
+          }
+        });
+      } else if (graphId === "rush") {
+        // Graphe alternatif : grille de cercles (5 + 4), sans liens.
+        // Les données viennent de rushList (projectDB.js).
+        const gap = 150;
+        const rushSize = 70;
+        // Répartition des Rush en rangées de 5 max (ex. 9 → [5, 4]).
+        const perRow = 5;
+        const rowCounts = [];
+        let remaining = rushList.length;
+        while (remaining > 0) {
+          rowCounts.push(Math.min(perRow, remaining));
+          remaining -= perRow;
+        }
+        const maxCols = Math.max(...rowCounts, 0);
+
+        let rushIndex = 0;
+        rowCounts.forEach((count, row) => {
+          const rowOffset = ((maxCols - count) * gap) / 2;
+          for (let col = 0; col < count; col++) {
+            const rush = rushList[rushIndex];
+            freshNodes.push({
+              id: rush.id,
+              type: "statusNode",
+              position: {
+                x: rowOffset + col * gap,
+                y: row * gap,
+              },
+              draggable: true,
+              data: {
+                label: rush.label,
+                status: progress.getStatus(rush.id),
+                size: rushSize,
+                linkID: rush.linkID,
+                langPdf: rush.langPdf,
+                description: rush.description,
+                language: rush.lang,
+                logoColor: rush.logoColor,
+              },
+            });
+            rushIndex++;
           }
         });
       } else {
@@ -350,6 +392,8 @@ export default function App() {
         onSync={handleSync}
         syncing={syncing}
         onLogout={auth.logout}
+        onOpenRush={() => setCurrentGraph("rush")}
+        currentGraph={currentGraph}
       />
 
       {syncError && (

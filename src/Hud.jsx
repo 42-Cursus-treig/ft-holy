@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
+import { rushList } from "./projectDB";
 
-export const Hud = ({ progress, definitions, isAdmin, user, hasLocalDraft, onOpenAuth, onSync, syncing, onLogout }) => {
+export const Hud = ({ progress, definitions, isAdmin, user, hasLocalDraft, onOpenAuth, onSync, syncing, onLogout, onOpenRush, currentGraph }) => {
   const stats = useMemo(() => {
     let total = 0;
     let validated = 0;
@@ -43,7 +44,14 @@ export const Hud = ({ progress, definitions, isAdmin, user, hasLocalDraft, onOpe
       }
     });
 
-    return { total, validated, failed, piscines, piscinesDone };
+    // Rush : statuts stockés sous les ids de rushList (hors definitions)
+    const rushTotal = rushList.length;
+    let rushDone = 0;
+    rushList.forEach((r) => {
+      if (progress.statuses[r.id] === "validated") rushDone++;
+    });
+
+    return { total, validated, failed, piscines, piscinesDone, rush: rushTotal, rushDone };
   }, [progress, definitions]);
 
   const [confirmingLogout, setConfirmingLogout] = useState(false);
@@ -87,6 +95,32 @@ export const Hud = ({ progress, definitions, isAdmin, user, hasLocalDraft, onOpe
           <span className="text-vellum-mute text-sm">/ {stats.piscines}</span>
         </div>
       </div>
+
+      <button
+        onClick={onOpenRush}
+        title="Voir la grille des Rush"
+        className="px-4 py-2.5 text-left backdrop-blur-md transition-colors group"
+        style={{
+          background: "rgba(10, 12, 20, 0.85)",
+          border: `1px solid ${currentGraph === "rush" ? "var(--gold)" : "var(--ink-line)"}`,
+          borderRadius: 2,
+        }}
+      >
+        <div
+          className="smallcaps text-[9px] mb-1 text-vellum-mute transition-colors"
+        >
+          RUSHES
+        </div>
+        <div className="flex items-baseline gap-2 font-mono">
+          <span
+            className="text-lg font-medium transition-colors"
+            style={{ color: currentGraph === "rush" ? "var(--gold)" : "var(--vellum)" }}
+          >
+            {stats.rushDone}
+          </span>
+          <span className="text-vellum-mute text-sm">/ {stats.rush}</span>
+        </div>
+      </button>
 
       {isAdmin ? (
         <div

@@ -32,6 +32,37 @@ export const getIconUrl = (language, color) => {
   return `https://cdn.simpleicons.org/${language}/${safeColor}`;
 };
 
+export const FrameNode = ({ data }) => {
+  return (
+    <div
+      style={{
+        width: data.width,
+        height: data.height,
+        border: `1px solid ${C.inkLine}`,
+        borderRadius: 4,
+        background: "rgba(17, 20, 30, 0.35)",
+        pointerEvents: "none",
+        position: "relative",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: 8,
+          left: 12,
+          fontFamily: '"JetBrains Mono", monospace',
+          fontSize: 11,
+          letterSpacing: "0.25em",
+          color: C.vellumMute,
+          textTransform: "uppercase",
+        }}
+      >
+        {data.label}
+      </div>
+    </div>
+  );
+};
+
 const Halo = ({ size, color, opacity }) => {
   const haloSize = size * 2.4;
   const offset = (haloSize - size) / 2;
