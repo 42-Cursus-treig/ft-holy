@@ -56,7 +56,7 @@ export const projectDefinitions = {
     },
     "cloud-1": {
         parents: ["tronc-commun"],
-        position: { x: 48, y: 218 },
+        position: { x: 59, y: 223 },
         linkID: "202197",
         desc: "Introduction à la gestion et au déploiement de serveurs dans le cloud.",
     },
@@ -308,8 +308,6 @@ export const projectDefinitions = {
         parents: ["libftpp"],
         position: { x: 1037, y: 930 },
         linkID: "147612",
-        lang: "c++",
-        logoColor: "marine",
         desc: "Réimplémentez les différents containers du C++ pour bien comprendre leurs usages et spécificités."
     },
     "avaj-launcher": {
@@ -752,6 +750,8 @@ export const projectDefinitions = {
         parents: ["piscine-objet"],
         position: { x: 957, y: 841 },
         linkID: "157707",
+        lang: "c++",
+        logoColor: "marine",
         desc: "Ce sujet a pour objectif de vous initier aux concepts avancés du C++ à travers le développement d'outils et de systèmes complexes.",
     },
     "peace-break": {
@@ -803,7 +803,7 @@ export const projectDefinitions = {
     "unleashthebox": {
         parents: ["boot2root"],
         position: { x: 962, y: 79 },
-        linkID: "94609",
+        linkID: "206045",
         desc: "Un projet immersif consacré à la cybersécurité, dans le cadre duquel les participants apprennent à exploiter des systèmes et acquièrent les compétences indispensables pour évoluer dans le monde en constante évolution de la sécurité de l'information.",
     },
     "freddie-mercury": {
@@ -895,13 +895,25 @@ export const projectDefinitions = {
     "nm": {
         parents: ["malloc"],
         position: { x: 1105, y: 682 },
-        linkID: "192774",
+        linkID: "202344",
         desc: "Réécrivez les outils nm et otool pour décortiquer le format des exécutables et comprendre comment le kernel lance les binaires — une ouverture essentielle sur la culture UNIX système.",
     },
     "inception-of-things": {
         parents: ["cloud-1"],
-        position: { x: 8, y: 218 },
+        position: { x: 7, y: 171 },
         linkID: "188852",
         desc: "Découvrez Kubernetes côté développeur en déployant des clusters dans Docker et en mettant en place une pipeline d'intégration continue pour vos applications.",
     },
 };
+
+export const rushList = [
+    { id: "rush-00", label: "Libunit", linkID: "1234" },
+    { id: "rush-01", label: "Hotrace" },
+    { id: "rush-02", label: "AlCu" },
+    { id: "rush-03", label: "Wong kar Wai" },
+    { id: "rush-04", label: "yasl" },
+    { id: "rush-05", label: "wordle" },
+    { id: "rush-06", label: "Connect4" },
+    { id: "rush-07", label: "Retro-MFA" },
+    { id: "rush-08", label: "ft_shmup" },
+];
