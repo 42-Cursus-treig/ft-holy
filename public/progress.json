@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-04T12:59:15.343Z",
+  "updatedAt": "2026-06-26T11:58:43.971Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -23,12 +23,11 @@
     "piscine-ocaml": "validated",
     "humangl": "validated",
     "avaj-launcher": "validated",
-    "abstract-data": "validated",
     "ft-select": "validated",
     "ft-ls": "validated",
     "malloc": "validated",
     "ft-minecraft": "failed",
-    "doom-nukem": "failed",
+    "doom-nukem": "validated",
     "libasm": "validated",
     "n-puzzle": "validated",
     "cyber-6": "validated",
@@ -75,6 +74,18 @@
     "object-5": "validated",
     "object-4": "validated",
     "object-3": "validated",
-    "piscine-objet": "validated"
+    "piscine-objet": "validated",
+    "libftpp": "validated",
+    "ready-set-boole": "validated",
+    "data-0": "validated",
+    "data-1": "validated",
+    "ft-yacc": "validated",
+    "data-2": "validated",
+    "data-3": "validated",
+    "data-4": "validated",
+    "piscine-data-science": "validated",
+    "guimp": "validated",
+    "particle-system": "validated",
+    "nm": "validated"
   }
 }
