@@ -193,8 +193,9 @@ export default function App() {
                 status: progress.getStatus(rush.id),
                 size: rushSize,
                 linkID: rush.linkID,
+                pdfUrl: rush.pdfUrl,
                 langPdf: rush.langPdf,
-                description: rush.description,
+                description: rush.description ?? rush.desc,
                 language: rush.lang,
                 logoColor: rush.logoColor,
               },
@@ -248,7 +249,12 @@ export default function App() {
       setEdges(styleEdges(freshNodes, freshEdges, graphId));
 
       if (shouldFitView) {
-        setTimeout(() => fitView({ duration: 800, padding: 0.2 }), 50);
+        if (graphId === "rush") {
+          // Grille compacte : éviter de zoomer trop fort à l'arrivée.
+          setTimeout(() => fitView({ duration: 800, padding: 0.45, maxZoom: 1 }), 50);
+        } else {
+          setTimeout(() => fitView({ duration: 800, padding: 0.2 }), 50);
+        }
       }
     },
     [progress, isAdmin, setNodes, setEdges, fitView]

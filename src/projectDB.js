@@ -1,5 +1,5 @@
 export const generateId = (name) => name.toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
-
+ 
 export const projectDefinitions = {
     "tronc-commun": {
         size: 800,
@@ -25,7 +25,6 @@ export const projectDefinitions = {
         parents: ["malloc"],
         position: { x: 1076, y: 770 },
         lang: "c",
-        logoColor: "#2a6bcc",
         linkID: "61383",
         desc: "Pour tout connaitre du filesystem, de la façon dont sont rangés les fichiers et répertoires, codez par vous-même une des commandes les plus utilisées : ls .",
     },
@@ -56,7 +55,7 @@ export const projectDefinitions = {
     },
     "cloud-1": {
         parents: ["tronc-commun"],
-        position: { x: 59, y: 223 },
+        position: { x: 48, y: 218 },
         linkID: "202197",
         desc: "Introduction à la gestion et au déploiement de serveurs dans le cloud.",
     },
@@ -89,7 +88,6 @@ export const projectDefinitions = {
         parents: ["tronc-commun"],
         position: { x: 1010, y: 688 },
         lang: "c",
-        logoColor: "#2a6bcc",
         linkID: "188766",
         desc: "Découvrez les rouages d'une gestion optimale de la mémoire en recodant malloc, free et realloc.",
     },
@@ -129,7 +127,6 @@ export const projectDefinitions = {
         position: { x: -214, y: 726 },
         linkID: "196067",
         lang: "react",
-        logoColor: "#61dbfb",
         desc: "Créez un site de rencontres avec un micro-framework de votre choix, en mettant les interactions entre utilisateurs au cœur du projet.",
         langPdf: "fr",
     },
@@ -138,7 +135,6 @@ export const projectDefinitions = {
         position: { x: -164, y: 947 },
         linkID: "196064",
         lang: "php",
-        logoColor: "#474A8A",
         desc: "Réalisez en PHP pur (sans framework) un mini site Instagram-like permettant aux utilisateurs de créer et partager des photo-montages.",
     },
     "dslr": {
@@ -146,7 +142,6 @@ export const projectDefinitions = {
         position: { x: -103, y: 295 },
         linkID: "169568",
         lang: "python",
-        logoColor: "marine",
         desc: "Initiez-vous à la Data Science en recréant le Choixpeau Magique de Poudlard, un sujet proposé par l'association 42AI."
     },
     "multilayer-perceptron": {
@@ -160,7 +155,6 @@ export const projectDefinitions = {
         position: { x: 478, y: 1060 },
         linkID: "164309",
         lang: "c",
-        logoColor: "#2a6bcc",
         desc: "Suite avancée du Wolf3D mêlant Doom et Duke Nukem 3D : poussez le Raycasting à l'extrême tout en concevant un vrai jeu jouable.",
     },
     "corewar": {
@@ -180,12 +174,10 @@ export const projectDefinitions = {
         position: { x: -324, y: 862 },
         linkID: "191956",
         lang: "go",
-        logoColor: "teal",
         desc: "En partenariat avec Deezer, créez en groupe une application mobile de playlist collaborative intégrant les SDK et API de Deezer."
     },
     "libasm": {
         lang: "assemblyscript",
-        logoColor: "red",
         parents: ["tronc-commun"],
         position: { x: 874, y: 440 },
         linkID: "176883",
@@ -196,7 +188,6 @@ export const projectDefinitions = {
         position: { x: 554, y: 1085 },
         linkID: "164248",
         lang: "opengl",
-        logoColor: "teal",
         desc: "Premiers pas dans la 3D sur GPU avec OpenGL à travers un projet ludique couvrant les concepts principaux.",
     },
     "war": {
@@ -271,7 +262,6 @@ export const projectDefinitions = {
         position: { x: 364, y: 64 },
         linkID: "164068",
         lang: "c",
-        logoColor: "#2a6bcc",
         desc: "Recodez la commande ping pour comprendre la communication TCP/IP entre deux machines dans un réseau."
     },
     "ft-nmap": {
@@ -358,7 +348,6 @@ export const projectDefinitions = {
         position: { x: 1143, y: 824 },
         linkID: "188785",
         lang: "c",
-        logoColor: "#2a6bcc",
         desc: "Initiez-vous à la manipulation du terminal via les termcaps en créant une interface utilisateur pour un programme lancé en terminal."
     },
     "computorv1": {
@@ -366,7 +355,6 @@ export const projectDefinitions = {
         position: { x: -110, y: 439 },
         linkID: "175880",
         lang: "go",
-        logoColor: "teal",
         desc: "Recodez un résolveur d'équations mathématiques élémentaires dans le langage de votre choix, socle pour de nombreux autres projets."
     },
     "ft-ssl-rsa": {
@@ -380,7 +368,6 @@ export const projectDefinitions = {
         position: { x: 641, y: 1098 },
         linkID: "176882",
         lang: "c++",
-        logoColor: "marine",
         desc: "Créez un moteur de voxel inspiré de Minecraft avec génération de monde aléatoire.",
     },
     "override": {
@@ -460,7 +447,6 @@ export const projectDefinitions = {
         parents: ["tronc-commun"],
         position: { x: -127, y: 604 },
         lang: "c++",
-        logoColor: "marine",
         linkID: "163452",
         desc: "Réalisez un programme capable de résoudre des Taquins de tailles variées de façon aussi optimale que possible.",
     },
@@ -468,7 +454,6 @@ export const projectDefinitions = {
         parents: ["tronc-commun"],
         position: { x: 688, y: 986 },
         lang: "c++",
-        logoColor: "marine",
         linkID: "60868",
         desc: "Simulez et représentez en 3D un écoulement d'eau sur une surface — vague, tsunami ou simple pluie."
     },
@@ -531,14 +516,12 @@ export const projectDefinitions = {
         position: { x: 864, y: 995 },
         linkID: "163926",
         lang: "ocaml",
-        logoColor: "orange",
         desc: "Découvrez le modèle de Turing, fondement du paradigme impératif, en l'implémentant en OCaml.",
     },
     "humangl": {
         parents: ["scop"],
         position: { x: 561, y: 1198 },
         lang: "c++",
-        logoColor: "marine",
         linkID: "163924",
         desc: "Introduction à la modélisation hiérarchique avec OpenGL : liez et animez les parties d'un humanoïde via des matrices."
     },
@@ -566,16 +549,13 @@ export const projectDefinitions = {
         position: { x: 955, y: 1039 },
         linkID: "196674",
         lang: "ocaml",
-        logoColor: "orange",
         desc: "Introduction au framework Ocsigen pour créer des applications web riches en OCaml, illustrée par un simulateur de bestioles fuyant un virus.",
     },
     "open-project": {
         parents: ["tronc-commun"],
         position: { x: 211, y: 998 },
-        lang: "42",
         linkID: "128727",
         lang: "react",
-        logoColor: "#61dbfb",
         desc: "Gérez un projet long terme de 6 mois en groupe avec d'autres étudiants de 42, sur un sujet libre comportant des éléments informatiques.",
     },
     "piscine-web": {
@@ -589,7 +569,6 @@ export const projectDefinitions = {
     },
     "piscine-django": {
         lang: "python",
-        logoColor: "marine",
         linkID: "204454",
         langPdf: "fr",
         modules: [
@@ -606,7 +585,6 @@ export const projectDefinitions = {
     },
     "piscine-ror": {
         lang: "ruby",
-        logoColor: "red",
         linkID: "95536",
         langPdf: "fr",
         modules: [
@@ -624,7 +602,6 @@ export const projectDefinitions = {
     "piscine-symfony": {
         linkID: "147157",
         lang: "php",
-        logoColor: "#474A8A",
         langPdf: "fr",
         modules: [
             { id: "symfony-0", label: "Initiation", parents: [], linkID: "193441" },
@@ -642,7 +619,6 @@ export const projectDefinitions = {
         parents: ["tronc-commun"],
         position: { x: 14, y: 952 },
         lang: "dart",
-        logoColor: "darkturquoise",
         linkID: "95370",
         modules: [
             { id: "mobile-0", label: "Mobile Basics", parents: [], linkID: "143028" },
@@ -658,7 +634,6 @@ export const projectDefinitions = {
         position: { x: 730, y: 928 },
         linkID: "143947",
         lang: "ocaml",
-        logoColor: "orange",
         modules : [
             { id: "ocaml-0", label: "Basic syntax and semantics", parents: [], linkID: "144426" },
             { id: "ocaml-1", label: "Recursion and higher-order functions", parents: ["ocaml-0"], linkID: "144419" },
@@ -675,7 +650,6 @@ export const projectDefinitions = {
         parents: ["tronc-commun"],
         position: { x: 323, y: 1018 },
         lang: "unity",
-        logoColor: "grey",
         linkID: "164067",
         modules : [
             { id: "unity-0", label: "The basics unity tools", parents: [], linkID: "164019" },
@@ -706,7 +680,6 @@ export const projectDefinitions = {
         parents: ["tronc-commun"],
         position: { x: 835, y: 796 },
         lang: "c++",
-        logoColor: "marine",
         linkID: "143096",
         modules: [
             { id: "object-0", label: "Encapsulation", parents: [], linkID: "88947" },
@@ -721,7 +694,6 @@ export const projectDefinitions = {
         parents: ["tronc-commun"],
         position: { x: -32, y: 316 },
         lang: "python",
-        logoColor: "marine",
         linkID: "95527",
         modules: [
             { id: "data-0", label: "Data Engineer", parents: [], linkID: "172236" },
@@ -733,7 +705,6 @@ export const projectDefinitions = {
     },
     "ft-ality": {
         lang: "ocaml",
-        logoColor: "orange",
         parents: ["ft-turing"],
         position: { x: 885, y: 1100 },
         linkID: "149158",
@@ -751,7 +722,6 @@ export const projectDefinitions = {
         position: { x: 957, y: 841 },
         linkID: "157707",
         lang: "c++",
-        logoColor: "marine",
         desc: "Ce sujet a pour objectif de vous initier aux concepts avancés du C++ à travers le développement d'outils et de systèmes complexes.",
     },
     "peace-break": {
@@ -765,7 +735,6 @@ export const projectDefinitions = {
         position: { x: 852, y: 359 },
         linkID: "183541",
         lang: "C",
-        logoColor: "#2a6bcc",
         desc: "Un projet sur l'analyse lexicale et les automates finis. Dans le cadre de ce projet, vous devrez mettre en œuvre un puissant moteur d'expressions régulières"
     },
     "ft-yacc": {
@@ -797,7 +766,6 @@ export const projectDefinitions = {
         position: { x: -56, y: 396 },
         linkID: "204750",
         lang: "python",
-        logoColor: "marine",
         desc: "Ce projet est une introduction à la programmation quantique. Il vous mettra au défi de créer différents programmes quantiques et de les exécuter sur un véritable ordinateur quantique.",
     },
     "unleashthebox": {
@@ -900,20 +868,65 @@ export const projectDefinitions = {
     },
     "inception-of-things": {
         parents: ["cloud-1"],
-        position: { x: 7, y: 171 },
+        position: { x: 8, y: 218 },
         linkID: "188852",
         desc: "Découvrez Kubernetes côté développeur en déployant des clusters dans Docker et en mettant en place une pipeline d'intégration continue pour vos applications.",
     },
 };
 
 export const rushList = [
-    { id: "rush-00", label: "Libunit", linkID: "1234" },
-    { id: "rush-01", label: "Hotrace" },
-    { id: "rush-02", label: "AlCu" },
-    { id: "rush-03", label: "Wong kar Wai" },
-    { id: "rush-04", label: "yasl" },
-    { id: "rush-05", label: "wordle" },
-    { id: "rush-06", label: "Connect4" },
-    { id: "rush-07", label: "Retro-MFA" },
-    { id: "rush-08", label: "ft_shmup" },
+    {
+        id: "rush-00",
+        label: "Libunit",
+        pdfUrl: "subjects/libunit.fr.pdf",
+        desc: "Concevez un micro-framework en langage C dédié aux tests."
+    },
+    {
+        id: "rush-01",
+        label: "Hotrace",
+        linkID: "125938",
+        desc: "Développez un moteur de recherche capable d'indexer des données et de répondre efficacement aux recherches par mots-clés."
+    },
+    {
+        id: "rush-02",
+        label: "AlCu",
+        linkID: "149331",
+        desc: "Développez AlCu, un jeu basé sur des tas, et mettez en œuvre des algorithmes ainsi que des méthodes de programmation efficaces."
+    },
+    {
+        id: "rush-03",
+        label: "Wong kar Wai",
+        linkID: "133009",
+        desc: "Amusez-vous en développant le jeu 2048."
+    },
+    {
+        id: "rush-04",
+        label: "yasl",
+        linkID: "159666",
+        desc: "Découvrez un nouveau langage de programmation et mettez à l'épreuve votre capacité d'adaptation.",
+    },
+    {
+        id: "rush-05",
+        label: "wordle",
+        linkID: "163457",
+        desc: "Reproduisez le jeu Wordle en développant sa logique de jeu et son système de validation des mots."
+    },
+    {
+        id: "rush-06",
+        label: "Connect4",
+        linkID: "115815",
+        desc: "Développez une version du Puissance 4 intégrant une intelligence artificielle capable de vous affronter."
+    },
+    {
+        id: "rush-07",
+        label: "Retro-MFA",
+        linkID: "128785",
+        desc: "Retrouvez des images cachées dans un format de fichier propriétaire en développant les outils nécessaires à leur extraction."
+    },
+    {
+        id: "rush-08",
+        label: "ft_shmup",
+        linkID: "149142",
+        desc: "Le but de ce projet est d’implémenter un jeu simpliste de type shoot'em up dans votre terminal."
+    },
 ];
