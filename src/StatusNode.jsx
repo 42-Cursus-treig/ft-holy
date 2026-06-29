@@ -14,6 +14,22 @@ const C = {
   rustSoft: "#6B281C",
 };
 
+const LANG_COLORS = {
+  c: "#2a6bcc",
+  "c++": "marine",
+  python: "marine",
+  ocaml: "orange",
+  go: "teal",
+  opengl: "teal",
+  react: "#61dbfb",
+  php: "#474A8A",
+  ruby: "red",
+  assemblyscript: "red",
+  unity: "grey",
+  dart: "darkturquoise",
+  rust: "#dea584",
+};
+
 export const getIconUrl = (language, color) => {
   const customIcons = {
     java: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg",
@@ -28,7 +44,8 @@ export const getIconUrl = (language, color) => {
     return customIcons[key];
   }
 
-  const safeColor = color ? color.replace("#", "") : "F4F1E8";
+  const resolvedColor = color || LANG_COLORS[key] || "F4F1E8";
+  const safeColor = resolvedColor.replace("#", "");
   return `https://cdn.simpleicons.org/${language}/${safeColor}`;
 };
 

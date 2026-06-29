@@ -30,6 +30,17 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
   const status = node.data.status || "available";
   const pdfLang = node.data.langPdf || "en";
 
+  // Lien vers le sujet : un PDF local (pdfUrl) est prioritaire sur le linkID intra.
+  // pdfUrl peut être absolu (https://…) ou relatif au dossier public/ (ex: "subjects/rush.pdf").
+  let subjectHref = null;
+  if (node.data.pdfUrl) {
+    subjectHref = /^https?:\/\//.test(node.data.pdfUrl)
+      ? node.data.pdfUrl
+      : `${import.meta.env.BASE_URL}${node.data.pdfUrl.replace(/^\//, "")}`;
+  } else if (node.data.linkID) {
+    subjectHref = `https://cdn.intra.42.fr/pdf/pdf/${node.data.linkID}/${pdfLang}.subject.pdf`;
+  }
+
   return (
     <div
       className="absolute top-5 right-5 w-[340px] p-0 z-10 fade-in overflow-hidden"
@@ -87,7 +98,7 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
         </div>
       </div>
 
-      {(node.data.description || node.data.linkID) && (
+      {(node.data.description || subjectHref) && (
         <div
           className="px-5 py-4 border-b border-ink-line"
           style={{ background: STATUS_BG[status] }}
@@ -97,9 +108,9 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
               {node.data.description}
             </p>
           )}
-          {node.data.linkID && (
+          {subjectHref && (
             <a
-              href={`https://cdn.intra.42.fr/pdf/pdf/${node.data.linkID}/${pdfLang}.subject.pdf`}
+              href={subjectHref}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1.5 text-xs font-mono hover:text-vellum transition-colors"
