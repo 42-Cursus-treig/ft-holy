@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "login": "treig",
+  "graph": "pool",
+  "updatedAt": "2026-07-18T10:00:00Z",
+  "statuses": {
+    "shell-00": "validated",
+    "shell-01": "failed",
+    "c-00": "validated",
+    "c-01": "validated",
+    "c-02": "validated",
+    "c-03": "validated",
+    "c-04": "validated",
+    "c-05": "validated",
+    "c-06": "validated",
+    "c-07": "validated",
+    "c-08": "validated",
+    "c-09": "validated",
+    "c-10": "failed",
+    "c-11": "validated",
+    "bsq": "failed",
+    "exam-00": "validated",
+    "exam-01": "validated",
+    "exam-02": "validated",
+    "exam-final": "validated"
+  }
+}

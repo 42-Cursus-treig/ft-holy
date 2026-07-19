@@ -2,25 +2,29 @@ import { getIconUrl } from "./StatusNode";
 
 const STATUS_LABEL = {
   validated: "VALIDÉ",
-  failed: "INVALIDÉ",
+  failed: "ÉCHOUÉ",
+  "in-progress": "EN COURS",
   available: "INEXPLORÉ",
 };
 
 const STATUS_COLOR = {
   validated: "var(--gold)",
   failed: "var(--rust)",
+  "in-progress": "var(--azure)",
   available: "var(--vellum-dim)",
 };
 
 const STATUS_BG = {
   validated: "rgba(212, 175, 55, 0.08)",
   failed: "rgba(166, 61, 42, 0.08)",
+  "in-progress": "rgba(74, 144, 217, 0.08)",
   available: "rgba(28, 32, 48, 0.6)",
 };
 
 const STATUS_BORDER = {
   validated: "rgba(212, 175, 55, 0.25)",
   failed: "rgba(166, 61, 42, 0.25)",
+  "in-progress": "rgba(74, 144, 217, 0.3)",
   available: "rgba(109, 106, 92, 0.2)",
 };
 
@@ -87,6 +91,18 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
           >
             {STATUS_LABEL[status]}
           </span>
+          {node.data.mark != null && (
+            <span
+              className="font-mono text-[11px] px-2 py-1"
+              style={{
+                color: STATUS_COLOR[status],
+                border: `1px solid ${STATUS_BORDER[status]}`,
+                borderRadius: 1,
+              }}
+            >
+              {node.data.mark}/100
+            </span>
+          )}
           {node.data.language && (
             <img
               src={getIconUrl(node.data.language, node.data.logoColor)}
