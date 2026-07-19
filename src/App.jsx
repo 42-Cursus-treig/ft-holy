@@ -19,10 +19,11 @@ import { AuthModal } from "./AuthModal";
 import DevToolbar from "./DevToolbar";
 
 import { activeProjects } from "./projectList";
-import { projectDefinitions, generateId, rushList } from "./projectDB";
+import { generateId, rushList } from "./projectDB";
+import { getDefinitions } from "./graphs";
 import { useProgress } from "./useProgress";
 import { useGitHubAuth, commitProgress } from "./useGitHubAuth";
-import { LS_POSITIONS_KEY } from "./config";
+import { LS_POSITIONS_KEY, GRAPH, READ_ONLY, COMPACT } from "./config";
 
 const styleEdges = (nodes, edges, currentGraph) => {
   return edges.map((edge) => {
@@ -42,23 +43,32 @@ const styleEdges = (nodes, edges, currentGraph) => {
     const isPiscineModule = currentGraph !== "main";
 
     const color =
-      status === "validated" ? "#D4AF37" : status === "failed" ? "#A63D2A" : "#1C2030";
+      status === "validated"
+        ? "#D4AF37"
+        : status === "failed"
+        ? "#A63D2A"
+        : status === "in-progress"
+        ? "#4A90D9"
+        : "#7C86A8";
 
     const base = {
       ...edge,
       type: "floating",
       markerEnd: isPiscineModule
-        ? { type: "arrowclosed", width: 14, height: 14, color }
+        ? { type: "arrowclosed", width: 18, height: 18, color }
         : undefined,
     };
 
     if (status === "validated") {
-      return { ...base, animated: true, style: { stroke: "#D4AF37", strokeWidth: 1.2, opacity: 0.85 } };
+      return { ...base, animated: true, style: { stroke: "#D4AF37", strokeWidth: 1.6, opacity: 1 } };
     }
     if (status === "failed") {
-      return { ...base, animated: false, style: { stroke: "#A63D2A", strokeWidth: 1, strokeDasharray: "4,4", opacity: 0.8 } };
+      return { ...base, animated: false, style: { stroke: "#A63D2A", strokeWidth: 1.4, strokeDasharray: "4,4", opacity: 0.9 } };
     }
-    return { ...base, animated: false, style: { stroke: "#4A5270", strokeWidth: 1.4, opacity: 0.8 } };
+    if (status === "in-progress") {
+      return { ...base, animated: true, style: { stroke: "#4A90D9", strokeWidth: 1.6, opacity: 0.9 } };
+    }
+    return { ...base, animated: false, style: { stroke: "#7C86A8", strokeWidth: 1.6, opacity: 0.95 } };
   });
 };
 
@@ -77,10 +87,13 @@ const writePositions = (positions) => {
 };
 
 export default function App() {
+  const isPool = GRAPH === "pool";
+  const definitions = useMemo(() => getDefinitions(GRAPH), []);
+
   const [nodes, setNodes, onNodesChanges] = useNodesState([]);
   const [edges, setEdges, onEdgesChanges] = useEdgesState([]);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
-  const [currentGraph, setCurrentGraph] = useState("main");
+  const [currentGraph, setCurrentGraph] = useState(isPool ? "pool" : "main");
   const [authOpen, setAuthOpen] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [syncError, setSyncError] = useState(null);
@@ -91,7 +104,7 @@ export default function App() {
 
   const progress = useProgress();
   const auth = useGitHubAuth();
-  const isAdmin = auth.isAdmin;
+  const isAdmin = auth.isAdmin && !READ_ONLY;
 
   const buildGraph = useCallback(
     (graphId, shouldFitView = false) => {
@@ -99,11 +112,47 @@ export default function App() {
       let freshNodes = [];
       let freshEdges = [];
 
+      if (graphId === "pool") {
+        freshNodes = Object.entries(definitions).map(([id, def]) => ({
+          id,
+          type: "statusNode",
+          position: customPositions[id] || def.position || { x: 0, y: 0 },
+          draggable: !COMPACT,
+          data: {
+            label: def.label || id,
+            status: progress.getStatus(id),
+            mark: progress.getMark(id),
+            language: def.lang,
+            logoColor: def.logoColor,
+            description: def.desc,
+            size: def.size || 70,
+            linkID: def.linkID,
+            langPdf: def.langPdf,
+            isPool: true,
+          },
+        }));
+
+        Object.entries(definitions).forEach(([id, def]) => {
+          (def.parents || []).forEach((pid) => {
+            if (definitions[pid]) {
+              freshEdges.push({ id: `e-${pid}-${id}`, source: pid, target: id });
+            }
+          });
+        });
+
+        setNodes(freshNodes);
+        setEdges(styleEdges(freshNodes, freshEdges, graphId));
+        if (shouldFitView) {
+          setTimeout(() => fitView({ duration: 800, padding: COMPACT ? 0.05 : 0.15 }), 50);
+        }
+        return;
+      }
+
       if (graphId === "main") {
         freshNodes = activeProjects
           .map((name) => {
             const id = generateId(name);
-            const def = projectDefinitions[id];
+            const def = definitions[id];
             if (!def) return null;
             return {
               id,
@@ -113,6 +162,7 @@ export default function App() {
               data: {
                 label: name,
                 status: progress.getStatus(id),
+                mark: progress.getMark(id),
                 language: def.lang,
                 logoColor: def.logoColor,
                 description: def.desc,
@@ -124,7 +174,7 @@ export default function App() {
                 subProjectModules: def.subProjects
                   ? Object.fromEntries(def.subProjects.map((sub) => {
                       const subId = sub.id || sub;
-                      const subDef = projectDefinitions[subId];
+                      const subDef = definitions[subId];
                       if (subDef && subDef.modules) {
                         const valCount = subDef.modules.filter(m => progress.getStatus(m.id) === "validated").length;
                         return [subId, `${valCount}/${subDef.modules.length}`];
@@ -134,7 +184,7 @@ export default function App() {
                   : undefined,
                 onSubClick: (subId) => setSelectedProjectId(subId),
                 onSubDoubleClick: (subId) => {
-                  if (projectDefinitions[subId]?.modules) {
+                  if (definitions[subId]?.modules) {
                     setCurrentGraph(subId);
                     setSelectedProjectId(null);
                   }
@@ -151,7 +201,7 @@ export default function App() {
           .filter(Boolean);
 
         freshNodes.forEach((node) => {
-          const def = projectDefinitions[node.id];
+          const def = definitions[node.id];
           if (def?.parents) {
             def.parents.forEach((pid) => {
               if (activeProjects.some((p) => generateId(p) === pid)) {
@@ -161,11 +211,8 @@ export default function App() {
           }
         });
       } else if (graphId === "rush") {
-        // Graphe alternatif : grille de cercles (5 + 4), sans liens.
-        // Les données viennent de rushList (projectDB.js).
         const gap = 150;
         const rushSize = 70;
-        // Répartition des Rush en rangées de 5 max (ex. 9 → [5, 4]).
         const perRow = 5;
         const rowCounts = [];
         let remaining = rushList.length;
@@ -183,14 +230,12 @@ export default function App() {
             freshNodes.push({
               id: rush.id,
               type: "statusNode",
-              position: {
-                x: rowOffset + col * gap,
-                y: row * gap,
-              },
+              position: { x: rowOffset + col * gap, y: row * gap },
               draggable: true,
               data: {
                 label: rush.label,
                 status: progress.getStatus(rush.id),
+                mark: progress.getMark(rush.id),
                 size: rushSize,
                 linkID: rush.linkID,
                 pdfUrl: rush.pdfUrl,
@@ -204,7 +249,7 @@ export default function App() {
           }
         });
       } else {
-        const def = projectDefinitions[graphId];
+        const def = definitions[graphId];
         if (def?.modules?.length) {
           const radius = 300;
           freshNodes = def.modules.map((mod, i) => {
@@ -219,6 +264,7 @@ export default function App() {
               data: {
                 label: mod.label,
                 status: progress.getStatus(mod.id),
+                mark: progress.getMark(mod.id),
                 size: 75,
                 linkID: mod.linkID,
                 langPdf: mod.langPdf ?? def.langPdf,
@@ -250,14 +296,13 @@ export default function App() {
 
       if (shouldFitView) {
         if (graphId === "rush") {
-          // Grille compacte : éviter de zoomer trop fort à l'arrivée.
           setTimeout(() => fitView({ duration: 800, padding: 0.45, maxZoom: 1 }), 50);
         } else {
           setTimeout(() => fitView({ duration: 800, padding: 0.2 }), 50);
         }
       }
     },
-    [progress, isAdmin, setNodes, setEdges, fitView]
+    [progress, isAdmin, definitions, setNodes, setEdges, fitView]
   );
 
   const lastGraph = useRef(null);
@@ -269,16 +314,27 @@ export default function App() {
   }, [currentGraph, progress.data, isAdmin]);
 
   const onNodeDoubleClick = useCallback((_e, node) => {
-    if (node.data.label?.toLowerCase().includes("piscine") && projectDefinitions[node.id]?.modules) {
+    if (isPool || COMPACT) return;
+    if (node.data.label?.toLowerCase().includes("piscine") && definitions[node.id]?.modules) {
       setCurrentGraph(node.id);
       setSelectedProjectId(null);
     }
-  }, []);
+  }, [isPool, definitions]);
 
-  const onPaneClick = useCallback(() => setSelectedProjectId(null), []);
+  const onPaneClick = useCallback(() => {
+    if (COMPACT) {
+      window.parent.postMessage({ type: "holy:expand" }, "*");
+      return;
+    }
+    setSelectedProjectId(null);
+  }, []);
 
   const onNodeClick = useCallback((e, node) => {
     e.stopPropagation();
+    if (COMPACT) {
+      window.parent.postMessage({ type: "holy:expand" }, "*");
+      return;
+    }
     setSelectedProjectId(node.id);
   }, []);
 
@@ -291,7 +347,11 @@ export default function App() {
         if (sub) {
           selectedNode = {
             id: sub.id,
-            data: { label: sub.label, status: progress.getStatus(sub.id) }
+            data: {
+              label: sub.label,
+              status: progress.getStatus(sub.id),
+              mark: progress.getMark(sub.id),
+            },
           };
           break;
         }
@@ -350,13 +410,15 @@ export default function App() {
         fitView
         minZoom={0.15}
         maxZoom={2.5}
+        panOnDrag={!COMPACT}
+        zoomOnScroll={!COMPACT}
         proOptions={{ hideAttribution: true }}
         style={{ zIndex: 2 }}
       >
         <Background color="#1C2030" gap={40} size={1} />
-        <Controls showInteractive={false} />
+        {!COMPACT && <Controls showInteractive={false} />}
 
-        {currentGraph !== "main" && (
+        {currentGraph !== "main" && !isPool && !COMPACT && (
           <Panel position="top-center">
             <button
               onClick={() => setCurrentGraph("main")}
@@ -372,14 +434,16 @@ export default function App() {
           </Panel>
         )}
 
-        <Panel position="top-left">
-          <SearchBar nodes={nodes} onSelectNode={setSelectedProjectId} />
-        </Panel>
+        {!COMPACT && (
+          <Panel position="top-left">
+            <SearchBar nodes={nodes} onSelectNode={setSelectedProjectId} />
+          </Panel>
+        )}
 
-        <DevToolbar />
+        {!READ_ONLY && <DevToolbar />}
       </ReactFlow>
 
-      {selectedNode && (
+      {selectedNode && !COMPACT && (
         <DetailPanel
           node={selectedNode}
           isAdmin={isAdmin}
@@ -388,19 +452,21 @@ export default function App() {
         />
       )}
 
-      <Hud
-        progress={progress.data}
-        definitions={projectDefinitions}
-        isAdmin={isAdmin}
-        user={auth.user}
-        hasLocalDraft={progress.hasLocalDraft}
-        onOpenAuth={() => setAuthOpen(true)}
-        onSync={handleSync}
-        syncing={syncing}
-        onLogout={auth.logout}
-        onOpenRush={() => setCurrentGraph("rush")}
-        currentGraph={currentGraph}
-      />
+      {!isPool && !COMPACT && (
+        <Hud
+          progress={progress.data}
+          definitions={definitions}
+          isAdmin={isAdmin}
+          user={auth.user}
+          hasLocalDraft={progress.hasLocalDraft}
+          onOpenAuth={() => setAuthOpen(true)}
+          onSync={handleSync}
+          syncing={syncing}
+          onLogout={auth.logout}
+          onOpenRush={() => setCurrentGraph("rush")}
+          currentGraph={currentGraph}
+        />
+      )}
 
       {syncError && (
         <div
@@ -415,16 +481,18 @@ export default function App() {
         </div>
       )}
 
-      {authOpen && !isAdmin && (
+      {authOpen && !isAdmin && !READ_ONLY && (
         <AuthModal auth={auth} onClose={() => setAuthOpen(false)} />
       )}
 
-      <div
-        className="absolute top-5 left-1/2 -translate-x-1/2 z-0 pointer-events-none text-center"
-        style={{ opacity: 0.5 }}
-      >
-        <div className="font-serif italic text-vellum-dim text-sm">ft_holy</div>
-      </div>
+      {!COMPACT && (
+        <div
+          className="absolute top-5 left-1/2 -translate-x-1/2 z-0 pointer-events-none text-center"
+          style={{ opacity: 0.5 }}
+        >
+          <div className="font-serif italic text-vellum-dim text-sm">ft_holy</div>
+        </div>
+      )}
     </div>
   );
 }

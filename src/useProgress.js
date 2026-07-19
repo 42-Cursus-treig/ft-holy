@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { PROGRESS_PUBLIC_URL, LS_PROGRESS_KEY } from "./config";
+import { progressUrl, PROGRESS_PUBLIC_URL, LS_PROGRESS_KEY, READ_ONLY, LOGIN } from "./config";
 
-const EMPTY = { version: 1, updatedAt: null, statuses: {} };
+const EMPTY = { version: 1, updatedAt: null, statuses: {}, marks: {} };
 
 const readLocal = () => {
   try {
@@ -32,35 +32,56 @@ const mostRecent = (a, b) => {
 export const useProgress = () => {
   const [data, setData] = useState(EMPTY);
   const [remoteLoaded, setRemoteLoaded] = useState(false);
+  const [error, setError] = useState(null);
   const [hasLocalDraft, setHasLocalDraft] = useState(false);
   const remoteRef = useRef(EMPTY);
 
   useEffect(() => {
+    const url = `${progressUrl(LOGIN)}${progressUrl(LOGIN).includes("?") ? "&" : "?"}t=${Date.now()}`;
+
+    // Mode distant : pas de localStorage du tout
+    if (READ_ONLY) {
+      fetch(url, { cache: "no-store", credentials: "include" })
+        .then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json();
+        })
+        .then((remote) => {
+          const normalized = remote?.statuses ? remote : EMPTY;
+          remoteRef.current = normalized;
+          setData(normalized);
+          setRemoteLoaded(true);
+        })
+        .catch((e) => {
+          setError(e.message);
+          setRemoteLoaded(true);
+        });
+      return;
+    }
+
+    // Mode personnel : comportement actuel inchangé
     const local = readLocal();
     if (local) setData(local);
-
-    const url = `${PROGRESS_PUBLIC_URL}?t=${Date.now()}`;
     fetch(url, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : EMPTY))
       .catch(() => EMPTY)
       .then((remote) => {
-        const normalized = remote && remote.statuses ? remote : EMPTY;
+        const normalized = remote?.statuses ? remote : EMPTY;
         remoteRef.current = normalized;
-        const winner = mostRecent(local, normalized);
-        setData(winner);
+        setData(mostRecent(local, normalized));
         setRemoteLoaded(true);
-        const localTs = local?.updatedAt ? Date.parse(local.updatedAt) : 0;
-        const remoteTs = normalized.updatedAt ? Date.parse(normalized.updatedAt) : 0;
-        setHasLocalDraft(localTs > remoteTs);
+        const lt = local?.updatedAt ? Date.parse(local.updatedAt) : 0;
+        const rt = normalized.updatedAt ? Date.parse(normalized.updatedAt) : 0;
+        setHasLocalDraft(lt > rt);
       });
   }, []);
 
-  const getStatus = useCallback(
-    (id) => data.statuses[id] || "available",
-    [data]
-  );
+  const getStatus = useCallback((id) => data.statuses[id] || "available", [data]);
+
+  const getMark = useCallback((id) => data.marks?.[id] ?? null, [data]);
 
   const setStatus = useCallback((id, status) => {
+    if (READ_ONLY) return;
     setData((prev) => {
       const next = { ...prev.statuses };
       if (status === "available") {
@@ -72,6 +93,7 @@ export const useProgress = () => {
         version: 1,
         updatedAt: new Date().toISOString(),
         statuses: next,
+        marks: prev.marks || {}
       };
       writeLocal(updated);
       setHasLocalDraft(true);
@@ -98,14 +120,5 @@ export const useProgress = () => {
     }
   }, []);
 
-  return {
-    data,
-    getStatus,
-    setStatus,
-    remoteLoaded,
-    hasLocalDraft,
-    markSynced,
-    refreshRemote,
-    remoteRef,
-  };
+  return { data, getStatus, getMark, setStatus, remoteLoaded, error, readOnly: READ_ONLY, hasLocalDraft, markSynced, refreshRemote, remoteRef };
 };

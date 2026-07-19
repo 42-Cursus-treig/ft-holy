@@ -38,15 +38,22 @@ export const getIconUrl = (language, color) => {
     kotlin: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kotlin/kotlin-original.svg",
   };
 
+  const ICON_SLUGS = {
+    bash: "gnubash",
+    shell: "gnubash",
+    "c++": "cplusplus",
+  };
+
   const key = language?.toLowerCase();
 
   if (customIcons[key]) {
     return customIcons[key];
   }
 
+  const slug = ICON_SLUGS[key] || key;
   const resolvedColor = color || LANG_COLORS[key] || "F4F1E8";
   const safeColor = resolvedColor.replace("#", "");
-  return `https://cdn.simpleicons.org/${language}/${safeColor}`;
+  return `https://cdn.simpleicons.org/${slug}/${safeColor}`;
 };
 
 export const FrameNode = ({ data }) => {
