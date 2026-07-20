@@ -313,6 +313,17 @@ export default function App() {
     lastGraph.current = currentGraph;
   }, [currentGraph, progress.data, isAdmin]);
 
+  useEffect(() => {
+    if (COMPACT || window.parent === window) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        window.parent.postMessage({ type: "holy:collapse" }, "*");
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   const onNodeDoubleClick = useCallback((_e, node) => {
     if (isPool || COMPACT) return;
     if (node.data.label?.toLowerCase().includes("piscine") && definitions[node.id]?.modules) {
