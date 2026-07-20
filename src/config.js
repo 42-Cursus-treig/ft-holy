@@ -2,7 +2,7 @@ const params = new URLSearchParams(window.location.search);
 
 export const LOGIN = params.get("login") || null;
 export const SELF = params.has("me") || params.get("login") === "me";
-export const GRAPH = params.get("graph") || (LOGIN ? "pool" : "cursus");
+export const GRAPH = params.get("graph") || (LOGIN || SELF ? "pool" : "cursus");
 
 export const API_BASE =
   import.meta.env.VITE_API_BASE ||
