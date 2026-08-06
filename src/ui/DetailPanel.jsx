@@ -1,4 +1,4 @@
-import { getIconUrl } from "./StatusNode";
+import { getIconUrl } from "../graph/StatusNode";
 
 const STATUS_LABEL = {
   validated: "VALIDÉ",
@@ -34,8 +34,6 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
   const status = node.data.status || "available";
   const pdfLang = node.data.langPdf || "en";
 
-  // Lien vers le sujet : un PDF local (pdfUrl) est prioritaire sur le linkID intra.
-  // pdfUrl peut être absolu (https://…) ou relatif au dossier public/ (ex: "subjects/rush.pdf").
   let subjectHref = null;
   if (node.data.pdfUrl) {
     subjectHref = /^https?:\/\//.test(node.data.pdfUrl)

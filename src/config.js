@@ -2,11 +2,12 @@ const params = new URLSearchParams(window.location.search);
 
 export const LOGIN = params.get("login") || null;
 export const SELF = params.has("me") || params.get("login") === "me";
-export const GRAPH = params.get("graph") || (LOGIN || SELF ? "pool" : "cursus");
+
+export const GRAPH_PARAM = params.get("graph");
 
 export const API_BASE =
   import.meta.env.VITE_API_BASE ||
-  (import.meta.env.DEV ? "" : "https://moulinette.ft-moulinette.fr");
+  (import.meta.env.DEV ? "" : "https://ft-moulinette.fr");
 
 export const PROGRESS_PUBLIC_URL = `${import.meta.env.BASE_URL}progress.json`;
 
@@ -20,7 +21,9 @@ export const READ_ONLY = LOGIN !== null || SELF;
 export const COMPACT = params.has("compact");
 
 export const LS_PROGRESS_KEY = LOGIN ? `ft_holy:progress:${LOGIN}` : "ft_holy:progress";
-export const LS_POSITIONS_KEY = `ft_holy:positions:${GRAPH}`;
+
+export const LS_POSITIONS_PREFIX = "ft_holy:positions:";
+export const positionsKey = (worldId) => `${LS_POSITIONS_PREFIX}${worldId}`;
 
 export const GITHUB_OWNER = "tristan-reig";
 export const GITHUB_REPO = "ft-holy";

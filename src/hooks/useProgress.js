@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { progressUrl, PROGRESS_PUBLIC_URL, LS_PROGRESS_KEY, READ_ONLY, LOGIN } from "./config";
+import { progressUrl, PROGRESS_PUBLIC_URL, LS_PROGRESS_KEY, READ_ONLY, LOGIN } from "../config";
 
 const EMPTY = { version: 1, updatedAt: null, statuses: {}, marks: {} };
 
@@ -39,7 +39,6 @@ export const useProgress = () => {
   useEffect(() => {
     const url = `${progressUrl(LOGIN)}${progressUrl(LOGIN).includes("?") ? "&" : "?"}t=${Date.now()}`;
 
-    // Mode distant : pas de localStorage du tout
     if (READ_ONLY) {
       fetch(url, { cache: "no-store", credentials: "include" })
         .then((r) => {
@@ -59,7 +58,6 @@ export const useProgress = () => {
       return;
     }
 
-    // Mode personnel : comportement actuel inchangé
     const local = readLocal();
     if (local) setData(local);
     fetch(url, { cache: "no-store" })

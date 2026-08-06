@@ -15,7 +15,7 @@ export const poolDefinitions = {
     desc: "Redirections, jobs, variables d'environnement et scripting shell.",
   },
 
-  // --- C : pairs en rangée basse, impairs en rangée haute ---
+  // --- C ---
   "c-00": {
     label: "C Piscine C 00", parents: ["shell-01"],
     position: { x: 230, y: 200 }, lang: "c",
@@ -87,7 +87,7 @@ export const poolDefinitions = {
     desc: "Arbres binaires de recherche : insertion, parcours et applications.",
   },
 
-  // --- Rushs : chaînés entre eux, BSQ hérite de C13 ---
+  // --- Rushs ---
   "rush-00": {
     label: "C Piscine Rush 00", parents: [],
     position: { x: 120, y: 370 }, lang: "c",
@@ -109,7 +109,7 @@ export const poolDefinitions = {
     desc: "Biggest Square : trouvez le plus grand carré libre dans une carte donnée. Rush final de la piscine.",
   },
 
-  // --- Exams : chaînés entre eux ---
+  // --- Exams ---
   "exam-00": {
     label: "C Piscine Exam 00", parents: [],
     position: { x: 120, y: 540 }, lang: "c",
