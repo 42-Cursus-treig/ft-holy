@@ -1,20 +1,129 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-slate-950 text-white overflow-hidden;
+:root {
+  --ink-deep: #05060A;
+  --ink: #0A0C14;
+  --ink-soft: #11141E;
+  --ink-line: #4A5270;
+  --ink-hairline: #1C2030;
+
+  --vellum: #F4F1E8;
+  --vellum-dim: #C5C1B1;
+  --vellum-mute: #8E8A7A;
+
+  --gold: #D4AF37;
+  --gold-soft: #8A7223;
+  --rust: #A63D2A;
+  --rust-soft: #6B281C;
+  --azure: #4A90D9;
+  --azure-soft: #2C5A8A;
+
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-sans: "Inter", system-ui, sans-serif;
 }
 
-:root {
-  --gold: #D4AF37;
-  --rust: #A63D2A;
-  --ink-deep: #1C2030;
-  --ink-line: #4A5270;
-  --vellum: #F0EAD6;
-  --vellum-dim: #C5C1B1;
-  --vellum-mute: #6D6A5C;
-  --azure: #4A90D9;
+@layer base {
+  body {
+    @apply overflow-hidden;
+    background: var(--ink-deep);
+    color: var(--vellum);
+    font-family: var(--font-sans);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--gold);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .smallcaps {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 500;
+  }
+
+  .rule {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--ink-line) 20%,
+      var(--ink-line) 80%,
+      transparent
+    );
+  }
+
+  .starfield {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(244, 241, 232, 0.7), transparent),
+      radial-gradient(1px 1px at 75% 15%, rgba(244, 241, 232, 0.55), transparent),
+      radial-gradient(1px 1px at 45% 70%, rgba(212, 175, 55, 0.5), transparent),
+      radial-gradient(1px 1px at 88% 62%, rgba(244, 241, 232, 0.6), transparent),
+      radial-gradient(1px 1px at 12% 82%, rgba(244, 241, 232, 0.45), transparent),
+      radial-gradient(1.5px 1.5px at 60% 40%, rgba(244, 241, 232, 0.35), transparent),
+      radial-gradient(1px 1px at 33% 55%, rgba(244, 241, 232, 0.4), transparent),
+      radial-gradient(1px 1px at 68% 88%, rgba(244, 241, 232, 0.35), transparent);
+    background-size: 420px 420px;
+    animation: drift 240s linear infinite;
+  }
+
+  .parchment-vignette::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 70%,
+      rgba(5, 6, 10, 0.45) 100%
+    );
+  }
+
+  .fade-in {
+    animation: fade-in 0.35s ease-out both;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 420px 420px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .starfield {
+    animation: none;
+  }
+  .fade-in {
+    animation: none;
+  }
+  .react-flow__edge-path {
+    animation: none !important;
+  }
 }

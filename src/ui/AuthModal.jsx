@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GITHUB_CLIENT_ID, ADMIN_USERNAME } from "./config";
+import { GITHUB_CLIENT_ID, ADMIN_USERNAME } from "../config";
 
 export const AuthModal = ({ onClose, auth }) => {
   const [pat, setPat] = useState("");
@@ -34,7 +34,7 @@ export const AuthModal = ({ onClose, auth }) => {
             <div className="smallcaps text-[9px] text-vellum-mute mb-1">ACCÈS</div>
             <h2 className="font-serif text-2xl text-vellum">Authentification</h2>
           </div>
-          <button onClick={onClose} className="text-vellum-mute hover:text-vellum text-xl">×</button>
+          <button onClick={onClose} className="text-vellum-mute hover:text-vellum text-xl">x</button>
         </div>
 
         <p className="font-serif italic text-sm text-vellum-dim mb-5">

@@ -10,23 +10,39 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-import FloatingEdge from "./FloatingEdge";
-import { SearchBar } from "./SearchBar";
-import { StatusNode } from "./StatusNode";
-import { DetailPanel } from "./DetailPanel";
-import { Hud } from "./Hud";
-import { AuthModal } from "./AuthModal";
-import DevToolbar from "./DevToolbar";
+import FloatingEdge from "./graph/FloatingEdge";
+import { SearchBar } from "./ui/SearchBar";
+import { StatusNode } from "./graph/StatusNode";
+import { DetailPanel } from "./ui/DetailPanel";
+import { Hud } from "./ui/Hud";
+import { AuthModal } from "./ui/AuthModal";
+import { GraphSwitcher } from "./ui/GraphSwitcher";
+import { OrbitRing } from "./graph/OrbitRing";
+import DevToolbar from "./ui/DevToolbar";
 
-import { activeProjects } from "./projectList";
-import { generateId, rushList } from "./projectDB";
-import { getDefinitions } from "./graphs";
-import { useProgress } from "./useProgress";
-import { useGitHubAuth, commitProgress } from "./useGitHubAuth";
-import { LS_POSITIONS_KEY, GRAPH, READ_ONLY, COMPACT } from "./config";
+import { generateId, rushList } from "./data/projectDB";
+import {
+  WORLDS,
+  WORLD_ORDER,
+  INITIAL_WORLD,
+  getWorld,
+  childIdsOf,
+  radialLayout,
+} from "./data/graphs";
+import { useProgress } from "./hooks/useProgress";
+import { useGitHubAuth } from "./hooks/useGitHubAuth";
+import { commitProgress } from "./lib/github";
+import { positionsKey, READ_ONLY, COMPACT } from "./config";
 
-const styleEdges = (nodes, edges, currentGraph) => {
-  return edges.map((edge) => {
+const EDGE_COLORS = {
+  validated: "#D4AF37",
+  failed: "#A63D2A",
+  "in-progress": "#4A90D9",
+  idle: "#7C86A8",
+};
+
+const styleEdges = (nodes, edges, showArrows) =>
+  edges.map((edge) => {
     const sourceNode = nodes.find((n) => n.id === edge.source);
     let status = sourceNode?.data?.status;
 
@@ -35,184 +51,84 @@ const styleEdges = (nodes, edges, currentGraph) => {
         const subId = sub.id || sub;
         return sourceNode.data.subProjectStatuses[subId] === "validated";
       });
-      if (isGroupValidated) {
-        status = "validated";
-      }
+      if (isGroupValidated) status = "validated";
     }
 
-    const isPiscineModule = currentGraph !== "main";
-
-    const color =
-      status === "validated"
-        ? "#D4AF37"
-        : status === "failed"
-        ? "#A63D2A"
-        : status === "in-progress"
-        ? "#4A90D9"
-        : "#7C86A8";
+    const color = EDGE_COLORS[status] || EDGE_COLORS.idle;
 
     const base = {
       ...edge,
       type: "floating",
-      markerEnd: isPiscineModule
+      markerEnd: showArrows
         ? { type: "arrowclosed", width: 18, height: 18, color }
         : undefined,
     };
 
     if (status === "validated") {
-      return { ...base, animated: true, style: { stroke: "#D4AF37", strokeWidth: 1.6, opacity: 1 } };
+      return { ...base, animated: true, style: { stroke: color, strokeWidth: 1.6, opacity: 1 } };
     }
     if (status === "failed") {
-      return { ...base, animated: false, style: { stroke: "#A63D2A", strokeWidth: 1.4, strokeDasharray: "4,4", opacity: 0.9 } };
+      return {
+        ...base,
+        animated: false,
+        style: { stroke: color, strokeWidth: 1.4, strokeDasharray: "4,4", opacity: 0.9 },
+      };
     }
     if (status === "in-progress") {
-      return { ...base, animated: true, style: { stroke: "#4A90D9", strokeWidth: 1.6, opacity: 0.9 } };
+      return { ...base, animated: true, style: { stroke: color, strokeWidth: 1.6, opacity: 0.9 } };
     }
-    return { ...base, animated: false, style: { stroke: "#7C86A8", strokeWidth: 1.6, opacity: 0.95 } };
+    return { ...base, animated: false, style: { stroke: color, strokeWidth: 1.6, opacity: 0.95 } };
   });
-};
 
-const readPositions = () => {
+const readPositions = (worldId) => {
   try {
-    const raw = localStorage.getItem(LS_POSITIONS_KEY);
+    const raw = localStorage.getItem(positionsKey(worldId));
     return raw ? JSON.parse(raw) : {};
   } catch {
     return {};
   }
 };
-const writePositions = (positions) => {
+
+const writePositions = (worldId, positions) => {
   try {
-    localStorage.setItem(LS_POSITIONS_KEY, JSON.stringify(positions));
+    localStorage.setItem(positionsKey(worldId), JSON.stringify(positions));
   } catch {}
 };
 
 export default function App() {
-  const isPool = GRAPH === "pool";
-  const definitions = useMemo(() => getDefinitions(GRAPH), []);
-
+  const [worldId, setWorldId] = useState(INITIAL_WORLD);
+  const [subGraph, setSubGraph] = useState(null);
   const [nodes, setNodes, onNodesChanges] = useNodesState([]);
   const [edges, setEdges, onEdgesChanges] = useEdgesState([]);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
-  const [currentGraph, setCurrentGraph] = useState(isPool ? "pool" : "main");
   const [authOpen, setAuthOpen] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [syncError, setSyncError] = useState(null);
 
+  const world = getWorld(worldId);
+  const definitions = world.definitions;
+  const childIds = useMemo(() => childIdsOf(definitions), [definitions]);
+
   const { fitView } = useReactFlow();
   const edgeTypes = useMemo(() => ({ floating: FloatingEdge }), []);
-  const nodeTypes = useMemo(() => ({ statusNode: StatusNode }), []);
+  const nodeTypes = useMemo(() => ({ statusNode: StatusNode, orbitRing: OrbitRing }), []);
 
   const progress = useProgress();
   const auth = useGitHubAuth();
   const isAdmin = auth.isAdmin && !READ_ONLY;
 
   const buildGraph = useCallback(
-    (graphId, shouldFitView = false) => {
-      const customPositions = isAdmin ? readPositions() : {};
+    (shouldFitView = false) => {
+      const customPositions = isAdmin ? readPositions(worldId) : {};
       let freshNodes = [];
       let freshEdges = [];
+      let showArrows = true;
+      let padding = world.fitPadding ?? 0.2;
+      let maxZoom;
 
-      if (graphId === "pool") {
-        freshNodes = Object.entries(definitions).map(([id, def]) => ({
-          id,
-          type: "statusNode",
-          position: customPositions[id] || def.position || { x: 0, y: 0 },
-          draggable: !COMPACT,
-          data: {
-            label: def.label || id,
-            status: progress.getStatus(id),
-            mark: progress.getMark(id),
-            language: def.lang,
-            logoColor: def.logoColor,
-            description: def.desc,
-            size: def.size || 70,
-            linkID: def.linkID,
-            langPdf: def.langPdf,
-            isPool: true,
-          },
-        }));
-
-        Object.entries(definitions).forEach(([id, def]) => {
-          (def.parents || []).forEach((pid) => {
-            if (definitions[pid]) {
-              freshEdges.push({ id: `e-${pid}-${id}`, source: pid, target: id });
-            }
-          });
-        });
-
-        setNodes(freshNodes);
-        setEdges(styleEdges(freshNodes, freshEdges, graphId));
-        if (shouldFitView) {
-          setTimeout(() => fitView({ duration: 800, padding: COMPACT ? 0.05 : 0.15 }), 50);
-        }
-        return;
-      }
-
-      if (graphId === "main") {
-        freshNodes = activeProjects
-          .map((name) => {
-            const id = generateId(name);
-            const def = definitions[id];
-            if (!def) return null;
-            return {
-              id,
-              type: "statusNode",
-              position: customPositions[id] || def.position || { x: 0, y: 0 },
-              draggable: !def.locked,
-              data: {
-                label: name,
-                status: progress.getStatus(id),
-                mark: progress.getMark(id),
-                language: def.lang,
-                logoColor: def.logoColor,
-                description: def.desc,
-                size: def.size,
-                subProjects: def.subProjects,
-                subProjectStatuses: def.subProjects
-                  ? Object.fromEntries(def.subProjects.map((sub) => [sub.id, progress.getStatus(sub.id)]))
-                  : undefined,
-                subProjectModules: def.subProjects
-                  ? Object.fromEntries(def.subProjects.map((sub) => {
-                      const subId = sub.id || sub;
-                      const subDef = definitions[subId];
-                      if (subDef && subDef.modules) {
-                        const valCount = subDef.modules.filter(m => progress.getStatus(m.id) === "validated").length;
-                        return [subId, `${valCount}/${subDef.modules.length}`];
-                      }
-                      return [subId, null];
-                    }))
-                  : undefined,
-                onSubClick: (subId) => setSelectedProjectId(subId),
-                onSubDoubleClick: (subId) => {
-                  if (definitions[subId]?.modules) {
-                    setCurrentGraph(subId);
-                    setSelectedProjectId(null);
-                  }
-                },
-                linkID: def.linkID,
-                langPdf: def.langPdf,
-                modules: def.modules,
-                moduleStatuses: def.modules
-                  ? Object.fromEntries(def.modules.map((m) => [m.id, progress.getStatus(m.id)]))
-                  : undefined,
-              },
-            };
-          })
-          .filter(Boolean);
-
-        freshNodes.forEach((node) => {
-          const def = definitions[node.id];
-          if (def?.parents) {
-            def.parents.forEach((pid) => {
-              if (activeProjects.some((p) => generateId(p) === pid)) {
-                freshEdges.push({ id: `e-${pid}-${node.id}`, source: pid, target: node.id });
-              }
-            });
-          }
-        });
-      } else if (graphId === "rush") {
+      // ---- Grille des rushes ------------------------------------------
+      if (subGraph === "rush") {
         const gap = 150;
-        const rushSize = 70;
         const perRow = 5;
         const rowCounts = [];
         let remaining = rushList.length;
@@ -236,7 +152,7 @@ export default function App() {
                 label: rush.label,
                 status: progress.getStatus(rush.id),
                 mark: progress.getMark(rush.id),
-                size: rushSize,
+                size: 70,
                 linkID: rush.linkID,
                 pdfUrl: rush.pdfUrl,
                 langPdf: rush.langPdf,
@@ -248,18 +164,24 @@ export default function App() {
             rushIndex++;
           }
         });
-      } else {
-        const def = definitions[graphId];
+        padding = 0.45;
+        maxZoom = 1;
+      }
+
+      // ---- Modules d'un projet (piscines thématiques) ------------------
+      else if (subGraph) {
+        const def = definitions[subGraph];
         if (def?.modules?.length) {
           const radius = 300;
           freshNodes = def.modules.map((mod, i) => {
             const angle = (i / def.modules.length) * 2 * Math.PI;
-            const x = customPositions[mod.id]?.x ?? radius * Math.cos(angle);
-            const y = customPositions[mod.id]?.y ?? radius * Math.sin(angle);
             return {
               id: mod.id,
               type: "statusNode",
-              position: { x, y },
+              position: {
+                x: customPositions[mod.id]?.x ?? radius * Math.cos(angle),
+                y: customPositions[mod.id]?.y ?? radius * Math.sin(angle),
+              },
               draggable: true,
               data: {
                 label: mod.label,
@@ -291,46 +213,157 @@ export default function App() {
         }
       }
 
-      setNodes(freshNodes);
-      setEdges(styleEdges(freshNodes, freshEdges, graphId));
+      // ---- Racine d'une planche ---------------------------------------
+      else {
+        showArrows = world.showArrows ?? true;
 
-      if (shouldFitView) {
-        if (graphId === "rush") {
-          setTimeout(() => fitView({ duration: 800, padding: 0.45, maxZoom: 1 }), 50);
-        } else {
-          setTimeout(() => fitView({ duration: 800, padding: 0.2 }), 50);
+        const entries = world.order
+          ? world.order
+              .map((name) => {
+                const id = generateId(name);
+                const def = definitions[id];
+                return def ? { id, def, label: name } : null;
+              })
+              .filter(Boolean)
+          : Object.entries(definitions)
+              .filter(([id]) => !childIds.has(id))
+              .map(([id, def]) => ({ id, def, label: def.label || id }));
+
+        const radial =
+          world.layout === "radial"
+            ? radialLayout(entries, world, progress.getStatus)
+            : null;
+
+        freshNodes = entries.map(({ id, def, label }) => ({
+          id,
+          type: "statusNode",
+          position:
+            customPositions[id] || radial?.positions[id] || def.position || { x: 0, y: 0 },
+          draggable: !def.locked && !COMPACT,
+          data: {
+            label,
+            status: progress.getStatus(id),
+            mark: progress.getMark(id),
+            language: def.lang,
+            logoColor: def.logoColor,
+            description: def.desc,
+            size: def.size ?? world.nodeSize,
+            linkID: def.linkID,
+            pdfUrl: def.pdfUrl,
+            langPdf: def.langPdf,
+            subProjects: def.subProjects,
+            subProjectStatuses: def.subProjects
+              ? Object.fromEntries(
+                  def.subProjects.map((sub) => {
+                    const subId = sub.id || sub;
+                    return [subId, progress.getStatus(subId)];
+                  })
+                )
+              : undefined,
+            subProjectModules: def.subProjects
+              ? Object.fromEntries(
+                  def.subProjects.map((sub) => {
+                    const subId = sub.id || sub;
+                    const subDef = definitions[subId];
+                    if (subDef?.modules) {
+                      const done = subDef.modules.filter(
+                        (m) => progress.getStatus(m.id) === "validated"
+                      ).length;
+                      return [subId, `${done}/${subDef.modules.length}`];
+                    }
+                    return [subId, null];
+                  })
+                )
+              : undefined,
+            onSubClick: (subId) => setSelectedProjectId(subId),
+            onSubDoubleClick: (subId) => {
+              if (definitions[subId]?.modules) {
+                setSubGraph(subId);
+                setSelectedProjectId(null);
+              }
+            },
+            modules: def.modules,
+            moduleStatuses: def.modules
+              ? Object.fromEntries(def.modules.map((m) => [m.id, progress.getStatus(m.id)]))
+              : undefined,
+          },
+        }));
+
+        if (world.showEdges !== false) {
+          const nodeIds = new Set(freshNodes.map((n) => n.id));
+          entries.forEach(({ id, def }) => {
+            (def.parents || []).forEach((pid) => {
+              if (nodeIds.has(pid)) {
+                freshEdges.push({ id: `e-${pid}-${id}`, source: pid, target: id });
+              }
+            });
+          });
+        }
+
+        if (radial) {
+          freshNodes = [
+            ...radial.rings.map((ring) => ({
+              id: `orbit-${ring.radius}`,
+              type: "orbitRing",
+              position: { x: -ring.radius, y: -ring.radius },
+              data: ring,
+              draggable: false,
+              selectable: false,
+              focusable: false,
+              zIndex: -1,
+              style: { pointerEvents: "none" },
+            })),
+            ...freshNodes,
+          ];
         }
       }
+
+      setNodes(freshNodes);
+      setEdges(styleEdges(freshNodes, freshEdges, showArrows));
+
+      if (shouldFitView) {
+        setTimeout(
+          () => fitView({ duration: 800, padding: COMPACT ? 0.05 : padding, maxZoom }),
+          50
+        );
+      }
     },
-    [progress, isAdmin, definitions, setNodes, setEdges, fitView]
+    [worldId, subGraph, world, definitions, childIds, progress, isAdmin, setNodes, setEdges, fitView]
   );
 
-  const lastGraph = useRef(null);
+  const lastGraphKey = useRef(null);
 
   useEffect(() => {
-    const isNewGraph = lastGraph.current !== currentGraph;
-    buildGraph(currentGraph, isNewGraph);
-    lastGraph.current = currentGraph;
-  }, [currentGraph, progress.data, isAdmin]);
+    const key = `${worldId}/${subGraph ?? "root"}`;
+    buildGraph(lastGraphKey.current !== key);
+    lastGraphKey.current = key;
+  }, [worldId, subGraph, progress.data, isAdmin]);
 
   useEffect(() => {
     if (COMPACT || window.parent === window) return;
     const onKey = (e) => {
-      if (e.key === "Escape") {
-        window.parent.postMessage({ type: "holy:collapse" }, "*");
-      }
+      if (e.key === "Escape") window.parent.postMessage({ type: "holy:collapse" }, "*");
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const onNodeDoubleClick = useCallback((_e, node) => {
-    if (isPool || COMPACT) return;
-    if (node.data.label?.toLowerCase().includes("piscine") && definitions[node.id]?.modules) {
-      setCurrentGraph(node.id);
-      setSelectedProjectId(null);
-    }
-  }, [isPool, definitions]);
+  const selectWorld = useCallback((id) => {
+    setWorldId(id);
+    setSubGraph(null);
+    setSelectedProjectId(null);
+  }, []);
+
+  const onNodeDoubleClick = useCallback(
+    (_e, node) => {
+      if (COMPACT || subGraph) return;
+      if (definitions[node.id]?.modules?.length) {
+        setSubGraph(node.id);
+        setSelectedProjectId(null);
+      }
+    },
+    [definitions, subGraph]
+  );
 
   const onPaneClick = useCallback(() => {
     if (COMPACT) {
@@ -349,24 +382,28 @@ export default function App() {
     setSelectedProjectId(node.id);
   }, []);
 
-  let selectedNode = nodes.find((n) => n.id === selectedProjectId);
-
+  let selectedNode = nodes.find((n) => n.id === selectedProjectId) || null;
   if (!selectedNode && selectedProjectId) {
-    for (const n of nodes) {
-      if (n.data.subProjects) {
-        const sub = n.data.subProjects.find(s => s.id === selectedProjectId);
-        if (sub) {
-          selectedNode = {
-            id: sub.id,
-            data: {
-              label: sub.label,
-              status: progress.getStatus(sub.id),
-              mark: progress.getMark(sub.id),
-            },
-          };
-          break;
-        }
-      }
+    const parent = nodes.find((n) =>
+      n.data.subProjects?.some((s) => (s.id || s) === selectedProjectId)
+    );
+    const sub = parent?.data.subProjects.find((s) => (s.id || s) === selectedProjectId);
+    const def = definitions[selectedProjectId];
+    if (sub || def) {
+      selectedNode = {
+        id: selectedProjectId,
+        data: {
+          label: sub?.label || def?.label || selectedProjectId,
+          status: progress.getStatus(selectedProjectId),
+          mark: progress.getMark(selectedProjectId),
+          description: def?.desc,
+          language: def?.lang,
+          logoColor: def?.logoColor,
+          linkID: def?.linkID,
+          pdfUrl: def?.pdfUrl,
+          langPdf: def?.langPdf,
+        },
+      };
     }
   }
 
@@ -381,13 +418,13 @@ export default function App() {
       if (!isAdmin) return;
       const positionChanges = changes.filter((c) => c.type === "position" && c.position);
       if (positionChanges.length === 0) return;
-      const stored = readPositions();
+      const stored = readPositions(worldId);
       positionChanges.forEach((c) => {
         stored[c.id] = c.position;
       });
-      writePositions(stored);
+      writePositions(worldId, stored);
     },
-    [onNodesChanges, isAdmin]
+    [onNodesChanges, isAdmin, worldId]
   );
 
   const handleSync = async () => {
@@ -403,6 +440,13 @@ export default function App() {
       setSyncing(false);
     }
   };
+
+  const subLabel =
+    subGraph === "rush"
+      ? "Rushes"
+      : subGraph
+      ? definitions[subGraph]?.label || subGraph
+      : null;
 
   return (
     <div className="w-screen h-screen relative bg-ink-deep parchment-vignette">
@@ -427,21 +471,21 @@ export default function App() {
         style={{ zIndex: 2 }}
       >
         <Background color="#1C2030" gap={40} size={1} />
-        {!COMPACT && <Controls showInteractive={false} />}
+        {!COMPACT && <Controls position="bottom-right" showInteractive={false} />}
 
-        {currentGraph !== "main" && !isPool && !COMPACT && (
+        {!COMPACT && (
           <Panel position="top-center">
-            <button
-              onClick={() => setCurrentGraph("main")}
-              className="mt-4 px-4 py-2 smallcaps text-[10px] text-vellum-dim hover:text-gold transition-colors backdrop-blur-md"
-              style={{
-                background: "rgba(10, 12, 20, 0.85)",
-                border: "1px solid var(--ink-line)",
-                borderRadius: 2,
+            <GraphSwitcher
+              worlds={WORLDS}
+              order={WORLD_ORDER}
+              currentWorld={worldId}
+              subLabel={subLabel}
+              onSelect={selectWorld}
+              onBack={() => {
+                setSubGraph(null);
+                setSelectedProjectId(null);
               }}
-            >
-              ← retour à la carte principale
-            </button>
+            />
           </Panel>
         )}
 
@@ -451,7 +495,7 @@ export default function App() {
           </Panel>
         )}
 
-        {!READ_ONLY && <DevToolbar />}
+        {!READ_ONLY && <DevToolbar worldId={worldId} />}
       </ReactFlow>
 
       {selectedNode && !COMPACT && (
@@ -463,10 +507,11 @@ export default function App() {
         />
       )}
 
-      {!isPool && !COMPACT && (
+      {!COMPACT && (
         <Hud
           progress={progress.data}
           definitions={definitions}
+          world={world}
           isAdmin={isAdmin}
           user={auth.user}
           hasLocalDraft={progress.hasLocalDraft}
@@ -474,8 +519,8 @@ export default function App() {
           onSync={handleSync}
           syncing={syncing}
           onLogout={auth.logout}
-          onOpenRush={() => setCurrentGraph("rush")}
-          currentGraph={currentGraph}
+          onOpenRush={() => setSubGraph(subGraph === "rush" ? null : "rush")}
+          subGraph={subGraph}
         />
       )}
 
@@ -494,15 +539,6 @@ export default function App() {
 
       {authOpen && !isAdmin && !READ_ONLY && (
         <AuthModal auth={auth} onClose={() => setAuthOpen(false)} />
-      )}
-
-      {!COMPACT && (
-        <div
-          className="absolute top-5 left-1/2 -translate-x-1/2 z-0 pointer-events-none text-center"
-          style={{ opacity: 0.5 }}
-        >
-          <div className="font-serif italic text-vellum-dim text-sm">ft_holy</div>
-        </div>
       )}
     </div>
   );

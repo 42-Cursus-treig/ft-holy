@@ -12,6 +12,8 @@ const C = {
   goldSoft: "#8A7223",
   rust: "#A63D2A",
   rustSoft: "#6B281C",
+  azure: "#4A90D9",
+  azureSoft: "#2C5A8A",
 };
 
 const LANG_COLORS = {
@@ -315,6 +317,8 @@ export const StatusNode = ({ data, selected }) => {
         ? { bg: "rgba(212, 175, 55, 0.12)", border: C.gold, text: C.gold }
         : status === "failed"
         ? { bg: "rgba(166, 61, 42, 0.12)", border: C.rust, text: C.rust }
+        : status === "in-progress"
+        ? { bg: "rgba(74, 144, 217, 0.12)", border: C.azure, text: C.azure }
         : { bg: "rgba(28, 32, 48, 0.9)", border: C.vellumMute, text: C.vellum };
 
     let progressText = null;
@@ -416,10 +420,14 @@ export const StatusNode = ({ data, selected }) => {
   const isValidated = status === "validated";
   const isFailed = status === "failed";
 
+  const isInProgress = status === "in-progress";
+
   const starBg = isValidated ? C.gold : isFailed ? C.rust : C.inkSoft;
-  const borderColor = isValidated ? C.goldSoft : isFailed ? C.rustSoft : C.vellumMute;
+  const borderColor = isValidated ? C.goldSoft : isFailed ? C.rustSoft
+    : isInProgress ? C.azureSoft : C.vellumMute;
   const textColor = isValidated || isFailed ? C.inkDeep : C.vellum;
-  const selectionGlow = isValidated ? C.gold : isFailed ? C.rust : C.vellumDim;
+  const selectionGlow = isValidated ? C.gold : isFailed ? C.rust
+    : isInProgress ? C.azure : C.vellumDim;
 
   return (
     <div
