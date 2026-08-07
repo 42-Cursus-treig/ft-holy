@@ -27,9 +27,10 @@ export const WORLDS = {
     definitions: ancienTroncDefinitions,
     order: null,
     layout: "radial",
-    ringGap: 140,
-    ringExponent: 0.7,
-    nodeSize: 78,
+    ringGap: 160,
+    ringExponent: 0.75,
+    ringRatio: 1.2,
+    nodeSize: 102,
     showEdges: false,
     showArrows: false,
     hasRush: false,
@@ -45,9 +46,10 @@ export const WORLDS = {
     definitions: nouveauTroncDefinitions,
     order: null,
     layout: "radial",
-    ringGap: 140,
-    ringExponent: 0.7,
-    nodeSize: 78,
+    ringGap: 160,
+    ringExponent: 0.75,
+    ringRatio: 1.2,
+    nodeSize: 102,
     showEdges: false,
     showArrows: false,
     hasRush: false,
@@ -115,13 +117,34 @@ export const effectiveStatus = (id, def, getStatus) => {
   return getStatus(id);
 };
 
-const RANK_DRIFT = 0.1;
+const estimateBox = (def, size) => {
+  const subs = def.subProjects;
+  if (def.shape === "rect") return { w: size * 1.6, h: size * 0.62 };
+  if (!subs?.length) return { w: size, h: size };
+  const titleWidth = 24 + 6.7 * (def.label?.length ?? 0);
+  const rowWidth =
+    40 + 7.2 * Math.max(...subs.map((sub) => (sub.label || sub.id || "").length));
+  return {
+    w: Math.max(size * 1.5, titleWidth, rowWidth),
+    h: 38 + 32 * subs.length,
+  };
+};
+
+const boxGap = (a, b) =>
+  Math.max(
+    Math.abs(a.cx - b.cx) - (a.w + b.w) / 2,
+    Math.abs(a.cy - b.cy) - (a.h + b.h) / 2
+  );
+
+const OFFSET_STEPS = 180;
+const SPREAD_WEIGHT = 0.35;
 
 export const radialLayout = (entries, world, getStatus) => {
   const gap = world.ringGap ?? 300;
   const exponent = world.ringExponent ?? 1;
-  const byRank = new Map();
+  const ratio = world.ringRatio ?? 1;
 
+  const byRank = new Map();
   entries.forEach((entry) => {
     const rank = entry.def.rank ?? 0;
     if (!byRank.has(rank)) byRank.set(rank, []);
@@ -130,6 +153,7 @@ export const radialLayout = (entries, world, getStatus) => {
 
   const positions = {};
   const rings = [];
+  const placed = [];
 
   [...byRank.keys()]
     .sort((a, b) => a - b)
@@ -137,26 +161,76 @@ export const radialLayout = (entries, world, getStatus) => {
       const ring = byRank.get(rank);
       const radius =
         rank === 0 ? (ring.length > 1 ? gap * 0.5 : 0) : gap * Math.pow(rank, exponent);
+      const rx = radius * ratio;
+      const ry = radius;
       const step = (2 * Math.PI) / ring.length;
-      const offset = (rank % 2 ? step / 2 : 0) + rank * RANK_DRIFT;
+
+      const boxes = ring.map((entry) =>
+        estimateBox(entry.def, entry.def.size ?? world.nodeSize ?? 70)
+      );
+      const byBulk = ring
+        .map((_, i) => i)
+        .sort((a, b) => boxes[b].w * boxes[b].h - boxes[a].w * boxes[a].h);
+
+      let best = null;
+
+      for (let k = 0; k < OFFSET_STEPS; k++) {
+        const offset = (k / OFFSET_STEPS) * step;
+        const slots = ring.map((_, i) => {
+          const angle = offset + i * step;
+          return { cx: rx ? rx * Math.cos(angle) : 0, cy: ry ? ry * Math.sin(angle) : 0 };
+        });
+
+        const taken = new Array(ring.length).fill(false);
+        const slotOf = new Array(ring.length);
+        const positioned = [];
+
+        for (const i of byBulk) {
+          let bestSlot = -1;
+          let bestClearance = -Infinity;
+          for (let s = 0; s < slots.length; s++) {
+            if (taken[s]) continue;
+            const candidate = { ...slots[s], ...boxes[i] };
+            let clearance = Infinity;
+            for (const other of placed) clearance = Math.min(clearance, boxGap(candidate, other));
+            for (const other of positioned) clearance = Math.min(clearance, boxGap(candidate, other));
+            if (clearance > bestClearance) {
+              bestClearance = clearance;
+              bestSlot = s;
+            }
+          }
+          taken[bestSlot] = true;
+          slotOf[i] = bestSlot;
+          positioned.push({ ...slots[bestSlot], ...boxes[i] });
+        }
+
+        let worst = Infinity;
+        let spread = 0;
+        positioned.forEach((node, i) => {
+          let nearest = Infinity;
+          positioned.forEach((other, j) => {
+            if (i !== j) nearest = Math.min(nearest, boxGap(node, other));
+          });
+          for (const other of placed) nearest = Math.min(nearest, boxGap(node, other));
+          worst = Math.min(worst, nearest);
+          spread += Math.min(nearest, 600);
+        });
+
+        const score = worst + SPREAD_WEIGHT * (spread / positioned.length);
+        if (!best || score > best.score) best = { score, slots, slotOf };
+      }
 
       ring.forEach((entry, i) => {
-        const size = entry.def.size ?? world.nodeSize ?? 70;
-        const angle = offset + i * step;
-
-        const subCount = entry.def.subProjects?.length ?? 0;
-        const width = subCount ? size * 1.5 : size;
-        const height = subCount ? 38 + 32 * subCount : size;
-
-        positions[entry.id] = {
-          x: (radius ? radius * Math.cos(angle) : 0) - width / 2,
-          y: (radius ? radius * Math.sin(angle) : 0) - height / 2,
-        };
+        const slot = best.slots[best.slotOf[i]];
+        const box = boxes[i];
+        placed.push({ ...slot, ...box });
+        positions[entry.id] = { x: slot.cx - box.w / 2, y: slot.cy - box.h / 2 };
       });
 
       if (radius > 0) {
         rings.push({
-          radius,
+          rx,
+          ry,
           done: ring.every(
             (entry) => effectiveStatus(entry.id, entry.def, getStatus) === "validated"
           ),
