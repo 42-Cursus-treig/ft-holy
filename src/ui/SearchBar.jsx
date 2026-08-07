@@ -68,15 +68,8 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
   };
 
   return (
-    <div className="relative w-74">
-      <div
-        className="flex items-center gap-2 px-3 py-2 backdrop-blur-md transition-colors"
-        style={{
-          background: "rgba(10, 12, 20, 0.85)",
-          border: "1px solid var(--ink-line)",
-          borderRadius: 2,
-        }}
-      >
+    <div className="relative" style={{ width: "var(--hud-bar-width)" }}>
+      <div className="hud-bar items-center gap-2 px-3">
         <span className="smallcaps text-[9px] text-vellum-mute">CATALOGUE</span>
         <input
           ref={inputRef}
