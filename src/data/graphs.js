@@ -27,12 +27,15 @@ export const WORLDS = {
     definitions: ancienTroncDefinitions,
     order: null,
     layout: "radial",
-    ringGap: 240,
-    nodeSize: 72,
+    ringGap: 140,
+    ringExponent: 0.7,
+    nodeSize: 78,
     showEdges: false,
     showArrows: false,
     hasRush: false,
-    fitPadding: 0.12,
+    fitPadding: 0.16,
+    fitMaxZoom: 1.4,
+    topInset: 116,
   },
   "tronc-nouveau": {
     id: "tronc-nouveau",
@@ -42,12 +45,15 @@ export const WORLDS = {
     definitions: nouveauTroncDefinitions,
     order: null,
     layout: "radial",
-    ringGap: 240,
-    nodeSize: 72,
+    ringGap: 140,
+    ringExponent: 0.7,
+    nodeSize: 78,
     showEdges: false,
     showArrows: false,
     hasRush: false,
-    fitPadding: 0.12,
+    fitPadding: 0.16,
+    fitMaxZoom: 1.4,
+    topInset: 116,
   },
   cursus: {
     id: "cursus",
@@ -109,8 +115,11 @@ export const effectiveStatus = (id, def, getStatus) => {
   return getStatus(id);
 };
 
+const RANK_DRIFT = 0.1;
+
 export const radialLayout = (entries, world, getStatus) => {
   const gap = world.ringGap ?? 300;
+  const exponent = world.ringExponent ?? 1;
   const byRank = new Map();
 
   entries.forEach((entry) => {
@@ -126,16 +135,22 @@ export const radialLayout = (entries, world, getStatus) => {
     .sort((a, b) => a - b)
     .forEach((rank) => {
       const ring = byRank.get(rank);
-      const radius = rank === 0 ? (ring.length > 1 ? gap * 0.4 : 0) : rank * gap;
+      const radius =
+        rank === 0 ? (ring.length > 1 ? gap * 0.5 : 0) : gap * Math.pow(rank, exponent);
       const step = (2 * Math.PI) / ring.length;
-      const offset = -Math.PI / 2 + (rank % 2 ? step / 2 : 0);
+      const offset = (rank % 2 ? step / 2 : 0) + rank * RANK_DRIFT;
 
       ring.forEach((entry, i) => {
         const size = entry.def.size ?? world.nodeSize ?? 70;
         const angle = offset + i * step;
+
+        const subCount = entry.def.subProjects?.length ?? 0;
+        const width = subCount ? size * 1.5 : size;
+        const height = subCount ? 38 + 32 * subCount : size;
+
         positions[entry.id] = {
-          x: (radius ? radius * Math.cos(angle) : 0) - size / 2,
-          y: (radius ? radius * Math.sin(angle) : 0) - size / 2,
+          x: (radius ? radius * Math.cos(angle) : 0) - width / 2,
+          y: (radius ? radius * Math.sin(angle) : 0) - height / 2,
         };
       });
 

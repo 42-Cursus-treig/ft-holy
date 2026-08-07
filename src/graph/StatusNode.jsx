@@ -16,46 +16,65 @@ const C = {
   azureSoft: "#2C5A8A",
 };
 
-const LANG_COLORS = {
-  c: "#2a6bcc",
-  "c++": "marine",
-  python: "marine",
-  ocaml: "orange",
-  go: "teal",
-  opengl: "teal",
-  react: "#61dbfb",
-  php: "#474A8A",
-  ruby: "red",
-  assemblyscript: "red",
-  unity: "grey",
-  dart: "darkturquoise",
-  rust: "#dea584",
+const SIMPLE_ICONS = "https://cdn.simpleicons.org";
+
+const EXTERNAL_ICONS = {
+  java: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg",
+};
+
+const ICON_SLUGS = {
+  bash: "gnubash",
+  shell: "gnubash",
+  "c++": "cplusplus",
+  cpp: "cplusplus",
+  js: "javascript",
+  ts: "typescript",
+};
+
+const UNREADABLE_ON_INK = {
+  rust: "DEA584",
+  express: "F4F1E8",
+  github: "F4F1E8",
+  apple: "F4F1E8",
 };
 
 export const getIconUrl = (language, color) => {
-  const customIcons = {
-    java: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg",
-    flutter: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg",
-    dart: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg",
-    kotlin: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kotlin/kotlin-original.svg",
-  };
-
-  const ICON_SLUGS = {
-    bash: "gnubash",
-    shell: "gnubash",
-    "c++": "cplusplus",
-  };
-
   const key = language?.toLowerCase();
-
-  if (customIcons[key]) {
-    return customIcons[key];
-  }
+  if (!key) return null;
+  if (EXTERNAL_ICONS[key]) return EXTERNAL_ICONS[key];
 
   const slug = ICON_SLUGS[key] || key;
-  const resolvedColor = color || LANG_COLORS[key] || "F4F1E8";
-  const safeColor = resolvedColor.replace("#", "");
-  return `https://cdn.simpleicons.org/${slug}/${safeColor}`;
+  const tint = (color || UNREADABLE_ON_INK[key] || "").replace("#", "");
+  return tint ? `${SIMPLE_ICONS}/${slug}/${tint}` : `${SIMPLE_ICONS}/${slug}`;
+};
+
+const LangBadge = ({ language, color, size, scale = 0.4, offset = 0.08 }) => {
+  const src = getIconUrl(language, color);
+  if (!src) return null;
+  return (
+    <div
+      style={{
+        position: "absolute",
+        bottom: -size * offset,
+        right: -size * offset,
+        width: size * scale,
+        height: size * scale,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: C.inkDeep,
+        border: `1px solid ${C.inkLine}`,
+        borderRadius: "50%",
+        zIndex: 3,
+      }}
+    >
+      <img
+        src={src}
+        alt=""
+        style={{ width: "75%", height: "75%", objectFit: "contain", pointerEvents: "none" }}
+      />
+    </div>
+  );
 };
 
 export const FrameNode = ({ data }) => {
@@ -198,6 +217,8 @@ export const StatusNode = ({ data, selected }) => {
       isGroupValidated = validatedCount > 0;
     }
 
+    const groupIcon = getIconUrl(data.language, data.logoColor);
+
     return (
       <div
         style={{
@@ -234,7 +255,16 @@ export const StatusNode = ({ data, selected }) => {
           </div>
         )}
 
-        <div style={{ padding: "8px 12px", borderBottom: `1px solid ${C.inkLine}` }}>
+        <div
+          style={{
+            padding: "8px 12px",
+            borderBottom: `1px solid ${C.inkLine}`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 10,
+          }}
+        >
           <div
             style={{
               fontFamily: '"Cormorant Garamond", serif',
@@ -245,11 +275,20 @@ export const StatusNode = ({ data, selected }) => {
           >
             {data.label}
           </div>
+
+          {groupIcon && (
+            <img
+              src={groupIcon}
+              alt=""
+              style={{ width: 16, height: 16, objectFit: "contain", flexShrink: 0 }}
+            />
+          )}
         </div>
         
         {data.subProjects.map((sub, i) => {
           const subId = sub.id || sub;
           const subLabel = sub.label || sub;
+          const subIcon = getIconUrl(sub.lang, sub.logoColor);
           const subStatus = data.subProjectStatuses?.[subId] || "available";
           const moduleProgress = data.subProjectModules?.[subId];
           
@@ -289,7 +328,14 @@ export const StatusNode = ({ data, selected }) => {
               }}
               className="hover:bg-slate-800/50 transition-colors"
             >
-              <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                {subIcon && (
+                  <img
+                    src={subIcon}
+                    alt=""
+                    style={{ width: 12, height: 12, objectFit: "contain", flexShrink: 0 }}
+                  />
+                )}
                 <span>{subLabel}</span>
                 {moduleProgress && (
                   <span style={{ fontSize: 10, color: C.vellumDim }}>
@@ -381,35 +427,13 @@ export const StatusNode = ({ data, selected }) => {
           </div>
         )}
 
-        {data.language && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: -8,
-              right: -8,
-              width: size * 0.42,
-              height: size * 0.42,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: C.inkDeep,
-              border: `1px solid ${C.inkLine}`,
-              borderRadius: "50%",
-            }}
-          >
-            <img
-              src={getIconUrl(data.language, data.logoColor)}
-              alt=""
-              style={{
-                width: "75%",
-                height: "75%",
-                objectFit: "contain",
-                filter: "saturate(0.7) brightness(0.95)",
-                pointerEvents: "none",
-              }}
-            />
-          </div>
-        )}
+        <LangBadge
+          language={data.language}
+          color={data.logoColor}
+          size={size}
+          scale={0.42}
+          offset={0.1}
+        />
 
         <Handle type="source" position={Position.Bottom} style={{ opacity: 0, pointerEvents: "none" }} />
       </div>
@@ -491,36 +515,7 @@ export const StatusNode = ({ data, selected }) => {
           {data.label}
         </span>
 
-        {data.language && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: -size * 0.08,
-              right: -size * 0.08,
-              width: size * 0.4,
-              height: size * 0.4,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: C.inkDeep,
-              border: `1px solid ${C.inkLine}`,
-              borderRadius: "50%",
-              zIndex: 3,
-            }}
-          >
-            <img
-              src={getIconUrl(data.language, data.logoColor)}
-              alt=""
-              style={{
-                width: "75%",
-                height: "75%",
-                objectFit: "contain",
-                filter: "saturate(0.7) brightness(0.95)",
-                pointerEvents: "none",
-              }}
-            />
-          </div>
-        )}
+        <LangBadge language={data.language} color={data.logoColor} size={size} />
       </div>
 
       <Handle type="source" position={Position.Bottom} style={{ opacity: 0, pointerEvents: "none" }} />

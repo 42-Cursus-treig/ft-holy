@@ -2,7 +2,6 @@ import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import {
   ReactFlow,
   Background,
-  Controls,
   Panel,
   useNodesState,
   useEdgesState,
@@ -18,6 +17,7 @@ import { Hud } from "./ui/Hud";
 import { AuthModal } from "./ui/AuthModal";
 import { GraphSwitcher } from "./ui/GraphSwitcher";
 import { OrbitRing } from "./graph/OrbitRing";
+import { Starfield } from "./graph/Starfield";
 import DevToolbar from "./ui/DevToolbar";
 
 import { generateId, rushList } from "./data/projectDB";
@@ -97,19 +97,20 @@ const writePositions = (worldId, positions) => {
 
 export default function App() {
   const [worldId, setWorldId] = useState(INITIAL_WORLD);
-  const [subGraph, setSubGraph] = useState(null);
+  const [subGraph, setSubGraph] = useState(null); // null | "rush" | id d'un projet à modules
   const [nodes, setNodes, onNodesChanges] = useNodesState([]);
   const [edges, setEdges, onEdgesChanges] = useEdgesState([]);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [authOpen, setAuthOpen] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [syncError, setSyncError] = useState(null);
+  const paneRef = useRef(null);
 
   const world = getWorld(worldId);
   const definitions = world.definitions;
   const childIds = useMemo(() => childIdsOf(definitions), [definitions]);
 
-  const { fitView } = useReactFlow();
+  const { fitView, getViewport, setViewport } = useReactFlow();
   const edgeTypes = useMemo(() => ({ floating: FloatingEdge }), []);
   const nodeTypes = useMemo(() => ({ statusNode: StatusNode, orbitRing: OrbitRing }), []);
 
@@ -124,7 +125,7 @@ export default function App() {
       let freshEdges = [];
       let showArrows = true;
       let padding = world.fitPadding ?? 0.2;
-      let maxZoom;
+      let maxZoom = world.fitMaxZoom;
 
       // ---- Grille des rushes ------------------------------------------
       if (subGraph === "rush") {
@@ -248,6 +249,11 @@ export default function App() {
             logoColor: def.logoColor,
             description: def.desc,
             size: def.size ?? world.nodeSize,
+            // `locked` n'est volontairement pas transmis : StatusNode a bien un
+            // rendu dédié (disque en pointillés) mais le hub Tronc Commun de la
+            // planche Mastery doit rester la grande étoile centrale. Le champ
+            // continue de servir en amont, pour figer le nœud et l'exclure des
+            // compteurs.
             linkID: def.linkID,
             pdfUrl: def.pdfUrl,
             langPdf: def.langPdf,
@@ -289,6 +295,8 @@ export default function App() {
           },
         }));
 
+        // Sur une planche radiale, le rang porte déjà l'ordre de progression :
+        // les liens n'ajouteraient que des cordes en travers des orbites.
         if (world.showEdges !== false) {
           const nodeIds = new Set(freshNodes.map((n) => n.id));
           entries.forEach(({ id, def }) => {
@@ -300,6 +308,18 @@ export default function App() {
           });
         }
 
+        if (freshNodes.length === 0) {
+          freshNodes = [
+            {
+              id: "wip",
+              type: "statusNode",
+              position: { x: 0, y: 0 },
+              data: { label: "Contenu à venir", status: "available", size: 90 },
+            },
+          ];
+        }
+
+        // Les orbites passent devant le fond mais derrière tout le reste.
         if (radial) {
           freshNodes = [
             ...radial.rings.map((ring) => ({
@@ -322,13 +342,56 @@ export default function App() {
       setEdges(styleEdges(freshNodes, freshEdges, showArrows));
 
       if (shouldFitView) {
-        setTimeout(
-          () => fitView({ duration: 800, padding: COMPACT ? 0.05 : padding, maxZoom }),
-          50
-        );
+        // Le bandeau du sélecteur flotte au-dessus du plan, mais `fitView` cadre
+        // sur toute la hauteur du conteneur et glisse donc le haut de la carte
+        // dessous. On laisse `fitView` faire son travail, puis on recadre le
+        // résultat dans la bande réellement libre : même contenu, dézoomé du
+        // rapport des deux hauteurs et recentré dessous. Descendre le viewport
+        // sans dézoomer ferait sortir le bas par en dessous.
+        //
+        // Sans animation : la valeur est relue juste après, une transition en
+        // cours renverrait une position intermédiaire.
+        const inset = COMPACT ? 0 : world.topInset ?? 0;
+        setTimeout(() => {
+          fitView({
+            duration: inset ? 0 : 800,
+            padding: COMPACT ? 0.05 : padding,
+            maxZoom,
+          });
+
+          const pane = paneRef.current;
+          if (!inset || !pane) return;
+
+          const { width, height } = pane.getBoundingClientRect();
+          if (height <= inset) return;
+
+          const { x, y, zoom } = getViewport();
+          const centerX = (width / 2 - x) / zoom;
+          const centerY = (height / 2 - y) / zoom;
+          const nextZoom = zoom * ((height - inset) / height);
+
+          setViewport({
+            x: width / 2 - centerX * nextZoom,
+            y: inset + (height - inset) / 2 - centerY * nextZoom,
+            zoom: nextZoom,
+          });
+        }, 50);
       }
     },
-    [worldId, subGraph, world, definitions, childIds, progress, isAdmin, setNodes, setEdges, fitView]
+    [
+      worldId,
+      subGraph,
+      world,
+      definitions,
+      childIds,
+      progress,
+      isAdmin,
+      setNodes,
+      setEdges,
+      fitView,
+      getViewport,
+      setViewport,
+    ]
   );
 
   const lastGraphKey = useRef(null);
@@ -337,6 +400,9 @@ export default function App() {
     const key = `${worldId}/${subGraph ?? "root"}`;
     buildGraph(lastGraphKey.current !== key);
     lastGraphKey.current = key;
+    // buildGraph est volontairement hors dépendances : il change à chaque rendu
+    // (progress renvoie un nouvel objet) et relancerait la construction en boucle.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [worldId, subGraph, progress.data, isAdmin]);
 
   useEffect(() => {
@@ -382,6 +448,8 @@ export default function App() {
     setSelectedProjectId(node.id);
   }, []);
 
+  // Un sous-projet n'a pas de nœud à lui : on reconstitue sa fiche depuis la
+  // carte parente et depuis sa définition, pour garder sujet et description.
   let selectedNode = nodes.find((n) => n.id === selectedProjectId) || null;
   if (!selectedNode && selectedProjectId) {
     const parent = nodes.find((n) =>
@@ -449,8 +517,11 @@ export default function App() {
       : null;
 
   return (
-    <div className="w-screen h-screen relative bg-ink-deep parchment-vignette">
-      <div className="starfield" />
+    <div
+      ref={paneRef}
+      className="w-screen h-screen relative bg-ink-deep parchment-vignette"
+    >
+      <Starfield />
 
       <ReactFlow
         nodes={nodes}
@@ -471,7 +542,6 @@ export default function App() {
         style={{ zIndex: 2 }}
       >
         <Background color="#1C2030" gap={40} size={1} />
-        {!COMPACT && <Controls position="bottom-right" showInteractive={false} />}
 
         {!COMPACT && (
           <Panel position="top-center">
