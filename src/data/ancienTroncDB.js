@@ -5,7 +5,7 @@ export const ancienTroncDefinitions = {
     parents: [],
     rank: 0,
     lang: "c",
-    desc: "Rang 00 — Votre première bibliothèque : réimplémentation des fonctions de la libc et des outils que vous réutiliserez dans tout le cursus.",
+    desc: "Recoder des fonctions essentielles de la bibliothèque C standard et créer une bibliothèque utilitaire réutilisable pour les futurs projets de 42.",
   },
 
   // ---- Rang 01 --------------------------------------------------------
@@ -14,37 +14,43 @@ export const ancienTroncDefinitions = {
     parents: ["tc-libft"],
     rank: 1,
     lang: "c",
-    desc: "Rang 01 — Recodez printf : nombre variable d'arguments, conversions et gestion du format.",
+    desc: "Recoder la fonction printf en C, avec un focus sur la gestion des arguments variadiques, afin de pouvoir la réutiliser dans les futurs projets.",
   },
   "tc-get-next-line": {
     label: "get_next_line",
     parents: ["tc-libft"],
     rank: 1,
     lang: "c",
-    desc: "Rang 01 — Lire une ligne depuis un descripteur de fichier, et découvrir les variables statiques.",
+    desc: "Développer une fonction capable de lire une source de données ligne par ligne, notamment depuis un fichier ou l’entrée standard, afin de la réutiliser dans de futurs projets.",
   },
   "tc-born2beroot": {
     label: "Born2beroot",
     parents: ["tc-libft"],
     rank: 1,
     lang: "bash",
-    desc: "Rang 01 — Mise en place d'un serveur sous machine virtuelle : partitionnement, durcissement, règles sudo et monitoring.",
+    desc: "Découvrir l’administration système en configurant une machine virtuelle Linux sécurisée, avec gestion des utilisateurs, des permissions, des services et des règles de sécurité.",
   },
 
   // ---- Rang 02 --------------------------------------------------------
+  "tc-exam-02": {
+    label: "Exam Rank 02",
+    parents: ["tc-ft-printf", "tc-get-next-line"],
+    rank: 2,
+    shape: "rect",
+  },
   "tc-push-swap": {
     label: "push_swap",
     parents: ["tc-ft-printf"],
     rank: 2,
     lang: "c",
-    desc: "Rang 02 — Trier une pile avec un jeu d'instructions limité, en minimisant le nombre d'opérations.",
+    desc: "Trier des données entre deux piles avec un nombre limité d’instructions, en choisissant et optimisant les algorithmes de tri pour effectuer le moins d’opérations possible.",
   },
   "tc-projet-unix": {
     label: "Projet Unix",
     parents: ["tc-ft-printf"],
     rank: 2,
     lang: "c",
-    desc: "Rang 02 — Un projet au choix autour des processus et de la communication inter-processus.",
+    desc: "Un projet au choix autour des processus et de la communication inter-processus.",
     subProjects: [
       { id: "tc-minitalk", label: "Minitalk" },
       { id: "tc-pipex", label: "Pipex" },
@@ -53,19 +59,19 @@ export const ancienTroncDefinitions = {
   "tc-minitalk": {
     label: "Minitalk",
     lang: "c",
-    desc: "Communication client / serveur par signaux UNIX, un bit à la fois.",
+    desc: "Créer un petit programme d’échange de données entre processus à l’aide des signaux UNIX, afin de s’initier à la communication interprocessus avant d’aborder des projets UNIX plus avancés.",
   },
   "tc-pipex": {
     label: "Pipex",
     lang: "c",
-    desc: "Reproduction du comportement d'un pipe shell : fork, dup2 et redirections.",
+    desc: "Approfondir la compréhension des redirections et des pipes UNIX en reproduisant le fonctionnement d’enchaînements de commandes, en préparation de projets système plus avancés.",
   },
   "tc-projet-graphique": {
     label: "Projet graphique",
     parents: ["tc-get-next-line"],
     rank: 2,
     lang: "c",
-    desc: "Rang 02 — Un projet au choix avec la MiniLibX : fenêtres, événements et rendu.",
+    desc: "Un projet au choix avec la MiniLibX : fenêtres, événements et rendu.",
     subProjects: [
       { id: "tc-so-long", label: "so_long" },
       { id: "tc-fdf", label: "FdF" },
@@ -75,55 +81,67 @@ export const ancienTroncDefinitions = {
   "tc-so-long": {
     label: "so_long",
     lang: "c",
-    desc: "Petit jeu 2D en vue de dessus : parsing de carte, textures et gestion des événements.",
+    desc: "Créer un petit jeu 2D avec la MiniLibX afin de découvrir la gestion des textures, des sprites, des tuiles et des interactions graphiques.",
   },
   "tc-fdf": {
     label: "FdF",
     lang: "c",
-    desc: "Représentation en fil de fer d'un relief, avec projection isométrique.",
+    desc: "S’initier à la programmation graphique avec la MiniLibX en représentant en 3D, sous forme de fils de fer, le relief d’un terrain à partir d’une carte.",
   },
   "tc-fract-ol": {
     label: "fract-ol",
     lang: "c",
-    desc: "Exploration de fractales (Mandelbrot, Julia) avec zoom et jeux de couleurs.",
+    desc: "Découvrir la programmation graphique 2D avec la MiniLibX en générant, affichant et explorant différentes fractales interactives.",
   },
 
   // ---- Rang 03 --------------------------------------------------------
+  "tc-exam-03": {
+    label: "Exam Rank 03",
+    parents: ["tc-push-swap"],
+    rank: 3,
+    shape: "rect",
+  },
   "tc-philosophers": {
     label: "Philosophers",
     parents: ["tc-born2beroot"],
     rank: 3,
     lang: "c",
-    desc: "Rang 03 — Threads, mutex et famine : le dîner des philosophes sans interblocage.",
+    desc: "Comprendre les threads, les mutex et la synchronisation en simulant des philosophes qui alternent entre manger, dormir et réfléchir, tout en évitant les blocages et la famine.",
   },
   "tc-minishell": {
     label: "Minishell",
     parents: ["tc-projet-unix"],
     rank: 3,
     lang: "c",
-    desc: "Rang 03 — Un shell en binôme : lexer, parser, redirections, pipes, builtins et variables d'environnement.",
+    desc: "Créer un shell simple inspiré de Bash afin de comprendre l’exécution de commandes, les processus, les redirections, les pipes et la gestion de l’environnement.",
   },
 
   // ---- Rang 04 --------------------------------------------------------
+  "tc-exam-04": {
+    label: "Exam Rank 04",
+    parents: ["tc-minishell"],
+    rank: 4,
+    shape: "rect",
+  },
   "tc-netpractice": {
     label: "NetPractice",
     parents: ["tc-born2beroot"],
     rank: 4,
-    desc: "Rang 04 — Adressage IP, masques et routage, à travers une série de réseaux à réparer.",
+    desc: "Découvrir les bases des réseaux informatiques en configurant et en résolvant des exercices pratiques autour de l’adressage IP, des sous-réseaux et du routage.",
   },
   "tc-cpp-00-04": {
-    label: "CPP Modules 00→04",
+    label: "CPP Modules 00-04",
     parents: ["tc-minishell"],
     rank: 4,
     lang: "c++",
-    desc: "Rang 04 — Premiers pas en C++ : classes, surcharge, héritage, polymorphisme et forme canonique.",
+    desc: "Découvrir les bases de la programmation orientée objet en C++, notamment les classes, la surcharge, l’héritage, le polymorphisme et la forme canonique.",
   },
   "tc-projet-rendu": {
     label: "Projet 3D",
     parents: ["tc-projet-graphique"],
     rank: 4,
     lang: "c",
-    desc: "Rang 04 — Un moteur de rendu au choix, en binôme.",
+    desc: "Un moteur de rendu au choix, en binôme.",
     subProjects: [
       { id: "tc-cub3d", label: "cub3d" },
       { id: "tc-minirt", label: "miniRT" },
@@ -132,28 +150,34 @@ export const ancienTroncDefinitions = {
   "tc-cub3d": {
     label: "cub3d",
     lang: "c",
-    desc: "Moteur de raycasting à la Wolfenstein : murs texturés, déplacements et collisions.",
+    desc: "Créer un moteur 3D inspiré de Wolfenstein 3D en utilisant le ray-casting, afin d’afficher et d’explorer dynamiquement un labyrinthe en vue subjective.",
   },
   "tc-minirt": {
     label: "miniRT",
     lang: "c",
-    desc: "Raytracer minimaliste : sphères, plans, cylindres, lumières et ombres portées.",
+    desc: "S’initier au ray tracing en développant un moteur de rendu 3D capable de générer des scènes à partir de formes géométriques, de lumières et de caméras.",
   },
 
   // ---- Rang 05 --------------------------------------------------------
+  "tc-exam-05": {
+    label: "Exam Rank 05",
+    parents: ["tc-cpp-00-04"],
+    rank: 5,
+    shape: "rect",
+  },
   "tc-cpp-05-09": {
-    label: "CPP Modules 05→09",
+    label: "CPP Modules 05-09",
     parents: ["tc-cpp-00-04"],
     rank: 5,
     lang: "c++",
-    desc: "Rang 05 — Exceptions, templates, conteneurs et algorithmes de la STL.",
+    desc: "Approfondir le C++ avec la gestion des exceptions, les templates, les conteneurs et les algorithmes de la STL.",
   },
   "tc-projet-serveur": {
     label: "Projet serveur",
     parents: ["tc-cpp-00-04"],
     rank: 5,
     lang: "c++",
-    desc: "Rang 05 — Un serveur réseau au choix, écrit en C++.",
+    desc: "Un serveur réseau au choix, écrit en C++.",
     subProjects: [
       { id: "tc-ft-irc", label: "ft_irc" },
       { id: "tc-webserv", label: "webserv" },
@@ -162,27 +186,39 @@ export const ancienTroncDefinitions = {
   "tc-ft-irc": {
     label: "ft_irc",
     lang: "c++",
-    desc: "Serveur IRC compatible avec un vrai client : canaux, opérateurs et commandes du protocole.",
+    desc: "Créer un serveur IRC conforme aux standards RFC afin de comprendre les communications réseau, la gestion de multiples clients et le fonctionnement d’un protocole Internet.",
   },
   "tc-webserv": {
     label: "webserv",
     lang: "c++",
-    desc: "Serveur HTTP non bloquant : fichier de configuration, méthodes, CGI et pages d'erreur.",
+    desc: "Créer un serveur HTTP conforme aux standards RFC afin de comprendre le fonctionnement du protocole HTTP, la gestion des requêtes et des réponses, et la communication avec un navigateur web.",
   },
   "tc-inception": {
     label: "Inception",
     parents: ["tc-netpractice"],
     rank: 5,
     lang: "docker",
-    desc: "Rang 05 — Infrastructure conteneurisée : NGINX, WordPress et MariaDB, chacun dans son image construite à la main.",
+    desc: "Approfondir l’utilisation de Docker en créant et orchestrant plusieurs conteneurs au sein d’une machine virtuelle, afin de comprendre la virtualisation de services et leur configuration.",
   },
 
   // ---- Rang 06 --------------------------------------------------------
+  "tc-collaborative-resume": {
+    label: "Collaborative Resume",
+    parents: ["tc-cpp-05-09", "tc-inception"],
+    rank: 6,
+    desc: "Mener un entretien croisé en binôme et rédiger le CV de l'autre : conduire l'entretien, structurer l'information recueillie et produire un document professionnel, puis échanger des retours avant la version finale.",
+  },
+  "tc-exam-06": {
+    label: "Exam Rank 06",
+    parents: ["tc-cpp-05-09", "tc-projet-serveur"],
+    rank: 6,
+    shape: "rect",
+  },
   "tc-transcendence": {
     label: "ft_transcendence",
     parents: ["tc-projet-serveur", "tc-inception"],
     rank: 6,
     lang: "typescript",
-    desc: "Rang 06 — Projet final en équipe : un site de Pong multijoueur en temps réel, avec chat, authentification et déploiement.",
+    desc: "Concevoir une application web complète autour du jeu Pong, intégrant frontend, backend, authentification, multijoueur et fonctionnalités sociales.",
   },
 };

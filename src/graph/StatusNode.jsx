@@ -108,19 +108,19 @@ export const FrameNode = ({ data }) => {
   );
 };
 
-const Halo = ({ size, color, opacity }) => {
-  const haloSize = size * 2.4;
-  const offset = (haloSize - size) / 2;
+const Halo = ({ width, height, color, opacity }) => {
+  const haloW = width * 2.4;
+  const haloH = height * 2.4;
   const idSuffix = color.replace("#", "");
   return (
     <svg
-      width={haloSize}
-      height={haloSize}
+      width={haloW}
+      height={haloH}
       viewBox="0 0 100 100"
       style={{
         position: "absolute",
-        left: -offset,
-        top: -offset,
+        left: -(haloW - width) / 2,
+        top: -(haloH - height) / 2,
         zIndex: 0,
         pointerEvents: "none",
       }}
@@ -136,6 +136,8 @@ const Halo = ({ size, color, opacity }) => {
     </svg>
   );
 };
+
+export const RECT_RATIO = { w: 1.6, h: 0.62 };
 
 export const StatusNode = ({ data, selected }) => {
   const size = data.size || 60;
@@ -440,6 +442,10 @@ export const StatusNode = ({ data, selected }) => {
     );
   }
 
+  const isRect = data.shape === "rect";
+  const boxW = isRect ? size * RECT_RATIO.w : size;
+  const boxH = isRect ? size * RECT_RATIO.h : size;
+
   const isMainNode = data.label && data.label.toUpperCase() === "TRONC COMMUN";
   const isValidated = status === "validated";
   const isFailed = status === "failed";
@@ -457,16 +463,20 @@ export const StatusNode = ({ data, selected }) => {
     <div
       style={{
         position: "relative",
-        width: size,
-        height: size,
+        width: boxW,
+        height: boxH,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         transition: "all 0.3s",
       }}
     >
-      {isValidated && !isMainNode && <Halo size={size} color={C.gold} opacity={0.55} />}
-      {isFailed && !isMainNode && <Halo size={size} color={C.rust} opacity={0.4} />}
+      {isValidated && !isMainNode && (
+        <Halo width={boxW} height={boxH} color={C.gold} opacity={0.55} />
+      )}
+      {isFailed && !isMainNode && (
+        <Halo width={boxW} height={boxH} color={C.rust} opacity={0.4} />
+      )}
 
       <Handle type="target" position={Position.Top} style={{ opacity: 0, pointerEvents: "none" }} />
 
@@ -478,7 +488,7 @@ export const StatusNode = ({ data, selected }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: "50%",
+          borderRadius: isRect ? 10 : "50%",
           background: starBg,
           border: `1px solid ${borderColor}`,
           color: textColor,
@@ -515,7 +525,7 @@ export const StatusNode = ({ data, selected }) => {
           {data.label}
         </span>
 
-        <LangBadge language={data.language} color={data.logoColor} size={size} />
+        <LangBadge language={data.language} color={data.logoColor} size={Math.min(boxW, boxH)} />
       </div>
 
       <Handle type="source" position={Position.Bottom} style={{ opacity: 0, pointerEvents: "none" }} />
