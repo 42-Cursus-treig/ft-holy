@@ -106,7 +106,6 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
               src={getIconUrl(node.data.language, node.data.logoColor)}
               alt={node.data.language}
               className="w-5 h-5"
-              style={{ filter: "saturate(0.7) brightness(0.95) opacity(0.9)" }}
             />
           )}
         </div>
