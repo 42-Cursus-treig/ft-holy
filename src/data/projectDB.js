@@ -876,55 +876,55 @@ export const projectDefinitions = {
 
 export const rushList = [
     {
-        id: "rush-00",
+        id: "cursus-rush-00",
         label: "Libunit",
         pdfUrl: "subjects/libunit.fr.pdf",
         desc: "Concevez un micro-framework en langage C dédié aux tests."
     },
     {
-        id: "rush-01",
+        id: "cursus-rush-01",
         label: "Hotrace",
         linkID: "125938",
         desc: "Développez un moteur de recherche capable d'indexer des données et de répondre efficacement aux recherches par mots-clés."
     },
     {
-        id: "rush-02",
+        id: "cursus-rush-02",
         label: "AlCu",
         linkID: "149331",
         desc: "Développez AlCu, un jeu basé sur des tas, et mettez en œuvre des algorithmes ainsi que des méthodes de programmation efficaces."
     },
     {
-        id: "rush-03",
+        id: "cursus-rush-03",
         label: "Wong kar Wai",
         linkID: "133009",
         desc: "Amusez-vous en développant le jeu 2048."
     },
     {
-        id: "rush-04",
+        id: "cursus-rush-04",
         label: "yasl",
         linkID: "159666",
         desc: "Découvrez un nouveau langage de programmation et mettez à l'épreuve votre capacité d'adaptation.",
     },
     {
-        id: "rush-05",
+        id: "cursus-rush-05",
         label: "wordle",
         linkID: "163457",
         desc: "Reproduisez le jeu Wordle en développant sa logique de jeu et son système de validation des mots."
     },
     {
-        id: "rush-06",
+        id: "cursus-rush-06",
         label: "Connect4",
         linkID: "115815",
         desc: "Développez une version du Puissance 4 intégrant une intelligence artificielle capable de vous affronter."
     },
     {
-        id: "rush-07",
+        id: "cursus-rush-07",
         label: "Retro-MFA",
         linkID: "128785",
         desc: "Retrouvez des images cachées dans un format de fichier propriétaire en développant les outils nécessaires à leur extraction."
     },
     {
-        id: "rush-08",
+        id: "cursus-rush-08",
         label: "ft_shmup",
         linkID: "149142",
         desc: "Le but de ce projet est d’implémenter un jeu simpliste de type shoot'em up dans votre terminal."
