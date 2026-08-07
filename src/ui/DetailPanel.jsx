@@ -34,8 +34,14 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
   const status = node.data.status || "available";
   const pdfLang = node.data.langPdf || "en";
 
+  // Lien vers le sujet, du plus explicite au plus déduit :
+  //   url     lien libre, tel quel
+  //   pdfUrl  fichier du dossier public/ (ex: "subjects/rush.pdf"), ou URL absolue
+  //   linkID  identifiant du PDF sur le CDN de l'intra, l'URL est reconstruite
   let subjectHref = null;
-  if (node.data.pdfUrl) {
+  if (node.data.url) {
+    subjectHref = node.data.url;
+  } else if (node.data.pdfUrl) {
     subjectHref = /^https?:\/\//.test(node.data.pdfUrl)
       ? node.data.pdfUrl
       : `${import.meta.env.BASE_URL}${node.data.pdfUrl.replace(/^\//, "")}`;

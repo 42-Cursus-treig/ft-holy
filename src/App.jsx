@@ -97,7 +97,7 @@ const writePositions = (worldId, positions) => {
 
 export default function App() {
   const [worldId, setWorldId] = useState(INITIAL_WORLD);
-  const [subGraph, setSubGraph] = useState(null);
+  const [subGraph, setSubGraph] = useState(null); // null | "rush" | id d'un projet à modules
   const [nodes, setNodes, onNodesChanges] = useNodesState([]);
   const [edges, setEdges, onEdgesChanges] = useEdgesState([]);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
@@ -250,8 +250,14 @@ export default function App() {
             description: def.desc,
             size: def.size ?? world.nodeSize,
             shape: def.shape,
+            // `locked` n'est volontairement pas transmis : StatusNode a bien un
+            // rendu dédié (disque en pointillés) mais le hub Tronc Commun de la
+            // planche Mastery doit rester la grande étoile centrale. Le champ
+            // continue de servir en amont, pour figer le nœud et l'exclure des
+            // compteurs.
             linkID: def.linkID,
             pdfUrl: def.pdfUrl,
+            url: def.url,
             langPdf: def.langPdf,
             subProjects: def.subProjects,
             subProjectStatuses: def.subProjects
@@ -291,6 +297,8 @@ export default function App() {
           },
         }));
 
+        // Sur une planche radiale, le rang porte déjà l'ordre de progression :
+        // les liens n'ajouteraient que des cordes en travers des orbites.
         if (world.showEdges !== false) {
           const nodeIds = new Set(freshNodes.map((n) => n.id));
           entries.forEach(({ id, def }) => {
@@ -313,6 +321,7 @@ export default function App() {
           ];
         }
 
+        // Les orbites passent devant le fond mais derrière tout le reste.
         if (radial) {
           freshNodes = [
             ...radial.rings.map((ring) => ({
@@ -335,6 +344,15 @@ export default function App() {
       setEdges(styleEdges(freshNodes, freshEdges, showArrows));
 
       if (shouldFitView) {
+        // Le bandeau du sélecteur flotte au-dessus du plan, mais `fitView` cadre
+        // sur toute la hauteur du conteneur et glisse donc le haut de la carte
+        // dessous. On laisse `fitView` faire son travail, puis on recadre le
+        // résultat dans la bande réellement libre : même contenu, dézoomé du
+        // rapport des deux hauteurs et recentré dessous. Descendre le viewport
+        // sans dézoomer ferait sortir le bas par en dessous.
+        //
+        // Sans animation : la valeur est relue juste après, une transition en
+        // cours renverrait une position intermédiaire.
         const inset = COMPACT ? 0 : world.topInset ?? 0;
         setTimeout(() => {
           fitView({
@@ -384,6 +402,9 @@ export default function App() {
     const key = `${worldId}/${subGraph ?? "root"}`;
     buildGraph(lastGraphKey.current !== key);
     lastGraphKey.current = key;
+    // buildGraph est volontairement hors dépendances : il change à chaque rendu
+    // (progress renvoie un nouvel objet) et relancerait la construction en boucle.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [worldId, subGraph, progress.data, isAdmin]);
 
   useEffect(() => {
@@ -429,6 +450,10 @@ export default function App() {
     setSelectedProjectId(node.id);
   }, []);
 
+  // Un sous-projet n'a pas de nœud à lui : on reconstitue sa fiche à partir de
+  // deux sources. Sa définition dans la base, si elle existe, et l'objet écrit
+  // dans `subProjects` de la carte parente. L'objet inline l'emporte : c'est le
+  // plus proche de l'endroit où on lit la liste, donc le plus explicite.
   let selectedNode = nodes.find((n) => n.id === selectedProjectId) || null;
   if (!selectedNode && selectedProjectId) {
     const parent = nodes.find((n) =>
@@ -436,19 +461,22 @@ export default function App() {
     );
     const sub = parent?.data.subProjects.find((s) => (s.id || s) === selectedProjectId);
     const def = definitions[selectedProjectId];
+
     if (sub || def) {
+      const source = { ...def, ...(typeof sub === "object" ? sub : null) };
       selectedNode = {
         id: selectedProjectId,
         data: {
-          label: sub?.label || def?.label || selectedProjectId,
+          label: source.label || selectedProjectId,
           status: progress.getStatus(selectedProjectId),
           mark: progress.getMark(selectedProjectId),
-          description: def?.desc,
-          language: def?.lang,
-          logoColor: def?.logoColor,
-          linkID: def?.linkID,
-          pdfUrl: def?.pdfUrl,
-          langPdf: def?.langPdf,
+          description: source.desc,
+          language: source.lang,
+          logoColor: source.logoColor,
+          linkID: source.linkID,
+          pdfUrl: source.pdfUrl,
+          url: source.url,
+          langPdf: source.langPdf,
         },
       };
     }
