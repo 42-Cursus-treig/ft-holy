@@ -1,9 +1,10 @@
-import { projectDefinitions } from "./projectDB";
+import { projectDefinitions, rushList } from "./projectDB";
 import { poolDefinitions } from "./poolDB";
 import { ancienTroncDefinitions } from "./ancienTroncDB";
 import { nouveauTroncDefinitions } from "./nouveauTroncDB";
 import { activeProjects } from "./projectList";
 import { GRAPH_PARAM, LOGIN, SELF } from "../config";
+import { reportIdCollisions } from "./audit";
 
 export const WORLDS = {
   pool: {
@@ -73,6 +74,10 @@ export const WORLDS = {
 };
 
 export const WORLD_ORDER = ["pool", "tronc-ancien", "tronc-nouveau", "cursus"];
+
+if (import.meta.env.DEV) {
+  reportIdCollisions(WORLDS, { "rushList (projectDB)": rushList });
+}
 
 const ALIASES = {
   main: "cursus",

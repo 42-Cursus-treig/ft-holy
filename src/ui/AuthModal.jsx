@@ -37,11 +37,6 @@ export const AuthModal = ({ onClose, auth }) => {
           <button onClick={onClose} className="text-vellum-mute hover:text-vellum text-xl">x</button>
         </div>
 
-        <p className="font-serif italic text-sm text-vellum-dim mb-5">
-          Seul <span className="font-mono not-italic text-vellum">{ADMIN_USERNAME}</span> peut
-          modifier la progression. Pour les visiteurs, la carte reste en lecture seule.
-        </p>
-
         {auth.deviceInfo ? (
           <div className="space-y-3">
             <p className="text-sm text-vellum-dim font-serif">
@@ -80,9 +75,6 @@ export const AuthModal = ({ onClose, auth }) => {
                   placeholder="ghp_…"
                   className="w-full px-3 py-2 bg-slate-900 text-white font-mono text-sm border border-slate-600 rounded-sm focus:border-yellow-500 focus:outline-none"                  autoFocus
                 />
-                <p className="text-[10px] text-vellum-mute mt-1 font-serif italic">
-                  Token classique avec scope <span className="font-mono not-italic">repo</span>. Stocké uniquement dans ton navigateur.
-                </p>
               </div>
               <button
                 type="submit"
