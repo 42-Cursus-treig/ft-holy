@@ -56,18 +56,13 @@ function DevToolbar({ worldId }) {
   };
 
   const btnClass =
-    "p-2 text-vellum-dim hover:text-white hover:bg-white/10 transition-colors flex items-center justify-center";
+    "flex-1 text-vellum-dim hover:text-vellum hover:bg-white/10 transition-colors flex items-center justify-center";
 
   return (
     <Panel position="top-right">
       <div
-        className="flex items-center gap-1 backdrop-blur-md transition-opacity duration-200"
-        style={{
-          background: "rgba(10, 12, 20, 0.85)",
-          border: "1px solid var(--ink-line)",
-          borderRadius: 4,
-          overflow: "hidden",
-        }}
+        className="hud-bar overflow-hidden"
+        style={{ width: "var(--hud-bar-width)" }}
       >
         <button onClick={logPositions} className={btnClass} title="Log des positions dans la console">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -77,7 +72,7 @@ function DevToolbar({ worldId }) {
           </svg>
         </button>
 
-        <div className="w-px h-4" style={{ background: "var(--ink-line)" }} />
+        <div className="w-px my-2" style={{ background: "var(--ink-line)" }} />
 
         <button onClick={takeScreenshot} className={btnClass} title="Capture d'écran HD">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -86,7 +81,7 @@ function DevToolbar({ worldId }) {
           </svg>
         </button>
 
-        <div className="w-px h-4" style={{ background: "var(--ink-line)" }} />
+        <div className="w-px my-2" style={{ background: "var(--ink-line)" }} />
 
         <button onClick={clearStorageAndRefresh} className={btnClass} title="Vider le LocalStorage">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

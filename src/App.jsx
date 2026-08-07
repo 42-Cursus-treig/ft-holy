@@ -338,27 +338,29 @@ export default function App() {
       if (shouldFitView) {
         const inset = COMPACT ? 0 : world.topInset ?? 0;
         setTimeout(() => {
-          fitView({
-            duration: inset ? 0 : 800,
-            padding: COMPACT ? 0.05 : padding,
-            maxZoom,
-          });
+          Promise.resolve(
+            fitView({
+              duration: inset ? 0 : 800,
+              padding: COMPACT ? 0.05 : padding,
+              maxZoom,
+            })
+          ).then(() => {
+            const pane = paneRef.current;
+            if (!inset || !pane) return;
 
-          const pane = paneRef.current;
-          if (!inset || !pane) return;
+            const { width, height } = pane.getBoundingClientRect();
+            if (height <= inset) return;
 
-          const { width, height } = pane.getBoundingClientRect();
-          if (height <= inset) return;
+            const { x, y, zoom } = getViewport();
+            const centerX = (width / 2 - x) / zoom;
+            const centerY = (height / 2 - y) / zoom;
+            const nextZoom = zoom * ((height - inset) / height);
 
-          const { x, y, zoom } = getViewport();
-          const centerX = (width / 2 - x) / zoom;
-          const centerY = (height / 2 - y) / zoom;
-          const nextZoom = zoom * ((height - inset) / height);
-
-          setViewport({
-            x: width / 2 - centerX * nextZoom,
-            y: inset + (height - inset) / 2 - centerY * nextZoom,
-            zoom: nextZoom,
+            setViewport({
+              x: width / 2 - centerX * nextZoom,
+              y: inset + (height - inset) / 2 - centerY * nextZoom,
+              zoom: nextZoom,
+            });
           });
         }, 50);
       }
