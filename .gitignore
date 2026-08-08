@@ -1,29 +1,23 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
+# Dépendances et build
 node_modules
 dist
-dist-ssr
-*.local
 
-# Environnement local
+# Logs
+*.log
+npm-debug.log*
+
+# Secrets et environnement local
 .env
-.env.local
+.env*.local
 api/.dev.vars
+api/.dev.vars.*
 
-# Editor directories and files
+# État local de wrangler (cache, simulation KV)
+.wrangler
+api/.wrangler
+
+# Éditeurs et OS
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
