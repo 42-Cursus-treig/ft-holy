@@ -526,8 +526,6 @@ export default function App() {
         proOptions={{ hideAttribution: true }}
         style={{ zIndex: 2 }}
       >
-        <Background color="#1C2030" gap={40} size={1} />
-
         {!COMPACT && (
           <Panel position="top-center">
             <GraphSwitcher
