@@ -296,7 +296,11 @@ export const toProgress = (payload) => {
   };
 };
 
+const IGNORED = new Set(["42cursus-rushes"]);
+
 export const unmappedSlugs = (payload) => {
   const known = new Set(Object.values(FT_SLUGS).flat());
-  return Object.keys(payload.projects || {}).filter((s) => !known.has(s));
+  return Object.keys(payload.projects || {}).filter(
+    (s) => !known.has(s) && !IGNORED.has(s)
+  );
 };

@@ -80,6 +80,9 @@ export const useProgress = () => {
               login: remote.login,
               displayName: remote.displayName,
               avatar: remote.avatar,
+              level: remote.cursus?.find((c) => c.id === 21)?.level
+                ?? remote.cursus?.[0]?.level
+                ?? null,
             });
             remoteRef.current = normalized;
             setData(normalized);

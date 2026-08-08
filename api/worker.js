@@ -6,7 +6,9 @@ const MAX_PAGES = 4;
 const ALLOWED_ORIGINS = [
   "https://tristan-reig.github.io",
   "http://localhost:5173",
+  "http://127.0.0.1:5173",
   "http://localhost:4173",
+  "http://127.0.0.1:4173",
 ];
 
 const LOGIN_RE = /^[a-zA-Z0-9_-]{2,32}$/;
@@ -21,12 +23,15 @@ class HttpError extends Error {
 
 const corsHeaders = (request) => {
   const origin = request.headers.get("Origin");
-  return {
-    "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
+  const headers = {
     "Access-Control-Allow-Methods": "GET, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     Vary: "Origin",
   };
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    headers["Access-Control-Allow-Origin"] = origin;
+  }
+  return headers;
 };
 
 const json = (request, body, status = 200, extra = {}) =>
