@@ -33,7 +33,7 @@ import {
 import { useProgress } from "./hooks/useProgress";
 import { useGitHubAuth } from "./hooks/useGitHubAuth";
 import { commitProgress } from "./lib/github";
-import { positionsKey, READ_ONLY, COMPACT } from "./config";
+import { positionsKey, READ_ONLY, COMPACT, GRAPH_PARAM } from "./config";
 
 const EDGE_COLORS = {
   validated: "#D4AF37",
@@ -119,6 +119,15 @@ export default function App() {
   const auth = useGitHubAuth();
   const isAdmin = auth.isAdmin && !READ_ONLY;
 
+  /**
+   * En mode API 42, seules les planches auxquelles la personne a droit sont
+   * proposées : la piscine si elle a eu lieu, le tronc détecté et la Mastery
+   * si elle a été admise. On filtre WORLD_ORDER plutôt que d'utiliser
+   * progress.worlds directement, pour conserver l'ordre canonique.
+   */
+  // En mode API, les planches autorisées ne sont connues qu'une fois le
+  // relevé chargé. Afficher les quatre onglets en attendant produirait un
+  // clignotement : on ne montre la barre qu'une fois la réponse arrivée.
   const worldsReady = !READ_ONLY || progress.remoteLoaded;
 
   const worldOrder = useMemo(
@@ -129,13 +138,34 @@ export default function App() {
     [progress.worlds]
   );
 
+  // Atterrissage : une seule fois, quand les droits sont connus.
+  const landedRef = useRef(false);
+
   useEffect(() => {
-    if (worldOrder.length && !worldOrder.includes(worldId)) {
+    if (!worldOrder.length) return;
+
+    // Un ?graph= pointant vers une planche interdite ne doit pas donner un
+    // graphe vide : on ramène la vue sur la première planche autorisée.
+    if (!worldOrder.includes(worldId)) {
       setWorldId(worldOrder[0]);
       setSubGraph(null);
       setSelectedProjectId(null);
+      return;
     }
-  }, [worldOrder, worldId]);
+
+    // Sur le relevé de quelqu'un, on ouvre sur la planche la plus avancée
+    // qu'il ait débloquée — la piscine n'intéresse plus personne une fois le
+    // tronc commun entamé. Un ?graph= explicite reste prioritaire.
+    if (!landedRef.current && progress.worlds && !GRAPH_PARAM) {
+      landedRef.current = true;
+      const last = worldOrder[worldOrder.length - 1];
+      if (last !== worldId) {
+        setWorldId(last);
+        setSubGraph(null);
+        setSelectedProjectId(null);
+      }
+    }
+  }, [worldOrder, worldId, progress.worlds]);
 
   const buildGraph = useCallback(
     (shouldFitView = false) => {
@@ -543,7 +573,11 @@ export default function App() {
         panOnDrag={!COMPACT}
         zoomOnScroll={!COMPACT}
         proOptions={{ hideAttribution: true }}
-        style={{ zIndex: 2 }}
+        style={{
+          zIndex: 2,
+          opacity: worldsReady ? 1 : 0,
+          transition: "opacity 0.25s ease-out",
+        }}
       >
         {!COMPACT && worldsReady && (
           <Panel position="top-center">
@@ -579,7 +613,7 @@ export default function App() {
         />
       )}
 
-      {!COMPACT && (
+      {!COMPACT && worldsReady && (
         <Hud
           progress={progress.data}
           definitions={definitions}
