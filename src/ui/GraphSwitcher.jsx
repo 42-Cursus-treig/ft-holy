@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 
+const ROMAN = ["I", "II", "III", "IV"];
+
 export const GraphSwitcher = ({ worlds, order, currentWorld, subLabel, onSelect, onBack }) => {
   useEffect(() => {
     const onKey = (e) => {
@@ -44,7 +46,7 @@ export const GraphSwitcher = ({ worlds, order, currentWorld, subLabel, onSelect,
       </span>
       <div className="w-px my-2 hidden sm:block shrink-0" style={{ background: "var(--ink-line)" }} />
 
-      {order.map((id) => {
+      {order.map((id, index) => {
         const world = worlds[id];
         const active = id === currentWorld;
         return (
@@ -61,7 +63,7 @@ export const GraphSwitcher = ({ worlds, order, currentWorld, subLabel, onSelect,
               className="font-mono text-[9px]"
               style={{ color: active ? "var(--gold)" : "var(--vellum-mute)" }}
             >
-              {world.plate}
+              {ROMAN[index] ?? index + 1}
             </span>
             <span
               className="smallcaps text-[10px] transition-colors"

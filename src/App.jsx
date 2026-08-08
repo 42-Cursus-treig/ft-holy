@@ -19,6 +19,7 @@ import { GraphSwitcher } from "./ui/GraphSwitcher";
 import { OrbitRing } from "./graph/OrbitRing";
 import { Starfield } from "./graph/Starfield";
 import DevToolbar from "./ui/DevToolbar";
+import { NotFound } from "./ui/NotFound";
 
 import { generateId, rushList } from "./data/projectDB";
 import {
@@ -32,7 +33,7 @@ import {
 import { useProgress } from "./hooks/useProgress";
 import { useGitHubAuth } from "./hooks/useGitHubAuth";
 import { commitProgress } from "./lib/github";
-import { positionsKey, READ_ONLY, COMPACT } from "./config";
+import { positionsKey, READ_ONLY, COMPACT, LOGIN } from "./config";
 
 const EDGE_COLORS = {
   validated: "#D4AF37",
@@ -516,6 +517,10 @@ export default function App() {
       : subGraph
       ? definitions[subGraph]?.label || subGraph
       : null;
+
+  if (progress.error && progress.remoteLoaded) {
+    return <NotFound login={LOGIN} message={progress.error} />;
+  }
 
   return (
     <div

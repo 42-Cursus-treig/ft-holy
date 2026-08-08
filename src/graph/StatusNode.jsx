@@ -452,10 +452,16 @@ export const StatusNode = ({ data, selected }) => {
 
   const isInProgress = status === "in-progress";
 
-  const starBg = isValidated ? C.gold : isFailed ? C.rust : C.inkSoft;
+  const starBg = isValidated
+    ? C.gold
+    : isFailed
+    ? C.rust
+    : isInProgress
+    ? C.azure
+    : C.inkSoft;
   const borderColor = isValidated ? C.goldSoft : isFailed ? C.rustSoft
     : isInProgress ? C.azureSoft : C.vellumMute;
-  const textColor = isValidated || isFailed ? C.inkDeep : C.vellum;
+  const textColor = isValidated || isFailed || isInProgress ? C.inkDeep : C.vellum;
   const selectionGlow = isValidated ? C.gold : isFailed ? C.rust
     : isInProgress ? C.azure : C.vellumDim;
 
@@ -476,6 +482,9 @@ export const StatusNode = ({ data, selected }) => {
       )}
       {isFailed && !isMainNode && (
         <Halo width={boxW} height={boxH} color={C.rust} opacity={0.4} />
+      )}
+      {isInProgress && !isMainNode && (
+        <Halo width={boxW} height={boxH} color={C.azure} opacity={0.35} />
       )}
 
       <Handle type="target" position={Position.Top} style={{ opacity: 0, pointerEvents: "none" }} />
@@ -508,6 +517,8 @@ export const StatusNode = ({ data, selected }) => {
             ? `0 0 0 1.5px ${selectionGlow}, 0 0 24px ${selectionGlow}90`
             : isValidated
             ? `0 0 12px ${C.gold}30`
+            : isInProgress
+            ? `0 0 12px ${C.azure}30`
             : "none",
           zIndex: 2,
           transition: "box-shadow 0.2s",

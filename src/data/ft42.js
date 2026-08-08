@@ -217,13 +217,34 @@ export const detectTronc = (payload, cutoff = "2025-09-01") => {
   return "tronc-nouveau";
 };
 
+const MASTERY_LEVEL = 21;
+
+const CORE_DONE = ["42next-exam-rank-06", "exam-rank-06", "ft_transcendence"];
+
 export const allowedWorlds = (payload, tronc) => {
-  const ids = new Set((payload.cursus || []).map((c) => c.id));
+  const cursus = payload.cursus || [];
+  const ids = new Set(cursus.map((c) => c.id));
   const worlds = [];
+
   if (ids.has(9)) worlds.push("pool");
-  if (ids.has(21)) worlds.push(tronc, "cursus");
+  if (!ids.has(21)) return worlds;
+
+  worlds.push(tronc);
+
+  const projects = payload.projects || {};
+  const coreDone = CORE_DONE.some((s) => projects[s]?.status === "validated");
+  const level = cursus.find((c) => c.id === 21)?.level ?? 0;
+  if (coreDone || level >= MASTERY_LEVEL) worlds.push("cursus");
+
   return worlds;
 };
+
+const closedCursusIds = (payload) =>
+  new Set(
+    (payload.cursus || [])
+      .filter((c) => c.endAt && Date.parse(c.endAt) < Date.now())
+      .map((c) => c.id)
+  );
 
 const PRIORITY = { validated: 3, "in-progress": 2, failed: 1 };
 
@@ -244,10 +265,19 @@ const mergeVariants = (entries) =>
 export const toProgress = (payload) => {
   const statuses = {};
   const marks = {};
+  const closed = closedCursusIds(payload);
+
+  const stale = (entry) =>
+    entry.status === "in-progress" &&
+    (entry.cursusIds || []).length > 0 &&
+    (entry.cursusIds || []).every((id) => closed.has(id));
 
   for (const [id, slugs] of Object.entries(FT_SLUGS)) {
     const list = Array.isArray(slugs) ? slugs : [slugs];
-    const found = list.map((s) => payload.projects?.[s]).filter(Boolean);
+    const found = list
+      .map((s) => payload.projects?.[s])
+      .filter(Boolean)
+      .filter((e) => !stale(e));
     if (found.length === 0) continue;
 
     const merged = AGGREGATES.has(id)
