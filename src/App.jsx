@@ -120,6 +120,14 @@ export default function App() {
   const isAdmin = auth.isAdmin && !READ_ONLY;
 
   /**
+   * Édition des positions : possible en développement — le DevToolbar les
+   * relit, et il n'apparaît qu'en DEV — ou en admin authentifié. Jamais sur
+   * le relevé d'un tiers : les positions sont stockées par planche et non
+   * par login, on polluerait sa propre disposition.
+   */
+  const canEditPositions = (import.meta.env.DEV || isAdmin) && !READ_ONLY;
+
+  /**
    * En mode API 42, seules les planches auxquelles la personne a droit sont
    * proposées : la piscine si elle a eu lieu, le tronc détecté et la Mastery
    * si elle a été admise. On filtre WORLD_ORDER plutôt que d'utiliser
@@ -169,7 +177,7 @@ export default function App() {
 
   const buildGraph = useCallback(
     (shouldFitView = false) => {
-      const customPositions = isAdmin ? readPositions(worldId) : {};
+      const customPositions = canEditPositions ? readPositions(worldId) : {};
       let freshNodes = [];
       let freshEdges = [];
       let showArrows = true;
@@ -517,7 +525,7 @@ export default function App() {
   const onNodesChangeWithSave = useCallback(
     (changes) => {
       onNodesChanges(changes);
-      if (!isAdmin) return;
+      if (!canEditPositions) return;
       const positionChanges = changes.filter((c) => c.type === "position" && c.position);
       if (positionChanges.length === 0) return;
       const stored = readPositions(worldId);
@@ -526,7 +534,7 @@ export default function App() {
       });
       writePositions(worldId, stored);
     },
-    [onNodesChanges, isAdmin, worldId]
+    [onNodesChanges, canEditPositions, worldId]
   );
 
   const handleSync = async () => {
