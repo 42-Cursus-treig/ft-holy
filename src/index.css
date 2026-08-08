@@ -5,6 +5,8 @@
 @tailwind utilities;
 
 :root {
+  color-scheme: dark;
+  
   --ink-deep: #05060A;
   --ink: #0A0C14;
   --ink-soft: #11141E;
