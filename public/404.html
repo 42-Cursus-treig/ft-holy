@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="color-scheme" content="dark" />
+    <title>ft_holy</title>
+    <script>
+      (function () {
+        var base = "/ft-holy/";
+        var path = window.location.pathname;
+        var segment = path.indexOf(base) === 0 ? path.slice(base.length) : "";
+        segment = segment.replace(/\/+$/, "").split("/")[0];
+
+        var target = base;
+        if (/^[a-zA-Z0-9_-]{2,32}$/.test(segment)) {
+          target += "?login=" + encodeURIComponent(segment) + "&from=path";
+          if (window.location.search) {
+            target += "&" + window.location.search.slice(1);
+          }
+        }
+        window.location.replace(target + window.location.hash);
+      })();
+    </script>
+  </head>
+  <body style="background: #05060a"></body>
+</html>

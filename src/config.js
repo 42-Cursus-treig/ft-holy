@@ -1,13 +1,42 @@
 const params = new URLSearchParams(window.location.search);
 
-export const LOGIN = params.get("login") || null;
-export const SELF = params.has("me") || params.get("login") === "me";
+export const API_BASE = import.meta.env.VITE_API_BASE || "";
+export const API_ENABLED = Boolean(API_BASE);
+
+const BASE = import.meta.env.BASE_URL;
+const LOGIN_RE = /^[a-zA-Z0-9_-]{2,32}$/;
+
+const segmentLogin = (() => {
+  const path = window.location.pathname;
+  if (!path.startsWith(BASE)) return null;
+  const segment = path.slice(BASE.length).replace(/\/+$/, "").split("/")[0];
+  return LOGIN_RE.test(segment) ? segment : null;
+})();
+
+const queryLogin = (() => {
+  const value = params.get("login");
+  return value && LOGIN_RE.test(value) ? value : null;
+})();
+
+const rawLogin = segmentLogin || queryLogin;
+
+if (params.get("from") === "path" && rawLogin) {
+  const rest = new URLSearchParams(params);
+  rest.delete("login");
+  rest.delete("from");
+  const suffix = rest.toString();
+  window.history.replaceState(
+    null,
+    "",
+    `${BASE}${rawLogin}${suffix ? `?${suffix}` : ""}${window.location.hash}`
+  );
+}
+
+export const SELF = API_ENABLED && (params.has("me") || rawLogin === "me");
+export const LOGIN = API_ENABLED && rawLogin !== "me" ? rawLogin : null;
 
 export const GRAPH_PARAM = params.get("graph");
-
-export const API_BASE =
-  import.meta.env.VITE_API_BASE ||
-  (import.meta.env.DEV ? "" : "https://ft-moulinette.fr");
+export const COMPACT = params.has("compact");
 
 export const PROGRESS_PUBLIC_URL = `${import.meta.env.BASE_URL}progress.json`;
 
@@ -18,9 +47,10 @@ export const progressUrl = (login) => {
 };
 
 export const READ_ONLY = LOGIN !== null || SELF;
-export const COMPACT = params.has("compact");
 
-export const LS_PROGRESS_KEY = LOGIN ? `ft_holy:progress:${LOGIN}` : "ft_holy:progress";
+export const LS_PROGRESS_KEY = LOGIN
+  ? `ft_holy:progress:${LOGIN}`
+  : "ft_holy:progress";
 
 export const LS_POSITIONS_PREFIX = "ft_holy:positions:";
 export const positionsKey = (worldId) => `${LS_POSITIONS_PREFIX}${worldId}`;
