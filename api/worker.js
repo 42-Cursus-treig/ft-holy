@@ -5,6 +5,8 @@ const MAX_PAGES = 4;
 
 const ALLOWED_ORIGINS = [
   "https://tristan-reig.github.io",
+  "https://42-cursus-treig.github.io",
+
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "http://localhost:4173",
