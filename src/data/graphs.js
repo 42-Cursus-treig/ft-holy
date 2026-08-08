@@ -9,7 +9,6 @@ import { reportIdCollisions } from "./audit";
 export const WORLDS = {
   pool: {
     id: "pool",
-    plate: "I",
     label: "Piscine",
     caption: "26 jours",
     definitions: poolDefinitions,
@@ -22,7 +21,6 @@ export const WORLDS = {
   },
   "tronc-ancien": {
     id: "tronc-ancien",
-    plate: "II",
     label: "Ancien tronc commun",
     caption: "ancien programme",
     definitions: ancienTroncDefinitions,
@@ -41,7 +39,6 @@ export const WORLDS = {
   },
   "tronc-nouveau": {
     id: "tronc-nouveau",
-    plate: "III",
     label: "Nouveau tronc commun",
     caption: "nouveau programme",
     definitions: nouveauTroncDefinitions,
@@ -60,7 +57,6 @@ export const WORLDS = {
   },
   cursus: {
     id: "cursus",
-    plate: "IV",
     label: "Mastery",
     caption: "constellations",
     definitions: projectDefinitions,
