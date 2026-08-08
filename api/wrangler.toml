@@ -1,0 +1,7 @@
+name = "ft-holy-api"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "23ad26eb27e74857b8c54a6eebc2132f"

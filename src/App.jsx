@@ -118,6 +118,22 @@ export default function App() {
   const auth = useGitHubAuth();
   const isAdmin = auth.isAdmin && !READ_ONLY;
 
+  const worldOrder = useMemo(
+    () =>
+      progress.worlds
+        ? WORLD_ORDER.filter((id) => progress.worlds.includes(id))
+        : WORLD_ORDER,
+    [progress.worlds]
+  );
+
+  useEffect(() => {
+    if (worldOrder.length && !worldOrder.includes(worldId)) {
+      setWorldId(worldOrder[0]);
+      setSubGraph(null);
+      setSelectedProjectId(null);
+    }
+  }, [worldOrder, worldId]);
+
   const buildGraph = useCallback(
     (shouldFitView = false) => {
       const customPositions = isAdmin ? readPositions(worldId) : {};
@@ -169,7 +185,7 @@ export default function App() {
         maxZoom = 1;
       }
 
-      // ---- Modules d'un projet (piscines thématiques) ------------------
+      // ---- Modules d'un projet ------------------
       else if (subGraph) {
         const def = definitions[subGraph];
         if (def?.modules?.length) {
@@ -530,7 +546,7 @@ export default function App() {
           <Panel position="top-center">
             <GraphSwitcher
               worlds={WORLDS}
-              order={WORLD_ORDER}
+              order={worldOrder}
               currentWorld={worldId}
               subLabel={subLabel}
               onSelect={selectWorld}

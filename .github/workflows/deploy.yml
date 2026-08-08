@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'api/**'
+      - 'README.md'
   workflow_dispatch:
 
 permissions:
@@ -11,7 +14,6 @@ permissions:
   pages: write
   id-token: write
 
-# Un déploiement à la fois ; les pushes qui s'enchaînent ne se doublent pas.
 concurrency:
   group: pages
   cancel-in-progress: true
@@ -26,14 +28,12 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      # Le build n'a besoin d'aucune variable pour l'instant : le Device Flow
-      # GitHub est inopérant tant que DEVICE_PROXY est vide dans
-      # src/hooks/useGitHubAuth.js, donc VITE_GITHUB_CLIENT_ID ne sert à rien.
-      # Le jour où le proxy existe, définis la variable dans
-      # Settings → Secrets and variables → Actions → Variables, puis :
-      #   env:
-      #     VITE_GITHUB_CLIENT_ID: ${{ vars.VITE_GITHUB_CLIENT_ID }}
+
       - run: npm run build
+        env:
+          VITE_API_BASE: ${{ vars.VITE_API_BASE }}
+          VITE_GITHUB_CLIENT_ID: ${{ vars.VITE_GITHUB_CLIENT_ID }}
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

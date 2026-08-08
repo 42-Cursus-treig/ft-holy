@@ -1,5 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { progressUrl, PROGRESS_PUBLIC_URL, LS_PROGRESS_KEY, READ_ONLY, LOGIN } from "../config";
+import {
+  progressUrl,
+  PROGRESS_PUBLIC_URL,
+  LS_PROGRESS_KEY,
+  READ_ONLY,
+  LOGIN,
+} from "../config";
+import { toProgress, detectTronc, allowedWorlds } from "../data/ft42";
 
 const EMPTY = { version: 1, updatedAt: null, statuses: {}, marks: {} };
 
@@ -29,26 +36,70 @@ const mostRecent = (a, b) => {
   return ta >= tb ? a : b;
 };
 
+const isIntraPayload = (data) => data && typeof data.projects === "object";
+
+const messageFor = (code) =>
+  ({
+    login_not_found: "Ce login n'existe pas sur l'intra.",
+    invalid_login: "Login invalide.",
+    intra_rate_limited: "L'intra limite les requêtes, réessaie dans un instant.",
+    intra_token_failed: "L'API 42 est injoignable.",
+  }[code] || null);
+
 export const useProgress = () => {
   const [data, setData] = useState(EMPTY);
   const [remoteLoaded, setRemoteLoaded] = useState(false);
   const [error, setError] = useState(null);
   const [hasLocalDraft, setHasLocalDraft] = useState(false);
+
+  const [worlds, setWorlds] = useState(null);
+  const [tronc, setTronc] = useState(null);
+  const [profile, setProfile] = useState(null);
+
   const remoteRef = useRef(EMPTY);
 
   useEffect(() => {
-    const url = `${progressUrl(LOGIN)}${progressUrl(LOGIN).includes("?") ? "&" : "?"}t=${Date.now()}`;
+    const base = progressUrl(LOGIN);
+    const url = `${base}${base.includes("?") ? "&" : "?"}t=${Date.now()}`;
 
     if (READ_ONLY) {
-      fetch(url, { cache: "no-store", credentials: "include" })
-        .then((r) => {
-          if (!r.ok) throw new Error(`HTTP ${r.status}`);
-          return r.json();
+      fetch(url, { cache: "no-store" })
+        .then(async (r) => {
+          const body = await r.json().catch(() => null);
+          if (!r.ok) throw new Error(messageFor(body?.error) || `HTTP ${r.status}`);
+          return body;
         })
         .then((remote) => {
-          const normalized = remote?.statuses ? remote : EMPTY;
-          remoteRef.current = normalized;
-          setData(normalized);
+          if (isIntraPayload(remote)) {
+            const detected = detectTronc(remote);
+            const normalized = toProgress(remote);
+
+            setTronc(detected);
+            setWorlds(allowedWorlds(remote, detected));
+            setProfile({
+              login: remote.login,
+              displayName: remote.displayName,
+              avatar: remote.avatar,
+            });
+            remoteRef.current = normalized;
+            setData(normalized);
+
+            if (import.meta.env.DEV) {
+              import("../data/ft42").then(({ unmappedSlugs }) => {
+                const orphans = unmappedSlugs(remote);
+                if (orphans.length) {
+                  console.warn(
+                    `[ft_holy] ${orphans.length} slug(s) 42 sans correspondance :`,
+                    orphans.join(", ")
+                  );
+                }
+              });
+            }
+          } else {
+            const normalized = remote?.statuses ? remote : EMPTY;
+            remoteRef.current = normalized;
+            setData(normalized);
+          }
           setRemoteLoaded(true);
         })
         .catch((e) => {
@@ -91,7 +142,7 @@ export const useProgress = () => {
         version: 1,
         updatedAt: new Date().toISOString(),
         statuses: next,
-        marks: prev.marks || {}
+        marks: prev.marks || {},
       };
       writeLocal(updated);
       setHasLocalDraft(true);
@@ -106,9 +157,7 @@ export const useProgress = () => {
 
   const refreshRemote = useCallback(async () => {
     try {
-      const r = await fetch(`${PROGRESS_PUBLIC_URL}?t=${Date.now()}`, {
-        cache: "no-store",
-      });
+      const r = await fetch(`${PROGRESS_PUBLIC_URL}?t=${Date.now()}`, { cache: "no-store" });
       if (!r.ok) return null;
       const remote = await r.json();
       remoteRef.current = remote;
@@ -118,5 +167,20 @@ export const useProgress = () => {
     }
   }, []);
 
-  return { data, getStatus, getMark, setStatus, remoteLoaded, error, readOnly: READ_ONLY, hasLocalDraft, markSynced, refreshRemote, remoteRef };
+  return {
+    data,
+    getStatus,
+    getMark,
+    setStatus,
+    remoteLoaded,
+    error,
+    readOnly: READ_ONLY,
+    hasLocalDraft,
+    markSynced,
+    refreshRemote,
+    remoteRef,
+    worlds,
+    tronc,
+    profile,
+  };
 };
