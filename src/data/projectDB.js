@@ -55,7 +55,7 @@ export const projectDefinitions = {
     },
     "cloud-1": {
         parents: ["tronc-commun"],
-        position: { x: 48, y: 218 },
+        position: { x: 106, y: 203 },
         linkID: "202197",
         desc: "Introduction à la gestion et au déploiement de serveurs dans le cloud.",
     },
@@ -139,14 +139,14 @@ export const projectDefinitions = {
     },
     "dslr": {
         parents: ["piscine-data-science"],
-        position: { x: -103, y: 295 },
+        position: { x: -121, y: 192 },
         linkID: "169568",
         lang: "python",
         desc: "Initiez-vous à la Data Science en recréant le Choixpeau Magique de Poudlard, un sujet proposé par l'association 42AI."
     },
     "multilayer-perceptron": {
         parents: ["dslr"],
-        position: { x: -167, y: 195 },
+        position: { x: -125, y: 75 },
         linkID: "172235",
         desc: "Introduction aux réseaux de neurones artificiels via l'implémentation d'un multilayer perceptron, proposée par 42AI.",
     },
@@ -165,7 +165,7 @@ export const projectDefinitions = {
     },
     "ft-linear-regression": {
         parents: ["dslr"],
-        position: { x: -83, y: 161 },
+        position: { x: -42, y: 130 },
         linkID: "191256",
         desc: "Premiers pas en IA et Machine Learning : créez un programme qui prédit le prix d'une voiture via une régression linéaire entraînée par descente de gradient."
     },
@@ -234,7 +234,7 @@ export const projectDefinitions = {
     },
     "strace": {
         parents: ["lem-ipc"],
-        position: { x: 1207, y: 796 },
+        position: { x: 1212, y: 820 },
         linkID: "65612",
         desc: "Recodez strace, un outil listant tous les appels système effectués par un programme en cours d'exécution — premier pas vers un mini-GDB."
     },
@@ -284,7 +284,7 @@ export const projectDefinitions = {
     },
     "nibbler": {
         parents: ["lem-ipc"],
-        position: { x: 1231, y: 725 },
+        position: { x: 1236, y: 712 },
         linkID: "60850",
         desc: "Recodez le jeu Snake en C++ avec plusieurs interfaces graphiques différentes."
     },
@@ -321,7 +321,7 @@ export const projectDefinitions = {
     },
     "total-perspective-vortex": {
         parents: ["dslr"],
-        position: { x: -218, y: 239 },
+        position: { x: -255, y: 152 },
         linkID: "83234",
         desc: "Traitez des données en grandes dimensions avec Python et créez une interface homme-machine pilotée par les ondes cérébrales.",
     },
@@ -692,7 +692,7 @@ export const projectDefinitions = {
     },
     "piscine-data-science": {
         parents: ["tronc-commun"],
-        position: { x: -32, y: 316 },
+        position: { x: -39, y: 257 },
         lang: "python",
         linkID: "95527",
         modules: [
@@ -794,13 +794,13 @@ export const projectDefinitions = {
     },
     "learn2slither": {
         parents: ["dslr"],
-        position: { x: -139, y: 360 },
+        position: { x: -231, y: 227 },
         linkID: "202349",
         desc: "Créer une intelligence artificielle utilisant le reinforcement learning pour entraîner un serpent à survivre et maximiser ses récompenses sur une grille de jeu.",
     },
     "leaffliction": {
         parents: ["dslr"],
-        position: { x: -206, y: 306 },
+        position: { x: -206, y: 89 },
         linkID: "177685",
         desc: "Un projet novateur en vision par ordinateur qui utilise l'analyse d'images de feuilles pour détecter les maladies."
     },
@@ -838,7 +838,7 @@ export const projectDefinitions = {
     },
     "ft-malcolm": {
         parents: ["tronc-commun"],
-        position: { x: 230, y: 134 },
+        position: { x: 254, y: 128 },
         linkID: "163439",
         desc: "Introduction à la sécurité des réseaux : l'attaque de type 'Man-in-the-middle'",
     },
@@ -850,7 +850,7 @@ export const projectDefinitions = {
     },
     "bgp-at-doors-of-autonomous-systems-is-simple": {
         parents: ["tronc-commun"],
-        position: { x: 103, y: 117 },
+        position: { x: 169, y: 148 },
         linkID: "158468",
         desc: "Ce projet a pour but d'approfondir vos connaissances apprises par NetPractice. Vous allez devoir simuler plusieurs réseaux dans GNS3.",
     },
@@ -868,9 +868,54 @@ export const projectDefinitions = {
     },
     "inception-of-things": {
         parents: ["cloud-1"],
-        position: { x: 8, y: 218 },
+        position: { x: 60, y: 140 },
         linkID: "188852",
         desc: "Découvrez Kubernetes côté développeur en déployant des clusters dans Docker et en mettant en place une pipeline d'intégration continue pour vos applications.",
+    },
+    "call-me-maybe": {
+        parents: ["piscine-data-science"],
+        position: { x: -136, y: 295 },
+        lang: "python",
+        desc: "Découvrir le function calling des modèles de langage en transformant des instructions en langage naturel en appels de fonctions structurés, avec des arguments typés et un décodage contraint garantissant la génération de JSON valide et fiable.",
+    },
+    "rag-against-the-machine": {
+        parents: ["call-me-maybe"],
+        position: { x: -216, y: 295 },
+        lang: "python",
+        desc: "Concevoir un système de Retrieval-Augmented Generation (RAG) capable de répondre à des questions sur une base de code en retrouvant les informations pertinentes, grâce à un découpage intelligent des données et à des méthodes de recherche comme TF-IDF et BM25, puis en générant des réponses fondées sur les éléments récupérés.",
+    },
+    "agent-smith": {
+        parents: ["rag-against-the-machine"],
+        position: { x: -296, y: 295 },
+        lang: "python",
+        desc: "Concevoir un agent d’intelligence artificielle autonome capable de raisonner, générer, exécuter et améliorer du code de manière itérative afin de résoudre des problèmes de programmation dans un environnement sécurisé et isolé.",
+    },
+    "retroemu": {
+        parents: ["lem-ipc"],
+        position: { x: 1274, y: 779 },
+        lang: "rust",
+        desc: "Développer un émulateur de console portable 8 bits, compatible avec les modèles DMG et CGB, afin de comprendre l’émulation matérielle et le fonctionnement des cartouches ROM.",
+    },
+    "supercharge": {
+        parents: ["ftl-quantum"],
+        position: { x: -154, y: 362 },
+        lang: "react",
+        desc: "Créer une application web optimisant l’emplacement de bornes de recharge électrique et comparant une résolution classique par force brute à l’algorithme quantique QAOA.",
+    },
+    "ft-lgtm": {
+        parents: ["inception-of-things"],
+        position: { x: 19, y: 64 },
+        desc: "Créer une application web exécutant du code non fiable de façon sécurisée avec WASM/WASI, le stockant sur IPFS et supervisée via une stack LGTM sur Kubernetes.",
+    },
+    "inception-of-context": {
+        parents: ["ft-lgtm"],
+        position: { x: 50, y: 0 },
+        desc: "Créer un assistant de programmation IA entièrement local, capable d’indexer le code, répondre avec contexte et appliquer, valider ou annuler automatiquement des modifications.",
+    },
+    "inception-of-wisdom": {
+        parents: ["ft-lgtm"],
+        position: { x: -55, y: 25 },
+        desc: "Créer un agent autonome capable de surveiller un service, détecter les pannes, corriger automatiquement le code avec une IA locale, redéployer et annuler les modifications en cas d’échec.",
     },
 };
 
