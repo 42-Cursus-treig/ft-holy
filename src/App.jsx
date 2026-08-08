@@ -14,12 +14,12 @@ import { SearchBar } from "./ui/SearchBar";
 import { StatusNode } from "./graph/StatusNode";
 import { DetailPanel } from "./ui/DetailPanel";
 import { Hud } from "./ui/Hud";
+import { ProfileBadge } from "./ui/ProfileBadge";
 import { AuthModal } from "./ui/AuthModal";
 import { GraphSwitcher } from "./ui/GraphSwitcher";
 import { OrbitRing } from "./graph/OrbitRing";
 import { Starfield } from "./graph/Starfield";
 import DevToolbar from "./ui/DevToolbar";
-import { NotFound } from "./ui/NotFound";
 
 import { generateId, rushList } from "./data/projectDB";
 import {
@@ -33,7 +33,7 @@ import {
 import { useProgress } from "./hooks/useProgress";
 import { useGitHubAuth } from "./hooks/useGitHubAuth";
 import { commitProgress } from "./lib/github";
-import { positionsKey, READ_ONLY, COMPACT, LOGIN } from "./config";
+import { positionsKey, READ_ONLY, COMPACT } from "./config";
 
 const EDGE_COLORS = {
   validated: "#D4AF37",
@@ -119,6 +119,8 @@ export default function App() {
   const auth = useGitHubAuth();
   const isAdmin = auth.isAdmin && !READ_ONLY;
 
+  const worldsReady = !READ_ONLY || progress.remoteLoaded;
+
   const worldOrder = useMemo(
     () =>
       progress.worlds
@@ -186,7 +188,7 @@ export default function App() {
         maxZoom = 1;
       }
 
-      // ---- Modules d'un projet ------------------
+      // ---- Modules d'un projet (piscines thématiques) ------------------
       else if (subGraph) {
         const def = definitions[subGraph];
         if (def?.modules?.length) {
@@ -518,10 +520,6 @@ export default function App() {
       ? definitions[subGraph]?.label || subGraph
       : null;
 
-  if (progress.error && progress.remoteLoaded) {
-    return <NotFound login={LOGIN} message={progress.error} />;
-  }
-
   return (
     <div
       ref={paneRef}
@@ -547,7 +545,7 @@ export default function App() {
         proOptions={{ hideAttribution: true }}
         style={{ zIndex: 2 }}
       >
-        {!COMPACT && (
+        {!COMPACT && worldsReady && (
           <Panel position="top-center">
             <GraphSwitcher
               worlds={WORLDS}
@@ -588,6 +586,7 @@ export default function App() {
           world={world}
           isAdmin={isAdmin}
           user={auth.user}
+          profile={progress.profile}
           hasLocalDraft={progress.hasLocalDraft}
           onOpenAuth={() => setAuthOpen(true)}
           onSync={handleSync}
@@ -597,6 +596,8 @@ export default function App() {
           subGraph={subGraph}
         />
       )}
+
+      {!COMPACT && <ProfileBadge profile={progress.profile} />}
 
       {syncError && (
         <div

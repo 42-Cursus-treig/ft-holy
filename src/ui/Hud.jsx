@@ -15,6 +15,7 @@ export const Hud = ({
   onLogout,
   onOpenRush,
   subGraph,
+  profile,
 }) => {
   const stats = useMemo(() => {
     const childIds = childIdsOf(definitions);
@@ -162,7 +163,7 @@ export const Hud = ({
             </button>
           )}
         </div>
-      ) : (
+      ) : profile ? null : (
         <button
           onClick={onOpenAuth}
           className="px-3 py-2.5 smallcaps text-[10px] text-vellum-mute hover:text-gold transition-colors backdrop-blur-md"
