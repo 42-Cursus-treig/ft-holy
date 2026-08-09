@@ -49,7 +49,9 @@ const messageFor = (code) =>
   }[code] || null);
 
 export const useProgress = () => {
-  const [data, setData] = useState(EMPTY);
+  const [data, setData] = useState(() =>
+    READ_ONLY ? EMPTY : readLocal() || EMPTY
+  );
   const [remoteLoaded, setRemoteLoaded] = useState(false);
   const [error, setError] = useState(null);
   const [hasLocalDraft, setHasLocalDraft] = useState(false);
@@ -115,7 +117,6 @@ export const useProgress = () => {
     }
 
     const local = readLocal();
-    if (local) setData(local);
     fetch(url, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : EMPTY))
       .catch(() => EMPTY)
