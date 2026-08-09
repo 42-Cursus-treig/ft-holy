@@ -139,9 +139,11 @@ export default function App() {
     if (!worldOrder.length) return;
 
     if (!worldOrder.includes(worldId)) {
-      setWorldId(worldOrder[0]);
-      setSubGraph(null);
-      setSelectedProjectId(null);
+      queueMicrotask(() => {
+        setWorldId(worldOrder[0]);
+        setSubGraph(null);
+        setSelectedProjectId(null);
+      });
       return;
     }
 
@@ -149,9 +151,11 @@ export default function App() {
       landedRef.current = true;
       const last = worldOrder[worldOrder.length - 1];
       if (last !== worldId) {
-        setWorldId(last);
-        setSubGraph(null);
-        setSelectedProjectId(null);
+        queueMicrotask(() => {
+          setWorldId(last);
+          setSubGraph(null);
+          setSelectedProjectId(null);
+        });
       }
     }
   }, [worldOrder, worldId, progress.worlds]);
