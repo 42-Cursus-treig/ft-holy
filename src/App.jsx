@@ -93,7 +93,9 @@ const readPositions = (worldId) => {
 const writePositions = (worldId, positions) => {
   try {
     localStorage.setItem(positionsKey(worldId), JSON.stringify(positions));
-  } catch {}
+  } catch {
+    // localStorage may be unavailable in restricted browser contexts.
+  }
 };
 
 export default function App() {
@@ -116,26 +118,11 @@ export default function App() {
   const nodeTypes = useMemo(() => ({ statusNode: StatusNode, orbitRing: OrbitRing }), []);
 
   const progress = useProgress();
+  const { getStatus, getMark } = progress;
   const auth = useGitHubAuth();
   const isAdmin = auth.isAdmin && !READ_ONLY;
 
-  /**
-   * Édition des positions : possible en développement — le DevToolbar les
-   * relit, et il n'apparaît qu'en DEV — ou en admin authentifié. Jamais sur
-   * le relevé d'un tiers : les positions sont stockées par planche et non
-   * par login, on polluerait sa propre disposition.
-   */
   const canEditPositions = (import.meta.env.DEV || isAdmin) && !READ_ONLY;
-
-  /**
-   * En mode API 42, seules les planches auxquelles la personne a droit sont
-   * proposées : la piscine si elle a eu lieu, le tronc détecté et la Mastery
-   * si elle a été admise. On filtre WORLD_ORDER plutôt que d'utiliser
-   * progress.worlds directement, pour conserver l'ordre canonique.
-   */
-  // En mode API, les planches autorisées ne sont connues qu'une fois le
-  // relevé chargé. Afficher les quatre onglets en attendant produirait un
-  // clignotement : on ne montre la barre qu'une fois la réponse arrivée.
   const worldsReady = !READ_ONLY || progress.remoteLoaded;
 
   const worldOrder = useMemo(
@@ -146,14 +133,11 @@ export default function App() {
     [progress.worlds]
   );
 
-  // Atterrissage : une seule fois, quand les droits sont connus.
   const landedRef = useRef(false);
 
   useEffect(() => {
     if (!worldOrder.length) return;
 
-    // Un ?graph= pointant vers une planche interdite ne doit pas donner un
-    // graphe vide : on ramène la vue sur la première planche autorisée.
     if (!worldOrder.includes(worldId)) {
       setWorldId(worldOrder[0]);
       setSubGraph(null);
@@ -161,9 +145,6 @@ export default function App() {
       return;
     }
 
-    // Sur le relevé de quelqu'un, on ouvre sur la planche la plus avancée
-    // qu'il ait débloquée — la piscine n'intéresse plus personne une fois le
-    // tronc commun entamé. Un ?graph= explicite reste prioritaire.
     if (!landedRef.current && progress.worlds && !GRAPH_PARAM) {
       landedRef.current = true;
       const last = worldOrder[worldOrder.length - 1];
@@ -208,8 +189,8 @@ export default function App() {
               draggable: true,
               data: {
                 label: rush.label,
-                status: progress.getStatus(rush.id),
-                mark: progress.getMark(rush.id),
+                status: getStatus(rush.id),
+                mark: getMark(rush.id),
                 size: 70,
                 linkID: rush.linkID,
                 pdfUrl: rush.pdfUrl,
@@ -226,7 +207,7 @@ export default function App() {
         maxZoom = 1;
       }
 
-      // ---- Modules d'un projet (piscines thématiques) ------------------
+      // ---- Modules d'un projet ------------------
       else if (subGraph) {
         const def = definitions[subGraph];
         if (def?.modules?.length) {
@@ -243,8 +224,8 @@ export default function App() {
               draggable: true,
               data: {
                 label: mod.label,
-                status: progress.getStatus(mod.id),
-                mark: progress.getMark(mod.id),
+                status: getStatus(mod.id),
+                mark: getMark(mod.id),
                 size: 75,
                 linkID: mod.linkID,
                 langPdf: mod.langPdf ?? def.langPdf,
@@ -289,7 +270,7 @@ export default function App() {
 
         const radial =
           world.layout === "radial"
-            ? radialLayout(entries, world, progress.getStatus)
+            ? radialLayout(entries, world, getStatus)
             : null;
 
         freshNodes = entries.map(({ id, def, label }) => ({
@@ -300,8 +281,8 @@ export default function App() {
           draggable: !def.locked && !COMPACT,
           data: {
             label,
-            status: progress.getStatus(id),
-            mark: progress.getMark(id),
+            status: getStatus(id),
+            mark: getMark(id),
             language: def.lang,
             logoColor: def.logoColor,
             description: def.desc,
@@ -316,7 +297,7 @@ export default function App() {
               ? Object.fromEntries(
                   def.subProjects.map((sub) => {
                     const subId = sub.id || sub;
-                    return [subId, progress.getStatus(subId)];
+                    return [subId, getStatus(subId)];
                   })
                 )
               : undefined,
@@ -327,7 +308,7 @@ export default function App() {
                     const subDef = definitions[subId];
                     if (subDef?.modules) {
                       const done = subDef.modules.filter(
-                        (m) => progress.getStatus(m.id) === "validated"
+                        (m) => getStatus(m.id) === "validated"
                       ).length;
                       return [subId, `${done}/${subDef.modules.length}`];
                     }
@@ -344,7 +325,7 @@ export default function App() {
             },
             modules: def.modules,
             moduleStatuses: def.modules
-              ? Object.fromEntries(def.modules.map((m) => [m.id, progress.getStatus(m.id)]))
+              ? Object.fromEntries(def.modules.map((m) => [m.id, getStatus(m.id)]))
               : undefined,
           },
         }));
@@ -428,8 +409,9 @@ export default function App() {
       world,
       definitions,
       childIds,
-      progress,
-      isAdmin,
+      getStatus,
+      getMark,
+      canEditPositions,
       setNodes,
       setEdges,
       fitView,
@@ -444,7 +426,7 @@ export default function App() {
     const key = `${worldId}/${subGraph ?? "root"}`;
     buildGraph(lastGraphKey.current !== key);
     lastGraphKey.current = key;
-  }, [worldId, subGraph, progress.data, isAdmin]);
+  }, [worldId, subGraph, buildGraph]);
 
   useEffect(() => {
     if (COMPACT || window.parent === window) return;
@@ -503,8 +485,8 @@ export default function App() {
         id: selectedProjectId,
         data: {
           label: source.label || selectedProjectId,
-          status: progress.getStatus(selectedProjectId),
-          mark: progress.getMark(selectedProjectId),
+          status: getStatus(selectedProjectId),
+          mark: getMark(selectedProjectId),
           description: source.desc,
           language: source.lang,
           logoColor: source.logoColor,

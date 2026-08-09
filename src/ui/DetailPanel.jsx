@@ -1,4 +1,4 @@
-import { getIconUrl } from "../graph/StatusNode";
+import { getIconUrl } from "../graph/iconUrl";
 
 const STATUS_LABEL = {
   validated: "VALIDÉ",

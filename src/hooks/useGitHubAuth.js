@@ -18,12 +18,17 @@ const writeToken = (t) => {
   try {
     if (t) localStorage.setItem(LS_TOKEN_KEY, t);
     else localStorage.removeItem(LS_TOKEN_KEY);
-  } catch {}
+  } catch {
+    //
+  }
 };
 
 export const useGitHubAuth = () => {
+  const [initialToken] = useState(() => readToken());
   const [user, setUser] = useState(null);
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState(() =>
+    initialToken ? "verifying" : "idle"
+  );
   const [deviceInfo, setDeviceInfo] = useState(null);
   const [error, setError] = useState(null);
 
@@ -31,9 +36,8 @@ export const useGitHubAuth = () => {
   useEffect(() => () => { alive.current = false; }, []);
 
   useEffect(() => {
-    const t = readToken();
+    const t = initialToken;
     if (!t) return;
-    setStatus("verifying");
     verifyToken(t).then((res) => {
       if (!alive.current) return;
       if (res.ok) {
@@ -45,7 +49,7 @@ export const useGitHubAuth = () => {
         if (res.reason === "not_admin") setError(`Compte ${res.login} non autorisé`);
       }
     });
-  }, []);
+  }, [initialToken]);
 
   const loginWithPAT = useCallback(async (pat) => {
     setStatus("verifying");

@@ -25,7 +25,9 @@ const readLocal = () => {
 const writeLocal = (data) => {
   try {
     localStorage.setItem(LS_PROGRESS_KEY, JSON.stringify(data));
-  } catch {}
+  } catch {
+    //
+  }
 };
 
 const mostRecent = (a, b) => {

@@ -1,4 +1,5 @@
 import { Handle, Position } from "@xyflow/react";
+import { getIconUrl } from "./iconUrl";
 
 const C = {
   inkDeep: "#05060A",
@@ -14,38 +15,6 @@ const C = {
   rustSoft: "#6B281C",
   azure: "#4A90D9",
   azureSoft: "#2C5A8A",
-};
-
-const SIMPLE_ICONS = "https://cdn.simpleicons.org";
-
-const EXTERNAL_ICONS = {
-  java: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg",
-};
-
-const ICON_SLUGS = {
-  bash: "gnubash",
-  shell: "gnubash",
-  "c++": "cplusplus",
-  cpp: "cplusplus",
-  js: "javascript",
-  ts: "typescript",
-};
-
-const UNREADABLE_ON_INK = {
-  rust: "DEA584",
-  express: "F4F1E8",
-  github: "F4F1E8",
-  apple: "F4F1E8",
-};
-
-export const getIconUrl = (language, color) => {
-  const key = language?.toLowerCase();
-  if (!key) return null;
-  if (EXTERNAL_ICONS[key]) return EXTERNAL_ICONS[key];
-
-  const slug = ICON_SLUGS[key] || key;
-  const tint = (color || UNREADABLE_ON_INK[key] || "").replace("#", "");
-  return tint ? `${SIMPLE_ICONS}/${slug}/${tint}` : `${SIMPLE_ICONS}/${slug}`;
 };
 
 const LangBadge = ({ language, color, size, scale = 0.4, offset = 0.08 }) => {
@@ -137,7 +106,7 @@ const Halo = ({ width, height, color, opacity }) => {
   );
 };
 
-export const RECT_RATIO = { w: 1.6, h: 0.62 };
+const RECT_RATIO = { w: 1.6, h: 0.62 };
 
 export const StatusNode = ({ data, selected }) => {
   const size = data.size || 60;
