@@ -37,7 +37,6 @@ export const commonCoreProjects = {
   },
   "tc-collaborative-resume": {
     label: "Collaborative Resume",
-    // linkID: "",
     desc: "Mener un entretien croisé en binôme et rédiger le CV de l'autre : conduire l'entretien, structurer l'information recueillie et produire un document professionnel, puis échanger des retours avant la version finale.",
   },
   "tc-transcendence": {

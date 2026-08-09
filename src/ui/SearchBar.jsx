@@ -13,9 +13,10 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
       ? []
       : nodes.filter((n) => n.data.label?.toLowerCase().includes(term.toLowerCase())).slice(0, 12);
 
-  useEffect(() => {
+  const handleTermChange = (event) => {
+    setTerm(event.target.value);
     setActiveIndex(-1);
-  }, [term]);
+  };
 
   useEffect(() => {
     if (activeIndex >= 0 && listRef.current) {
@@ -76,7 +77,7 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
           type="text"
           placeholder="rechercher une étoile…"
           value={term}
-          onChange={(e) => setTerm(e.target.value)}
+          onChange={handleTermChange}
           onKeyDown={handleInputKeyDown}
           className="flex-1 bg-transparent text-vellum font-serif italic text-sm placeholder:text-vellum-mute focus:outline-none"
         />
