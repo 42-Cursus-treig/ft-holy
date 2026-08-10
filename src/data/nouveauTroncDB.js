@@ -88,8 +88,7 @@ export const nouveauTroncDefinitions = {
       {
         id: "ntc-agent-smith",
         label: "Agent-Smith",
-        desc: "Concevoir un agent d’intelligence artificielle autonome capable de raisonner, générer, exécuter et améliorer du code de manière itérative afin de résoudre des problèmes de programmation dans un environnement sécurisé et isolé.",
-        linkID: "1"
+        desc: "Concevoir un agent d’intelligence artificielle autonome capable de raisonner, générer, exécuter et améliorer du code de manière itérative afin de résoudre des problèmes de programmation dans un environnement sécurisé et isolé."
       },
       {
         id: "ntc-tree-nity",
