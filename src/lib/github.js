@@ -43,6 +43,24 @@ const fetchCurrentSha = async (token) => {
   return d.sha;
 };
 
+const COMMIT_ERRORS = [
+  [/protected branch|pull request/i, "La branche est protégée : une pull request est exigée."],
+  [/is at .* but expected/i, "Le fichier a changé entre-temps, recharge la page et réessaie."],
+  [/Bad credentials|requires authentication/i, "Token invalide ou expiré, reconnecte-toi."],
+  [/Resource not accessible/i, "Ce token n'a pas la permission « Contents: read and write »."],
+  [/Not Found/i, "Dépôt ou fichier introuvable (vérifie GITHUB_OWNER / GITHUB_REPO)."],
+];
+
+const commitError = async (r) => {
+  const body = await r.json().catch(() => null);
+  const raw = body?.message || `HTTP ${r.status}`;
+  const known = COMMIT_ERRORS.find(([re]) => re.test(raw));
+  const err = new Error(known ? known[1] : `Commit échoué (${r.status}) : ${raw}`);
+  err.status = r.status;
+  err.githubMessage = raw;
+  return err;
+};
+
 export const commitProgress = async (token, progressData) => {
   const sha = await fetchCurrentSha(token);
   const body = {
@@ -57,9 +75,6 @@ export const commitProgress = async (token, progressData) => {
     headers: { ...headers(token), "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!r.ok) {
-    const err = await r.text();
-    throw new Error(`Commit échoué (${r.status}): ${err}`);
-  }
+  if (!r.ok) throw await commitError(r);
   return r.json();
 };

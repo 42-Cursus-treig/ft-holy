@@ -55,7 +55,7 @@ export const LS_PROGRESS_KEY = LOGIN
 export const LS_POSITIONS_PREFIX = "ft_holy:positions:";
 export const positionsKey = (worldId) => `${LS_POSITIONS_PREFIX}${worldId}`;
 
-export const GITHUB_OWNER = "tristan-reig";
+export const GITHUB_OWNER = "42-Cursus-treig";
 export const GITHUB_REPO = "ft-holy";
 export const GITHUB_BRANCH = "main";
 export const PROGRESS_FILE_PATH = "public/progress.json";
