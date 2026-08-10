@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'api']),
+  globalIgnores(['dist', 'api', 'tools/console-snippet.js', 'tools/bookmarklet.*']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
