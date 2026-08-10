@@ -30,6 +30,8 @@ const STATUS_BORDER = {
 };
 
 export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
+  // Hook appelé inconditionnellement : le garde sur `node` vient après,
+  // sinon React lève une erreur d'ordre des hooks à la fermeture du panneau.
   const subjectsMap = useSubjects();
 
   if (!node) return null;
@@ -120,29 +122,32 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
             </p>
           )}
           {subjectHref && (
-            <a
-              href={subjectHref}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-mono hover:text-vellum transition-colors"
-              style={{ color: STATUS_COLOR[status] }}
-            >
-              <span className="smallcaps">
-                {subject?.kind === "intra" ? "VOIR SUR L'INTRA" : "CONSULTER LE SUJET"}
-              </span>
-              <span>↗</span>
-            </a>
-          )}
+            <div className="flex items-baseline gap-2.5">
+              <a
+                href={subjectHref}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-mono hover:text-vellum transition-colors"
+                style={{ color: STATUS_COLOR[status] }}
+              >
+                <span className="smallcaps">
+                  {subject?.kind === "intra" ? "VOIR SUR L'INTRA" : "CONSULTER LE SUJET"}
+                </span>
+                <span>↗</span>
+              </a>
 
-          {fallbackHref && (
-            <a
-              href={fallbackHref}
-              target="_blank"
-              rel="noreferrer"
-              className="block mt-1.5 text-[10px] font-mono text-vellum-mute hover:text-vellum transition-colors"
-            >
-              sujet introuvable ? voir sur l&apos;intra ↗
-            </a>
+              {fallbackHref && (
+                <a
+                  href={fallbackHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="Ouvrir la page du projet sur l'intra"
+                  className="text-[10px] font-mono text-vellum-mute hover:text-vellum transition-colors"
+                >
+                  intra ↗
+                </a>
+              )}
+            </div>
           )}
         </div>
       )}
