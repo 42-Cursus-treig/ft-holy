@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "build:bookmarklet": "node tools/build-bookmarklet.mjs"
   },
   "dependencies": {
     "@xyflow/react": "^12.11.2",

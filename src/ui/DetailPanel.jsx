@@ -1,4 +1,5 @@
 import { getIconUrl } from "../graph/iconUrl";
+import { useSubjects, resolveSubject, intraFallback } from "../data/subjects";
 
 const STATUS_LABEL = {
   validated: "VALIDÉ",
@@ -29,21 +30,16 @@ const STATUS_BORDER = {
 };
 
 export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
+  const subjectsMap = useSubjects();
+
   if (!node) return null;
 
   const status = node.data.status || "available";
   const pdfLang = node.data.langPdf || "en";
 
-  let subjectHref = null;
-  if (node.data.url) {
-    subjectHref = node.data.url;
-  } else if (node.data.pdfUrl) {
-    subjectHref = /^https?:\/\//.test(node.data.pdfUrl)
-      ? node.data.pdfUrl
-      : `${import.meta.env.BASE_URL}${node.data.pdfUrl.replace(/^\//, "")}`;
-  } else if (node.data.linkID) {
-    subjectHref = `https://cdn.intra.42.fr/pdf/pdf/${node.data.linkID}/${pdfLang}.subject.pdf`;
-  }
+  const subject = resolveSubject(node.data, node.id, subjectsMap, pdfLang);
+  const subjectHref = subject?.href || null;
+  const fallbackHref = subject?.kind === "pdf" ? intraFallback(node.id) : null;
 
   return (
     <div
@@ -131,8 +127,21 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
               className="inline-flex items-center gap-1.5 text-xs font-mono hover:text-vellum transition-colors"
               style={{ color: STATUS_COLOR[status] }}
             >
-              <span className="smallcaps">CONSULTER LE SUJET</span>
+              <span className="smallcaps">
+                {subject?.kind === "intra" ? "VOIR SUR L'INTRA" : "CONSULTER LE SUJET"}
+              </span>
               <span>↗</span>
+            </a>
+          )}
+
+          {fallbackHref && (
+            <a
+              href={fallbackHref}
+              target="_blank"
+              rel="noreferrer"
+              className="block mt-1.5 text-[10px] font-mono text-vellum-mute hover:text-vellum transition-colors"
+            >
+              sujet introuvable ? voir sur l&apos;intra ↗
             </a>
           )}
         </div>
