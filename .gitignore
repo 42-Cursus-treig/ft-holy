@@ -21,3 +21,8 @@ api/.wrangler
 !.vscode/extensions.json
 .idea
 .DS_Store
+
+# Artefacts générés par build:bookmarklet
+tools/bookmarklet.txt
+tools/bookmarklet.html
+tools/console-snippet.js

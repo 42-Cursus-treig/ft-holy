@@ -18,7 +18,7 @@ if (!slugs.length) {
 
 const source = await readFile(resolve(here, "collect-subjects.js"), "utf8");
 
-const MARKER = /^(\s*const SLUGS = )__SLUGS__;$/m;
+const MARKER = /^(\s*const SLUGS = )\/\* __SLUGS__ \*\/ \[\];$/m;
 const hits = source.match(new RegExp(MARKER.source, "gm")) || [];
 
 if (hits.length !== 1) {
@@ -30,7 +30,7 @@ if (hits.length !== 1) {
 
 const filled = source.replace(MARKER, `$1${JSON.stringify(slugs)};`);
 
-if (filled.includes("__SLUGS__;")) {
+if (filled.includes("__SLUGS__")) {
   console.error("Le marqueur subsiste après remplacement — génération annulée.");
   process.exit(1);
 }

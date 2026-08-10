@@ -1,7 +1,7 @@
 (async () => {
   "use strict";
 
-  const SLUGS = __SLUGS__;
+  const SLUGS = /* __SLUGS__ */ [];
 
   const DELAY_MS = 700;
   const RETRY_BACKOFF = [2000, 5000];
