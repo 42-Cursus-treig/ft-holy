@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-07T20:04:50.016Z",
+  "updatedAt": "2026-08-14T13:32:30.319Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -122,7 +122,34 @@
     "tc-python-00-04": "validated",
     "tc-fly-in": "validated",
     "tc-rag-against-the-machine": "validated",
-    "tc-codexion": "validated"
+    "tc-codexion": "validated",
+    "shell-01": "validated",
+    "shell-00": "validated",
+    "c-01": "validated",
+    "c-00": "validated",
+    "c-03": "validated",
+    "c-02": "validated",
+    "c-05": "validated",
+    "c-04": "validated",
+    "c-07": "validated",
+    "c-06": "validated",
+    "c-09": "validated",
+    "c-08": "validated",
+    "c-10": "validated",
+    "c-11": "validated",
+    "c-12": "validated",
+    "c-13": "validated",
+    "bsq": "validated",
+    "exam-final": "validated",
+    "exam-02": "validated",
+    "rush-02": "validated",
+    "rush-01": "validated",
+    "exam-01": "validated",
+    "exam-00": "validated",
+    "rush-00": "validated",
+    "retroemu": "validated",
+    "b": "validated",
+    "supercharge": "validated"
   },
   "marks": {}
 }
