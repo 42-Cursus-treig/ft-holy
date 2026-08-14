@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-14T13:32:30.319Z",
+  "updatedAt": "2026-08-14T21:36:32.791Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -149,7 +149,16 @@
     "rush-00": "validated",
     "retroemu": "validated",
     "b": "validated",
-    "supercharge": "validated"
+    "supercharge": "validated",
+    "cursus-rush-00": "validated",
+    "cursus-rush-05": "validated",
+    "cursus-rush-01": "validated",
+    "cursus-rush-06": "validated",
+    "cursus-rush-02": "validated",
+    "cursus-rush-07": "validated",
+    "cursus-rush-03": "validated",
+    "cursus-rush-04": "validated",
+    "cursus-rush-08": "validated"
   },
   "marks": {}
 }
