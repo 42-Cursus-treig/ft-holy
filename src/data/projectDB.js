@@ -2,478 +2,475 @@ export const generateId = (name) => name.toLowerCase().replace(/\s+/g, '-').repl
  
 export const projectDefinitions = {
     "tronc-commun": {
-        size: 800,
+        size: 1100,
         locked: true,
-        position: { x: 38, y: 178 },
-        modules: [
-            { id: "tc-libft",  label: "Libft", parents: [] }
-        ]
+        position: { x: -112, y: 28 },
     },
     "guimp": {
         parents: ["mod1"],
-        position: { x: 743, y: 1068 },
+        position: { x: 824, y: 1194 },
         desc: "L'objectif de ce projet sera pour vous de réaliser une librairie d'interface graphique. Vous devrez prouver son bon fonctionnement avec un petit logiciel d'édition d'image 2D.",
     },
     "rt": {
         parents: ["tronc-commun"],
-        position: { x: 413, y: 1110 },
+        position: { x: 414, y: 1260 },
         desc: "Suite du projet RTv1, RT consiste à développer un moteur de raytracing avancé capable de gérer des effets réalistes comme les réflexions, la transparence, les textures et les découpes d’objets. Le projet demande de concevoir une architecture flexible et performante afin de produire des scènes 3D complexes et des images de synthèse de haute qualité."
     },
     "ft-ls": {
         parents: ["malloc"],
-        position: { x: 1076, y: 770 },
+        position: { x: 1218, y: 817 },
         lang: "c",
         desc: "Pour tout connaitre du filesystem, de la façon dont sont rangés les fichiers et répertoires, codez par vous-même une des commandes les plus utilisées : ls .",
     },
     "red-tetris": {
         parents: ["piscine-web"],
-        position: { x: -273, y: 925 },
+        position: { x: -355, y: 1024 },
         desc: "L’objectif de ce projet est de développer un jeu de tetris multijoueurs en réseau à partir d’une pile logicielle exclusivement Full Stack Javascript",
     },
     "zappy": {
         parents: ["bomberman"],
-        position: { x: 704, y: 1249 },
+        position: { x: 762, y: 1387 },
         desc: "Zappy est un projet réseau avancé consistant à développer un jeu multijoueur en TCP/IP avec un serveur, un client graphique et des intelligences artificielles capables d’interagir sur une même carte en temps réel.",
     },
     "ft-ssl-des": {
         parents: ["ft-ssl-md5"],
-        position: { x: 366, y: -89 },
+        position: { x: 356, y: -239 },
         desc: "Recodez une partie du programme OpenSSL, notamment les encodages BASE64, DES-ECB et DES-CBC.",
     },
     "expert-system": {
         parents: ["n-puzzle"],
-        position: { x: -215, y: 652 },
+        position: { x: -352, y: 651 },
         lang: "rust",
         desc: "Créez un système expert en calcul des propositions, capable de raisonner sur un ensemble de règles et de faits pour en déduire de nouveaux.",
     },
     "cloud-1": {
         parents: ["tronc-commun"],
-        position: { x: 106, y: 203 },
+        position: { x: 7, y: 90 },
         desc: "Introduction à la gestion et au déploiement de serveurs dans le cloud.",
     },
     "hypertube": {
         parents: ["matcha"],
-        position: { x: -316, y: 706 },
+        position: { x: -433, y: 782 },
         desc: "Réalisez un site de streaming de vidéos téléchargées via BitTorrent en utilisant un framework MVC de votre choix.",
     },
     "in-the-shadows": {
         parents: ["piscine-unity"],
-        position: { x: 307, y: 1103 },
+        position: { x: 280, y: 1251 },
         desc: "Développez un jeu complet alliant algorithmie et créativité.",
     },
     "swifty-companion": {
         parents: ["piscine-mobile"],
-        position: { x: -74, y: 997 },
+        position: { x: -184, y: 1099 },
         lang: "flutter",
         desc: "Développer une application mobile qui récupère et affiche les informations des utilisateurs de l’API 42 avec une interface interactive.",
     },
     "kfs-1": {
         parents: ["little-penguin-1"],
-        position: { x: 1066, y: 638 },
+        position: { x: 1215, y: 658 },
         desc: "Plongez dans la programmation noyau et créez votre propre kernel from scratch.",
     },
     "malloc": {
         parents: ["tronc-commun"],
-        position: { x: 1010, y: 688 },
+        position: { x: 1156, y: 722 },
         lang: "c",
         desc: "Découvrez les rouages d'une gestion optimale de la mémoire en recodant malloc, free et realloc.",
     },
     "42sh": {
         parents: ["ft-script"],
-        position: { x: 798, y: 115 },
+        position: { x: 898, y: 4 },
         desc: "Créez un shell complet et abouti depuis zéro, en couvrant une large palette de fonctionnalités UNIX/POSIX (pipes, redirections, job control, etc.).",
     },
     "matrix": {
         parents: ["tronc-commun"],
-        position: { x: -35, y: 561 },
+        position: { x: -185, y: 565 },
         lang: "rust",
         desc: "Vous avez sans doute déjà entendu parler des vecteurs et des espaces vectoriels. Il est maintenant temps de les formaliser à l'aide de l'algèbre linéaire et d'apprendre comment fonctionnent les matrices et les transformations linéaires."
     },
     "lem-in": {
         parents: ["n-puzzle"],
-        position: { x: -170, y: 512 },
+        position: { x: -324, y: 529 },
         desc: "Déplacez une colonie de fourmis d'un point à un autre le plus rapidement possible en implémentant des algorithmes de parcours de graphe.",
     },
     "dr-quine": {
         parents: ["woody-woodpacker"],
-        position: { x: 441, y: 79 },
+        position: { x: 452, y: -71 },
         desc: "Explorez les problématiques d'auto-réplication et affrontez le théorème de récursion de Kleene dans ce petit projet d'algorithmie.",
     },
     "xv": {
         parents: ["in-the-shadows"],
-        position: { x: 282, y: 1185 },
+        position: { x: 253, y: 1332 },
         desc: "Développez une interface graphique sous Unity pour optimiser des processus industriels, en partenariat avec l'entreprise Daher.",
     },
     "matcha": {
         parents: ["piscine-web"],
-        position: { x: -214, y: 726 },
-        lang: "react",
+        position: { x: -352, y: 814 },
+        lang: ["react", "python", "mariadb", "docker"],
         desc: "Créez un site de rencontres avec un micro-framework de votre choix, en mettant les interactions entre utilisateurs au cœur du projet.",
         langPdf: "fr",
     },
     "camagru": {
         parents: ["piscine-web"],
-        position: { x: -164, y: 947 },
+        position: { x: -287, y: 1033 },
         lang: "php",
         desc: "Réalisez en PHP pur (sans framework) un mini site Instagram-like permettant aux utilisateurs de créer et partager des photo-montages.",
     },
     "dslr": {
         parents: ["piscine-data-science"],
-        position: { x: -121, y: 192 },
+        position: { x: -245, y: 108 },
         lang: "python",
         desc: "Initiez-vous à la Data Science en recréant le Choixpeau Magique de Poudlard, un sujet proposé par l'association 42AI."
     },
     "multilayer-perceptron": {
         parents: ["dslr"],
-        position: { x: -125, y: 75 },
+        position: { x: -237, y: -25 },
         desc: "Introduction aux réseaux de neurones artificiels via l'implémentation d'un multilayer perceptron, proposée par 42AI.",
     },
     "doom-nukem": {
         parents: ["scop"],
-        position: { x: 478, y: 1060 },
+        position: { x: 498, y: 1209 },
         lang: "c",
         desc: "Suite avancée du Wolf3D mêlant Doom et Duke Nukem 3D : poussez le Raycasting à l'extrême tout en concevant un vrai jeu jouable.",
     },
     "corewar": {
         parents: ["abstract-vm"],
-        position: { x: 1115, y: 898 },
+        position: { x: 1249, y: 965 },
         desc: "Créez une arène virtuelle où s'affrontent des programmes en langage assembleur, en concevant votre propre VM et compilateur bytecode."
     },
     "ft-linear-regression": {
         parents: ["dslr"],
-        position: { x: -42, y: 130 },
+        position: { x: -152, y: 28 },
         desc: "Premiers pas en IA et Machine Learning : créez un programme qui prédit le prix d'une voiture via une régression linéaire entraînée par descente de gradient."
     },
     "music-room": {
         parents: ["piscine-web"],
-        position: { x: -324, y: 862 },
+        position: { x: -461, y: 947 },
         lang: "go",
         desc: "En partenariat avec Deezer, créez en groupe une application mobile de playlist collaborative intégrant les SDK et API de Deezer."
     },
     "libasm": {
         lang: "assemblyscript",
         parents: ["tronc-commun"],
-        position: { x: 874, y: 440 },
+        position: { x: 1020, y: 406 },
         desc: "Codez une mini-libc en assembleur en recodant des fonctions basiques de la libc, indispensable pour aborder les projets de sécurité.",
     },
     "scop": {
         parents: ["tronc-commun"],
-        position: { x: 554, y: 1085 },
+        position: { x: 593, y: 1230 },
         lang: "opengl",
         desc: "Premiers pas dans la 3D sur GPU avec OpenGL à travers un projet ludique couvrant les concepts principaux.",
     },
     "war": {
         parents: ["pestilence"],
-        position: { x: 582, y: -107 },
+        position: { x: 621, y: -252 },
         desc: "Troisième projet virus : reprenez Pestilence et faites en sorte que votre binaire modifie sa propre signature au runtime."
     },
     "snow-crash": {
         parents: ["piscine-cybersecurite"],
-        position: { x: 872, y: 211 },
+        position: { x: 993, y: 123 },
         desc: "Introduction à la sécurité informatique orientée développeur : trouvez des failles dans des programmes via reverse engineering et manipulation de plusieurs langages."
     },
     "taskmaster": {
         parents: ["tronc-commun"],
-        position: { x: 892, y: 728 },
+        position: { x: 1033, y: 780 },
         desc: "Réalisez un programme de job control similaire à supervisor, dans le langage de votre choix."
     },
     "rubik": {
         parents: ["n-puzzle"],
-        position: { x: -143, y: 685 },
+        position: { x: -265, y: 687 },
         desc: "Réalisez un résolveur de Rubik's Cube dans le langage de votre choix — un projet d'algorithmie non trivial.",
     },
     "shaderpixel": {
         parents: ["humangl"],
-        position: { x: 555, y: 1305 },
+        position: { x: 584, y: 1452 },
         desc: "Travaillez directement dans l'espace de la carte graphique en programmant des shaders pour créer des objets et effets visuels avancés."
     },
     "famine": {
         parents: ["woody-woodpacker"],
-        position: { x: 505, y: -9 },
+        position: { x: 531, y: -157 },
         desc: "Créez votre premier virus en C à but pédagogique, en manipulant des fichiers binaires pour infecter d'autres exécutables."
     },
     "ft-script": {
         parents: ["tronc-commun"],
-        position: { x: 737, y: 170 },
+        position: { x: 835, y: 57 },
         desc: "Recodez la commande script pour comprendre les interactions entre input utilisateur, TTY et pseudo-terminaux."
     },
     "strace": {
         parents: ["lem-ipc"],
-        position: { x: 1212, y: 820 },
+        position: { x: 1354, y: 868 },
         desc: "Recodez strace, un outil listant tous les appels système effectués par un programme en cours d'exécution — premier pas vers un mini-GDB."
     },
     "swifty-proteins": {
         parents: ["swifty-companion"],
-        position: { x: -135, y: 1063 },
+        position: { x: -244, y: 1166 },
         lang: "flutter",
         desc: "Initiez-vous à SceneKit en créant une application iOS qui modélise des ligands en 3D, avec Touch ID, gestures et recherche."
     },
     "woody-woodpacker": {
         parents: ["tronc-commun"],
-        position: { x: 503, y: 78 },
+        position: { x: 533, y: -69 },
         desc: "Modifiez les headers d'un fichier ELF64 pour y injecter du code et obfusquer une partie d'un binaire non strippé."
     },
     "ft-traceroute": {
         parents: ["ft-ping"],
-        position: { x: 266, y: 62 },
+        position: { x: 224, y: -82 },
         desc: "Recodez la commande traceroute pour suivre le chemin qu'un paquet IP emprunte entre deux machines sur un réseau TCP/IP."
     },
     "ft-ping": {
         parents: ["tronc-commun"],
-        position: { x: 364, y: 64 },
+        position: { x: 350, y: -85 },
         lang: "c",
         desc: "Recodez la commande ping pour comprendre la communication TCP/IP entre deux machines dans un réseau."
     },
     "ft-nmap": {
         parents: ["ft-traceroute"],
-        position: { x: 266, y: -143 },
+        position: { x: 236, y: -290 },
         desc: "Recodez nmap pour approfondir vos connaissances en réseau TCP/IP et explorer l'usage avancé des threads."
     },
     "kfs-4": {
         parents: ["kfs-3"],
-        position: { x: 1198, y: 550 },
+        position: { x: 1348, y: 550 },
         desc: "Créez une Interrupt Description Table et gérez les interruptions au sein de votre kernel."
     },
     "bomberman": {
         parents: ["humangl"],
-        position: { x: 643, y: 1206 },
+        position: { x: 693, y: 1347 },
         desc: "Recodez Bomberman en C++ avec OpenGL pour réaliser votre premier gros projet C++ de facture professionnelle."
     },
     "nibbler": {
         parents: ["lem-ipc"],
-        position: { x: 1236, y: 712 },
+        position: { x: 1383, y: 741 },
         desc: "Recodez le jeu Snake en C++ avec plusieurs interfaces graphiques différentes."
     },
     "abstract-vm": {
         parents: ["libftpp"],
-        position: { x: 1045, y: 854 },
+        position: { x: 1180, y: 919 },
         desc: "Réalisez une machine virtuelle capable d'exécuter du pseudo-ASM en utilisant une stack pour effectuer des opérations arithmétiques."
     },
     "abstract-data": {
         parents: ["libftpp"],
-        position: { x: 1037, y: 930 },
+        position: { x: 1165, y: 1008 },
         desc: "Réimplémentez les différents containers du C++ pour bien comprendre leurs usages et spécificités."
     },
     "avaj-launcher": {
         parents: ["tronc-commun"],
-        position: { x: 840, y: 864 },
+        position: { x: 961, y: 953 },
         lang: "java",
         desc: "Premier projet Java du cursus : implémentez un programme simple à partir d'un diagramme de classes UML fourni.",
     },
     "42run": {
         parents: ["scop"],
-        position: { x: 497, y: 1159 },
+        position: { x: 519, y: 1307 },
         desc: "Recréez Temple Run en C++ avec OpenGL dans ce projet intermédiaire de programmation graphique.",
     },
     "krpsim": {
         parents: ["n-puzzle"],
-        position: { x: -257, y: 585 },
+        position: { x: -394, y: 590 },
         desc: "Optimisez le rendement d'un graphe de processus avec contraintes de ressources en explorant et choisissant les algorithmes les plus adaptés.",
     },
     "total-perspective-vortex": {
         parents: ["dslr"],
-        position: { x: -255, y: 152 },
+        position: { x: -384, y: 75 },
         desc: "Traitez des données en grandes dimensions avec Python et créez une interface homme-machine pilotée par les ondes cérébrales.",
     },
     "kfs-5": {
         parents: ["kfs-4"],
-        position: { x: 1243, y: 647 },
+        position: { x: 1392, y: 665 },
         desc: "Implémentez la gestion des processus dans votre kernel, notamment l'interprétation de la fork bomb :(){ :|:& }."
     },
     "userspace-digressions": {
         parents: ["little-penguin-1"],
-        position: { x: 958, y: 494 },
+        position: { x: 1107, y: 479 },
         desc: "Créez votre propre binaire init en espace utilisateur.",
     },
     "computorv2": {
         parents: ["computorv1"],
-        position: { x: -187, y: 438 },
+        position: { x: -335, y: 411 },
         desc: "Étendez votre résolveur d'équations en une calculatrice complète gérant les matrices, nombres imaginaires et résolution de fonctions."
     },
     "ft-select": {
         parents: ["ft-ls"],
-        position: { x: 1143, y: 824 },
+        position: { x: 1283, y: 877 },
         lang: "c",
         desc: "Initiez-vous à la manipulation du terminal via les termcaps en créant une interface utilisateur pour un programme lancé en terminal."
     },
     "computorv1": {
         parents: ["tronc-commun"],
-        position: { x: -110, y: 439 },
+        position: { x: -257, y: 408 },
         lang: "go",
         desc: "Recodez un résolveur d'équations mathématiques élémentaires dans le langage de votre choix, socle pour de nombreux autres projets."
     },
     "ft-ssl-rsa": {
         parents: ["ft-ssl-des"],
-        position: { x: 366, y: -142 },
+        position: { x: 357, y: -292 },
         desc: "Codez votre propre générateur de nombres premiers aléatoires pour générer des clés RSA privées.",
     },
     "ft-vox": {
         parents: ["scop"],
-        position: { x: 641, y: 1098 },
+        position: { x: 700, y: 1236 },
         lang: "c++",
         desc: "Créez un moteur de voxel inspiré de Minecraft avec génération de monde aléatoire.",
     },
     "override": {
         parents: ["rainfall"],
-        position: { x: 1048, y: 137 },
+        position: { x: 1174, y: 56 },
         desc: "Recherchez des failles dans des binaires protégés et reconstruisez-les — un challenge de sécurité plus corsé que Rainfall.",
     },
     "boot2root": {
         parents: ["snow-crash"],
-        position: { x: 890, y: 126 },
+        position: { x: 1003, y: 27 },
         desc: "Challenge sécurité en groupe : trouvez tous les moyens possibles de passer root sur l'ISO fournie.",
     },
     "death": {
         parents: ["war"],
-        position: { x: 499, y: -106 },
+        position: { x: 520, y: -255 },
         desc: "Projet virus final : créez un véritable code métamorphique en combinant les acquis de Famine, Pestilence et War.",
     },
     "pestilence": {
         parents: ["famine"],
-        position: { x: 581, y: -10 },
+        position: { x: 625, y: -153 },
         desc: "Second projet virus : reprenez Famine et ajoutez une méthode d'obfuscation de votre code.",
     },
     "kfs-9": {
         parents: ["kfs-8"],
-        position: { x: 1411, y: 640 },
+        position: { x: 1560, y: 654 },
         desc: "Créez un parser et loader ELF pour votre kernel.",
     },
     "kfs-x": {
         parents: ["kfs-9"],
-        position: { x: 1455, y: 560 },
+        position: { x: 1605, y: 562 },
         desc: "Projet kernel final : créez un environnement Linux complet, éventuellement avec votre propre nom de kernel.",
     },
     "kfs-8": {
         parents: ["kfs-7"],
-        position: { x: 1371, y: 532 },
+        position: { x: 1521, y: 530 },
         desc: "Construisez une interface de modules pour votre kernel.",
     },
     "kfs-7": {
         parents: ["kfs-6"],
-        position: { x: 1325, y: 643 },
+        position: { x: 1474, y: 658 },
         desc: "Ajoutez vos propres syscalls, comptes utilisateurs, sockets et une hiérarchie Unix à votre kernel.",
     },
     "kfs-6": {
         parents: ["kfs-5"],
-        position: { x: 1292, y: 537 },
+        position: { x: 1442, y: 535 },
         desc: "Continuez le développement de votre kernel en y intégrant votre propre système de fichiers.",
     },
     "fix-me": {
         parents: ["swingy"],
-        position: { x: 983, y: 974 },
+        position: { x: 1104, y: 1063 },
         desc: "Projet Java final : simulez des échanges boursiers avec des algorithmes de trading, du networking et des sockets.",
     },
     "swingy": {
         parents: ["avaj-launcher"],
-        position: { x: 910, y: 922 },
+        position: { x: 1030, y: 1012 },
         lang: "java",
         desc: "Créez un jeu RPG en Java avec le framework SWING pour apprendre le développement d'applications GUI.",
     },
     "gomoku": {
         parents: ["n-puzzle"],
-        position: { x: -231, y: 527 },
+        position: { x: -381, y: 522 },
         desc: "Créez un jeu de Gomoku avec une IA capable de battre un humain, en implémentant un algorithme min-max et des heuristiques adaptées."
     },
     "n-puzzle": {
         parents: ["tronc-commun"],
-        position: { x: -127, y: 604 },
+        position: { x: -276, y: 620 },
         lang: "c++",
         desc: "Réalisez un programme capable de résoudre des Taquins de tailles variées de façon aussi optimale que possible.",
     },
     "mod1": {
         parents: ["tronc-commun"],
-        position: { x: 688, y: 986 },
+        position: { x: 769, y: 1112 },
         lang: "c++",
         desc: "Simulez et représentez en 3D un écoulement d'eau sur une surface — vague, tsunami ou simple pluie."
     },
     "kfs-3": {
         parents: ["kfs-2"],
-        position: { x: 1162, y: 646 },
+        position: { x: 1311, y: 665 },
         desc: "Troisième projet kernel : implémentez la gestion de la mémoire dans votre kernel."
     },
     "filesystem": {
         parents: ["drivers-and-interrupts","process-and-memory"],
-        position: { x: 1077, y: 436 },
+        position: { x: 1225, y: 411 },
         desc: "Créez votre propre système de fichiers pour votre kernel Linux."
     },
     "drivers-and-interrupts": {
         parents: ["little-penguin-1"],
-        position: { x: 1025, y: 488 },
+        position: { x: 1174, y: 473 },
         desc: "Apprenez à connecter un driver (clavier) à votre kernel Linux."
     },
     "process-and-memory": {
         parents: ["little-penguin-1"],
-        position: { x: 1116, y: 496 },
+        position: { x: 1266, y: 485 },
         desc: "Introduction aux syscalls et à la gestion de la mémoire au sein du kernel Linux."
     },
     "little-penguin-1": {
         parents: ["ft-linux"],
-        position: { x: 1029, y: 570 },
+        position: { x: 1179, y: 575 },
         desc: "Série de challenges inspirés du challenge Eudyptula pour aborder de nombreux points du développement kernel."
     },
     "rainfall": {
         parents: ["snow-crash"],
-        position: { x: 967, y: 198 },
+        position: { x: 1094, y: 118 },
         desc: "ISO de challenge de reverse engineering plus complexe que Snow Crash : reconstruisez et analysez des binaires pour en trouver les failles."
     },
     "matt-daemon": {
         parents: ["taskmaster"],
-        position: { x: 986, y: 769 },
+        position: { x: 1126, y: 823 },
         desc: "Créez un daemon-serveur Unix qui écoute sur un port donné et interprète une liste de commandes."
     },
     "ft-linux": {
         parents: ["tronc-commun"],
-        position: { x: 910, y: 573 },
+        position: { x: 1060, y: 580 },
         desc: "Construisez votre propre distribution Linux (LFS) — premier projet de la branche Kernel.",
     },
     "particle-system": {
         parents: ["humangl"],
-        position: { x: 469, y: 1285 },
+        position: { x: 481, y: 1434 },
         desc: "Introduction au GPU via OpenGL et OpenCL : créez un système de particules performant grâce à la parallélisation massive des calculs.",
     },
     "ft-turing": {
         parents: ["piscine-ocaml"],
-        position: { x: 864, y: 995 },
+        position: { x: 971, y: 1100 },
         lang: "ocaml",
         desc: "Découvrez le modèle de Turing, fondement du paradigme impératif, en l'implémentant en OCaml.",
     },
     "humangl": {
         parents: ["scop"],
-        position: { x: 561, y: 1198 },
+        position: { x: 595, y: 1344 },
         lang: "c++",
         desc: "Introduction à la modélisation hiérarchique avec OpenGL : liez et animez les parties d'un humanoïde via des matrices."
     },
     "ft-hangouts": {
         parents: ["piscine-mobile"],
-        position: { x: 70, y: 1041 },
+        position: { x: -15, y: 1165 },
         lang: "kotlin",
         desc: "Créez une application Android de gestion de contacts en Java pour comprendre le cycle de vie d'une app et l'utilisation du SDK Android."
     },
     "lem-ipc": {
         parents: ["malloc"],
-        position: { x: 1138, y: 735 },
+        position: { x: 1283, y: 772 },
         desc: "Approfondissez la communication inter-processus en explorant les mécanismes IPC, complémentaires à TCP/IP."
     },
     "kfs-2": {
         parents: ["kfs-1"],
-        position: { x: 1124, y: 560 },
+        position: { x: 1274, y: 563 },
         desc: "Plongez dans la programmation noyau et créez votre propre kernel from scratch."
     },
     "h42n42": {
         parents: ["ft-turing"],
-        position: { x: 955, y: 1039 },
+        position: { x: 1067, y: 1139 },
         lang: "ocaml",
         desc: "Introduction au framework Ocsigen pour créer des applications web riches en OCaml, illustrée par un simulateur de bestioles fuyant un virus.",
     },
     "open-project": {
         parents: ["tronc-commun"],
-        position: { x: 211, y: 998 },
+        position: { x: 151, y: 1135 },
         lang: "react",
         desc: "Gérez un projet long terme de 6 mois en groupe avec d'autres étudiants de 42, sur un sujet libre comportant des éléments informatiques.",
     },
     "piscine-web": {
         parents: ["tronc-commun"],
-        position: { x: -98, y: 780 },
+        position: { x: -233, y: 859 },
         subProjects: [
             { id: "piscine-django", label: "Piscine Django" },
             { id: "piscine-ror", label: "Piscine RoR" },
@@ -527,7 +524,7 @@ export const projectDefinitions = {
     },
     "piscine-mobile": {
         parents: ["tronc-commun"],
-        position: { x: 14, y: 952 },
+        position: { x: -91, y: 1059 },
         lang: "dart",
         modules: [
             { id: "mobile-0", label: "Mobile Basics", parents: [] },
@@ -540,7 +537,7 @@ export const projectDefinitions = {
     },
     "piscine-ocaml": {
         parents: ["tronc-commun"],
-        position: { x: 730, y: 928 },
+        position: { x: 827, y: 1042 },
         lang: "ocaml",
         modules : [
             { id: "ocaml-0", label: "Basic syntax and semantics", parents: [] },
@@ -556,7 +553,7 @@ export const projectDefinitions = {
     },
     "piscine-unity": {
         parents: ["tronc-commun"],
-        position: { x: 323, y: 1018 },
+        position: { x: 296, y: 1166 },
         lang: "unity",
         modules : [
             { id: "unity-0", label: "The basics unity tools", parents: [] },
@@ -570,7 +567,7 @@ export const projectDefinitions = {
     },
     "piscine-cybersecurite": {
         parents: ["tronc-commun"],
-        position: { x: 770, y: 274 },
+        position: { x: 890, y: 183 },
         lang: "nextdns",
         modules: [
             { id: "cyber-0", label: "Arachnida", parents: [] },
@@ -584,7 +581,7 @@ export const projectDefinitions = {
     },
     "piscine-objet": {
         parents: ["tronc-commun"],
-        position: { x: 835, y: 796 },
+        position: { x: 965, y: 871 },
         lang: "c++",
         modules: [
             { id: "object-0", label: "Encapsulation", parents: [] },
@@ -597,7 +594,7 @@ export const projectDefinitions = {
     },
     "piscine-data-science": {
         parents: ["tronc-commun"],
-        position: { x: -39, y: 257 },
+        position: { x: -165, y: 175 },
         lang: "python",
         modules: [
             { id: "data-0", label: "Data Engineer", parents: [] },
@@ -610,190 +607,200 @@ export const projectDefinitions = {
     "ft-ality": {
         lang: "ocaml",
         parents: ["ft-turing"],
-        position: { x: 885, y: 1100 },
+        position: { x: 983, y: 1213 },
         desc: "Ce projet va vous initier aux problématiques liées à l'analyse syntaxique automatique, en étudiant les automates finis avec un jeu de combat."
     },
     "ft-minecraft": {
         parents: ["ft-vox"],
-        position: { x: 733, y: 1187 },
+        position: { x: 801, y: 1321 },
         lang: "java",
         desc: "ft_minecraft est la suite de ft_vox, avec une approche plus avancée en matière de génération procédurale, de techniques de rendu et de mise en réseau.",
     },
     "libftpp": {
         parents: ["piscine-objet"],
-        position: { x: 957, y: 841 },
+        position: { x: 1089, y: 912 },
         lang: "c++",
         desc: "Ce sujet a pour objectif de vous initier aux concepts avancés du C++ à travers le développement d'outils et de systèmes complexes.",
     },
     "peace-break": {
         parents: ["swifty-proteins"],
-        position: { x: -212, y: 1130 },
+        position: { x: -321, y: 1233 },
         desc: "Inspiré de Brick Breaker, ce projet est une introduction au développement mobile : concevez une interface, gérez des données utilisateur et implémentez les mécaniques de jeu.",
     },
     "ft-lex": {
         parents: ["tronc-commun"],
-        position: { x: 852, y: 359 },
+        position: { x: 990, y: 300 },
         lang: "C",
         desc: "Un projet sur l'analyse lexicale et les automates finis. Dans le cadre de ce projet, vous devrez mettre en œuvre un puissant moteur d'expressions régulières"
     },
     "ft-yacc": {
         parents: ["ft-lex"],
-        position: { x: 967, y: 314 },
+        position: { x: 1105, y: 256 },
         desc: "Implémentez l'utilitaire POSIX yacc, un générateur de parsers, en explorant la théorie des automates, les langages formels et la hiérarchie de Chomsky.",
     },
     "cc1": {
         parents: ["ft-yacc","b"],
-        position: { x: 1065, y: 334 },
+        position: { x: 1208, y: 288 },
         desc: "Ce projet consiste à créer un compilateur C",
     },
     "b": {
         parents: ["libasm"],
-        position: { x: 963, y: 397 },
+        position: { x: 1108, y: 358 },
         desc: "La lettre qui précéde C",
     },
     "darkly": {
         parents: ["piscine-web"],
-        position: { x: -320, y: 785 },
+        position: { x: -476, y: 854 },
         desc: "Disséquez un site web vulnérable pour vous initier à la sécurité web et prendre conscience des failles liées aux erreurs de développement et de conception.",
     },
     "ftl-quantum": {
         parents: ["tronc-commun"],
-        position: { x: -56, y: 396 },
+        position: { x: -199, y: 349 },
         lang: "python",
         desc: "Ce projet est une introduction à la programmation quantique. Il vous mettra au défi de créer différents programmes quantiques et de les exécuter sur un véritable ordinateur quantique.",
     },
     "unleashthebox": {
         parents: ["boot2root"],
-        position: { x: 962, y: 79 },
+        position: { x: 1076, y: -18 },
         desc: "Un projet immersif consacré à la cybersécurité, dans le cadre duquel les participants apprennent à exploiter des systèmes et acquièrent les compétences indispensables pour évoluer dans le monde en constante évolution de la sécurité de l'information.",
     },
     "freddie-mercury": {
         parents: ["xv"],
-        position: { x: 256, y: 1266 },
+        position: { x: 225, y: 1413 },
         desc: "Créez un escape game complet en VR avec au moins deux niveaux, en maîtrisant les contrôles VR, les interactions avec les objets et le game design.",
     },
     "ft-newton": {
         parents: ["humangl"],
-        position: { x: 670, y: 1317 },
+        position: { x: 718, y: 1459 },
         desc: "Codez un moteur physique basique from scratch, illustré par un jeu inspiré d'Angry Birds, avec détection de collisions, corps rigides et gravité.",
     },
     "very-real-engine": {
         parents: ["ft-minecraft","ft-newton"],
-        position: { x: 767, y: 1315 },
+        position: { x: 831, y: 1451 },
         desc: "Créer et mettre en œuvre une bibliothèque contenant tous les outils nécessaires, notamment un moteur graphique et un moteur physique."
     },
     "learn2slither": {
         parents: ["dslr"],
-        position: { x: -231, y: 227 },
+        position: { x: -365, y: 160 },
         desc: "Créer une intelligence artificielle utilisant le reinforcement learning pour entraîner un serpent à survivre et maximiser ses récompenses sur une grille de jeu.",
     },
     "leaffliction": {
         parents: ["dslr"],
-        position: { x: -206, y: 89 },
+        position: { x: -326, y: -1 },
         desc: "Un projet novateur en vision par ordinateur qui utilise l'analyse d'images de feuilles pour détecter les maladies."
     },
     "tokenizer": {
         parents: ["tronc-commun"],
-        position: { x: -10, y: 674 },
+        position: { x: -154, y: 717 },
         desc: "Créez et déployez votre propre token fongible sur une blockchain publique",
     },
     "tokenizeart": {
         parents: ["tokenizer"],
-        position: { x: -74, y: 706 },
+        position: { x: -229, y: 742 },
         desc: "Créez et mintez votre propre NFT sur une blockchain publique, en gérant son image via IPFS, son smart contract et ses métadonnées.",
     },
     "ft-kalman": {
         parents: ["matrix"],
-        position: { x: -106, y: 542 },
+        position: { x: -249, y: 519 },
         desc: "Implémentez un filtre de Kalman pour suivre les coordonnées d'un véhicule équipé de capteurs défectueux — une introduction au filtrage de signaux et aux opérations matricielles.",
         langPdf: "fr",
     },
     "ready-set-boole": {
         parents: ["tronc-commun"],
-        position: { x: -40, y: 495 },
+        position: { x: -189, y: 477 },
         lang: "rust",
         desc: "Découvrez les bases des mathématiques appliquées à l'informatique grâce à l'algèbre booléenne et à la théorie des ensembles !",
     },
     "tinky-winkey": {
         parents: ["tronc-commun"],
-        position: { x: 636, y: 140 },
+        position: { x: 709, y: 9 },
         desc: "Introduction au système d'exploitation Windows à travers la création d'un service exécutant un keylogger."
     },
     "ft-malcolm": {
         parents: ["tronc-commun"],
-        position: { x: 254, y: 128 },
+        position: { x: 202, y: -13 },
         desc: "Introduction à la sécurité des réseaux : l'attaque de type 'Man-in-the-middle'",
     },
     "ft-ssl-md5": {
         parents: ["ft-ping"],
-        position: { x: 366, y: -33 },
+        position: { x: 355, y: -183 },
         desc: "Vous allez réécrire une partie du programme OpenSSL, plus précisément l'algorithme de hachage MD5.",
     },
     "bgp-at-doors-of-autonomous-systems-is-simple": {
         parents: ["tronc-commun"],
-        position: { x: 169, y: 148 },
+        position: { x: 92, y: 19 },
         desc: "Ce projet a pour but d'approfondir vos connaissances apprises par NetPractice. Vous allez devoir simuler plusieurs réseaux dans GNS3.",
     },
     "ft-shield": {
         parents: ["woody-woodpacker"],
-        position: { x: 588, y: 81 },
+        position: { x: 642, y: -59 },
         desc: "Utilisez vos skills sur la création de daemon pour créer votre premier trojan basique.",
     },
     "nm": {
         parents: ["malloc"],
-        position: { x: 1105, y: 682 },
-        desc: "Réécrivez les outils nm et otool pour décortiquer le format des exécutables et comprendre comment le kernel lance les binaires — une ouverture essentielle sur la culture UNIX système.",
+        position: { x: 1252, y: 710 },
+        desc: "Réécrivez les outils nm et otool pour décortiquer le format des exécutables et comprendre comment le kernel lance les binaires - une ouverture essentielle sur la culture UNIX système.",
     },
     "inception-of-things": {
         parents: ["cloud-1"],
-        position: { x: 60, y: 140 },
+        position: { x: -37, y: 26 },
         desc: "Découvrez Kubernetes côté développeur en déployant des clusters dans Docker et en mettant en place une pipeline d'intégration continue pour vos applications.",
     },
     "call-me-maybe": {
         parents: ["piscine-data-science"],
-        position: { x: -136, y: 295 },
+        position: { x: -272, y: 232 },
         lang: "python",
         desc: "Découvrir le function calling des modèles de langage en transformant des instructions en langage naturel en appels de fonctions structurés, avec des arguments typés et un décodage contraint garantissant la génération de JSON valide et fiable.",
     },
     "rag-against-the-machine": {
         parents: ["call-me-maybe"],
-        position: { x: -216, y: 295 },
+        position: { x: -355, y: 239 },
         lang: "python",
         desc: "Concevoir un système de Retrieval-Augmented Generation (RAG) capable de répondre à des questions sur une base de code en retrouvant les informations pertinentes, grâce à un découpage intelligent des données et à des méthodes de recherche comme TF-IDF et BM25, puis en générant des réponses fondées sur les éléments récupérés.",
     },
     "agent-smith": {
         parents: ["rag-against-the-machine"],
-        position: { x: -296, y: 295 },
+        position: { x: -437, y: 244 },
         lang: "python",
         desc: "Concevoir un agent d’intelligence artificielle autonome capable de raisonner, générer, exécuter et améliorer du code de manière itérative afin de résoudre des problèmes de programmation dans un environnement sécurisé et isolé.",
     },
     "retroemu": {
         parents: ["lem-ipc"],
-        position: { x: 1274, y: 779 },
+        position: { x: 1419, y: 818 },
         lang: "rust",
         desc: "Développer un émulateur de console portable 8 bits, compatible avec les modèles DMG et CGB, afin de comprendre l’émulation matérielle et le fonctionnement des cartouches ROM.",
     },
     "supercharge": {
         parents: ["ftl-quantum"],
-        position: { x: -154, y: 362 },
+        position: { x: -296, y: 315 },
         lang: "react",
         desc: "Créer une application web optimisant l’emplacement de bornes de recharge électrique et comparant une résolution classique par force brute à l’algorithme quantique QAOA.",
     },
     "ft-lgtm": {
         parents: ["inception-of-things"],
-        position: { x: 19, y: 64 },
+        position: { x: -75, y: -53 },
         desc: "Créer une application web exécutant du code non fiable de façon sécurisée avec WASM/WASI, le stockant sur IPFS et supervisée via une stack LGTM sur Kubernetes.",
     },
     "inception-of-context": {
         parents: ["ft-lgtm"],
-        position: { x: 50, y: 0 },
+        position: { x: -32, y: -126 },
         desc: "Créer un assistant de programmation IA entièrement local, capable d’indexer le code, répondre avec contexte et appliquer, valider ou annuler automatiquement des modifications.",
     },
     "inception-of-wisdom": {
         parents: ["ft-lgtm"],
-        position: { x: -55, y: 25 },
+        position: { x: -154, y: -87 },
         desc: "Créer un agent autonome capable de surveiller un service, détecter les pannes, corriger automatiquement le code avec une IA locale, redéployer et annuler les modifications en cas d’échec.",
     },
+    "datomic": {
+        position: { x: -152, y: 780 },
+        parents: ["tronc-commun"],
+        desc: "Découvrez plusieurs types de bases de données et apprenez à choisir et combiner la technologie adaptée à chaque problème."
+    },
+    "tokenzwap": {
+        position: { x: -313, y: 745 },
+        parents: ["tokenizeart"],
+        desc: "Découvrez les bases de la DeFi en créant un AMM permettant d’échanger des tokens et d’acheter ou vendre des NFT."
+    }
 };
 
 export const rushList = [

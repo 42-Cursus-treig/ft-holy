@@ -17,6 +17,7 @@ import { Hud } from "./ui/Hud";
 import { ProfileBadge } from "./ui/ProfileBadge";
 import { AuthModal } from "./ui/AuthModal";
 import { GraphSwitcher } from "./ui/GraphSwitcher";
+import { NotFound } from "./ui/NotFound";
 import { OrbitRing } from "./graph/OrbitRing";
 import { Starfield } from "./graph/Starfield";
 import DevToolbar from "./ui/DevToolbar";
@@ -33,7 +34,7 @@ import {
 import { useProgress } from "./hooks/useProgress";
 import { useGitHubAuth } from "./hooks/useGitHubAuth";
 import { commitProgress } from "./lib/github";
-import { positionsKey, READ_ONLY, COMPACT, GRAPH_PARAM } from "./config";
+import { positionsKey, READ_ONLY, COMPACT, GRAPH_PARAM, LOGIN } from "./config";
 
 const EDGE_COLORS = {
   validated: "#D4AF37",
@@ -541,6 +542,27 @@ export default function App() {
       ? definitions[subGraph]?.label || subGraph
       : null;
 
+  // ---- Sorties en page 404 ------------------------------------------------
+  // Placées après TOUS les hooks : un retour anticipé plus haut casserait
+  // l'ordre des hooks entre deux rendus.
+
+  // Login inexistant ou invalide : erreur définitive côté worker.
+  if (progress.error?.fatal) {
+    return <NotFound login={LOGIN} message={progress.error.message} />;
+  }
+
+  // Login valide mais sans cursus consultable (staff, piscine non commencée) :
+  // allowedWorlds renvoie [], worldOrder est vide, et le graphe s'afficherait
+  // entièrement "available". Deuxième source de page blanche, distincte du 404.
+  if (READ_ONLY && progress.remoteLoaded && progress.worlds?.length === 0) {
+    return (
+      <NotFound
+        login={progress.profile?.login || LOGIN}
+        message="Ce compte n'a aucun cursus consultable sur ft_holy."
+      />
+    );
+  }
+
   return (
     <div
       ref={paneRef}
@@ -623,6 +645,20 @@ export default function App() {
       )}
 
       {!COMPACT && <ProfileBadge profile={progress.profile} />}
+
+      {/* Erreur passagère : le graphe reste consultable. */}
+      {progress.error && !progress.error.fatal && !COMPACT && (
+        <div
+          className="absolute bottom-32 left-5 max-w-md px-4 py-2 text-xs font-mono text-rust z-20"
+          style={{
+            background: "rgba(10, 12, 20, 0.95)",
+            border: "1px solid var(--rust-soft)",
+            borderRadius: 2,
+          }}
+        >
+          {progress.error.message}
+        </div>
+      )}
 
       {syncError && (
         <div

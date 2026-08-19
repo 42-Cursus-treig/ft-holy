@@ -1,7 +1,11 @@
 const INTRA = "https://api.intra.42.fr";
 const CACHE_TTL = 900;
+const SEARCH_TTL = 3600;
 const PAGE_SIZE = 100;
 const MAX_PAGES = 4;
+
+const SEARCH_MIN = 2;
+const SEARCH_LIMIT = 8;
 
 const ALLOWED_ORIGINS = [
   "https://tristan-reig.github.io",
@@ -14,6 +18,7 @@ const ALLOWED_ORIGINS = [
 ];
 
 const LOGIN_RE = /^[a-zA-Z0-9_-]{2,32}$/;
+const QUERY_RE = /^[a-zA-Z0-9_-]{2,32}$/;
 
 class HttpError extends Error {
   constructor(status, code) {
@@ -40,6 +45,15 @@ const json = (request, body, status = 200, extra = {}) =>
   new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json; charset=utf-8", ...corsHeaders(request), ...extra },
+  });
+
+const cachedJson = (request, body, hit) =>
+  new Response(body, {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "X-Cache": hit ? "HIT" : "MISS",
+      ...corsHeaders(request),
+    },
   });
 
 async function getToken(env) {
@@ -71,6 +85,7 @@ async function intraGet(path, token) {
 
   if (r.status === 404) throw new HttpError(404, "login_not_found");
   if (r.status === 429) throw new HttpError(429, "intra_rate_limited");
+  if (r.status === 403) throw new HttpError(403, "intra_forbidden");
   if (!r.ok) throw new HttpError(502, `intra_${r.status}`);
 
   return r.json();
@@ -140,15 +155,7 @@ async function handleHoly(request, env, login) {
 
   const key = `holy:${login.toLowerCase()}`;
   const cached = await env.CACHE.get(key);
-  if (cached) {
-    return new Response(cached, {
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "X-Cache": "HIT",
-        ...corsHeaders(request),
-      },
-    });
-  }
+  if (cached) return cachedJson(request, cached, true);
 
   const token = await getToken(env);
   const user = await intraGet(`/v2/users/${encodeURIComponent(login)}`, token);
@@ -158,13 +165,38 @@ async function handleHoly(request, env, login) {
   const body = JSON.stringify(payload);
   await env.CACHE.put(key, body, { expirationTtl: CACHE_TTL });
 
-  return new Response(body, {
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "X-Cache": "MISS",
-      ...corsHeaders(request),
-    },
-  });
+  return cachedJson(request, body, false);
+}
+
+async function handleSearch(request, env, raw) {
+  const q = raw.toLowerCase();
+  if (q.length < SEARCH_MIN || !QUERY_RE.test(q)) throw new HttpError(400, "invalid_query");
+
+  const key = `search:${q}`;
+  const cached = await env.CACHE.get(key);
+  if (cached) return cachedJson(request, cached, true);
+
+  const token = await getToken(env);
+  const upper = `${q}zzzzzzzz`;
+  const users = await intraGet(
+    `/v2/users?range[login]=${encodeURIComponent(q)},${encodeURIComponent(upper)}` +
+      `&page[size]=${SEARCH_LIMIT}&sort=login`,
+    token
+  );
+
+  const results = (Array.isArray(users) ? users : [])
+    .filter((u) => typeof u.login === "string" && u.login.toLowerCase().startsWith(q))
+    .slice(0, SEARCH_LIMIT)
+    .map((u) => ({
+      login: u.login,
+      displayName: u.usual_full_name || u.displayname || null,
+      avatar: u.image?.versions?.small || u.image?.link || null,
+    }));
+
+  const body = JSON.stringify({ query: q, results });
+  await env.CACHE.put(key, body, { expirationTtl: SEARCH_TTL });
+
+  return cachedJson(request, body, false);
 }
 
 export default {
@@ -177,12 +209,15 @@ export default {
     }
 
     const { pathname } = new URL(request.url);
-    const match = pathname.match(/^\/api\/holy\/([^/]+)\/?$/);
+    const holy = pathname.match(/^\/api\/holy\/([^/]+)\/?$/);
+    const search = pathname.match(/^\/api\/search\/([^/]+)\/?$/);
 
-    if (!match) return json(request, { error: "not_found" }, 404);
+    if (!holy && !search) return json(request, { error: "not_found" }, 404);
 
     try {
-      return await handleHoly(request, env, decodeURIComponent(match[1]));
+      return holy
+        ? await handleHoly(request, env, decodeURIComponent(holy[1]))
+        : await handleSearch(request, env, decodeURIComponent(search[1]));
     } catch (e) {
       if (e instanceof HttpError) return json(request, { error: e.code }, e.status);
       return json(request, { error: "internal_error" }, 500);

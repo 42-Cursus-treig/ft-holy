@@ -24,7 +24,7 @@ export const NotFound = ({ login, message }) => (
       <h1 className="font-serif text-3xl text-vellum mb-3" style={{ fontWeight: 600 }}>
         {login ? (
           <>
-            Aucune étoile au nom de{" "}
+            Aucune student au nom de{" "}
             <span style={{ color: "var(--gold)" }}>{login}</span>
           </>
         ) : (

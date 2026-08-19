@@ -40,12 +40,18 @@ const mostRecent = (a, b) => {
 
 const isIntraPayload = (data) => data && typeof data.projects === "object";
 
+// Un login inexistant ou invalide est définitif → page 404 pleine.
+// Un rate limit, un token en échec ou une coupure réseau sont passagers →
+// bandeau d'avertissement, le graphe reste visible.
+const FATAL_ERRORS = new Set(["login_not_found", "invalid_login"]);
+
 const messageFor = (code) =>
   ({
     login_not_found: "Ce login n'existe pas sur l'intra.",
     invalid_login: "Login invalide.",
     intra_rate_limited: "L'intra limite les requêtes, réessaie dans un instant.",
     intra_token_failed: "L'API 42 est injoignable.",
+    intra_forbidden: "L'application n'a pas accès à ces données.",
   }[code] || null);
 
 export const useProgress = () => {
@@ -53,6 +59,8 @@ export const useProgress = () => {
     READ_ONLY ? EMPTY : readLocal() || EMPTY
   );
   const [remoteLoaded, setRemoteLoaded] = useState(false);
+  // { code, message, fatal } — objet et non chaîne, pour que l'appelant
+  // puisse décider entre page 404 et simple bandeau.
   const [error, setError] = useState(null);
   const [hasLocalDraft, setHasLocalDraft] = useState(false);
 
@@ -70,7 +78,13 @@ export const useProgress = () => {
       fetch(url, { cache: "no-store" })
         .then(async (r) => {
           const body = await r.json().catch(() => null);
-          if (!r.ok) throw new Error(messageFor(body?.error) || `HTTP ${r.status}`);
+          if (!r.ok) {
+            // Le code brut doit survivre au message traduit : c'est lui qui
+            // détermine si l'erreur est fatale.
+            const err = new Error(messageFor(body?.error) || `HTTP ${r.status}`);
+            err.code = body?.error || `http_${r.status}`;
+            throw err;
+          }
           return body;
         })
         .then((remote) => {
@@ -110,7 +124,8 @@ export const useProgress = () => {
           setRemoteLoaded(true);
         })
         .catch((e) => {
-          setError(e.message);
+          const code = e.code || "network_error";
+          setError({ code, message: e.message, fatal: FATAL_ERRORS.has(code) });
           setRemoteLoaded(true);
         });
       return;
