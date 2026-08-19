@@ -5,6 +5,7 @@ export const projectDefinitions = {
         size: 1100,
         locked: true,
         position: { x: -112, y: 28 },
+        desc: "Le tronc commun de 42 vous apprend les fondamentaux de la programmation et de l’informatique à travers une progression de projets pratiques. Vous y aborderez notamment le C, les algorithmes, les structures de données, Unix, les réseaux, les systèmes, la programmation orientée objet, tout en développant votre autonomie, votre rigueur et votre capacité à travailler en équipe."
     },
     "guimp": {
         parents: ["mod1"],

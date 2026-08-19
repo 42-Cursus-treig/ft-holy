@@ -46,19 +46,19 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
         .then(async (r) => {
           const body = await r.json().catch(() => null);
           if (r.status === 403) {
-            setSearch({ query, state: "unavailable", results: [] });
+            setSearch({ query, state: "unavailable", results: EMPTY_RESULTS });
             return;
           }
           if (!r.ok) throw new Error(body?.error || `HTTP ${r.status}`);
           setSearch({
             query,
             state: "ok",
-            results: Array.isArray(body?.results) ? body.results : [],
+            results: Array.isArray(body?.results) ? body.results : EMPTY_RESULTS,
           });
         })
         .catch((e) => {
           if (e.name === "AbortError") return;
-          setSearch({ query, state: "error", results: [] });
+          setSearch({ query, state: "error", results: EMPTY_RESULTS });
         });
     }, DEBOUNCE_MS);
 
@@ -85,7 +85,17 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
 
     const current = (LOGIN || "").toLowerCase();
     const students = searchState === "ok" ? search.results : EMPTY_RESULTS;
+
     const list = students
+      .filter((s) => s.login.toLowerCase() !== current)
+      .map((s) => ({
+        key: `user:${s.login}`,
+        kind: "student",
+        login: s.login,
+        primary: s.login,
+        secondary: s.displayName || "cadet·te",
+        avatar: s.avatar,
+      }));
 
     const alreadyListed = list.some((r) => r.login.toLowerCase() === query);
     if (isValidLogin(query) && query !== current && !alreadyListed && searchState !== "loading") {
@@ -219,12 +229,12 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
           className="smallcaps text-[9px] transition-colors"
           style={{ color: isStudentMode ? "var(--azure)" : "var(--vellum-mute)" }}
         >
-          {isStudentMode ? "CADET" : "CATALOGUE"}
+          {isStudentMode ? "STUDENT" : "PROJET"}
         </span>
         <input
           ref={inputRef}
           type="text"
-          placeholder="rechercher une étoile… (@ pour un cadet)"
+          placeholder="<projet> ou @<login>"
           value={term}
           onChange={handleTermChange}
           onKeyDown={handleInputKeyDown}
