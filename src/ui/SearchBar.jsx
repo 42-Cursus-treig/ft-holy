@@ -14,11 +14,13 @@ const SIGIL = "@";
 const MIN_QUERY = 2;
 const DEBOUNCE_MS = 220;
 
+const IDLE = { query: null, state: "idle", results: [] };
+const EMPTY_RESULTS = [];
+
 export const SearchBar = ({ nodes, onSelectNode }) => {
   const [term, setTerm] = useState("");
   const [activeIndex, setActiveIndex] = useState(-1);
-  const [students, setStudents] = useState([]);
-  const [searchState, setSearchState] = useState("idle");
+  const [search, setSearch] = useState(IDLE);
   const inputRef = useRef(null);
   const listRef = useRef(null);
   const { setCenter } = useReactFlow();
@@ -26,33 +28,37 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
   const isStudentMode = term.startsWith(SIGIL);
   const query = (isStudentMode ? term.slice(SIGIL.length) : term).trim().toLowerCase();
 
+  const shouldSearch = isStudentMode && API_ENABLED && query.length >= MIN_QUERY;
+
+  const searchState = !shouldSearch
+    ? "idle"
+    : search.query !== query
+    ? "loading"
+    : search.state;
+
   useEffect(() => {
-    if (!isStudentMode || !API_ENABLED || query.length < MIN_QUERY) {
-      setStudents([]);
-      setSearchState("idle");
-      return;
-    }
+    if (!shouldSearch) return;
 
     const controller = new AbortController();
-    setSearchState("loading");
 
     const timer = setTimeout(() => {
       fetch(searchUrl(query), { signal: controller.signal })
         .then(async (r) => {
           const body = await r.json().catch(() => null);
           if (r.status === 403) {
-            setStudents([]);
-            setSearchState("unavailable");
+            setSearch({ query, state: "unavailable", results: [] });
             return;
           }
           if (!r.ok) throw new Error(body?.error || `HTTP ${r.status}`);
-          setStudents(Array.isArray(body?.results) ? body.results : []);
-          setSearchState("ok");
+          setSearch({
+            query,
+            state: "ok",
+            results: Array.isArray(body?.results) ? body.results : [],
+          });
         })
         .catch((e) => {
           if (e.name === "AbortError") return;
-          setStudents([]);
-          setSearchState("error");
+          setSearch({ query, state: "error", results: [] });
         });
     }, DEBOUNCE_MS);
 
@@ -60,7 +66,7 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [isStudentMode, query]);
+  }, [shouldSearch, query]);
 
   const results = useMemo(() => {
     if (!isStudentMode) {
@@ -78,16 +84,8 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
     }
 
     const current = (LOGIN || "").toLowerCase();
+    const students = searchState === "ok" ? search.results : EMPTY_RESULTS;
     const list = students
-      .filter((s) => s.login.toLowerCase() !== current)
-      .map((s) => ({
-        key: `user:${s.login}`,
-        kind: "student",
-        login: s.login,
-        primary: s.login,
-        secondary: s.displayName || "cadet·te",
-        avatar: s.avatar,
-      }));
 
     const alreadyListed = list.some((r) => r.login.toLowerCase() === query);
     if (isValidLogin(query) && query !== current && !alreadyListed && searchState !== "loading") {
@@ -111,7 +109,7 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
     }
 
     return list;
-  }, [isStudentMode, term, query, nodes, students, searchState]);
+  }, [isStudentMode, term, query, nodes, search.results, searchState]);
 
   const handleTermChange = (event) => {
     setTerm(event.target.value);
@@ -234,7 +232,7 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
           spellCheck={false}
           autoComplete="off"
         />
-        {isStudentMode && searchState === "loading" ? (
+        {searchState === "loading" ? (
           <span className="font-mono text-[9px] text-azure animate-pulse">···</span>
         ) : (
           <div className="flex items-center gap-1">
