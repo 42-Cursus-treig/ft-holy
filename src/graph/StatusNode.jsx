@@ -1,5 +1,5 @@
 import { Handle, Position } from "@xyflow/react";
-import { getIconUrl } from "./iconUrl";
+import { getIconList } from "./iconUrl";
 
 const C = {
   inkDeep: "#05060A",
@@ -17,31 +17,85 @@ const C = {
   azureSoft: "#2C5A8A",
 };
 
-const LangBadge = ({ language, color, size, scale = 0.4, offset = 0.08 }) => {
-  const src = getIconUrl(language, color);
-  if (!src) return null;
+const IconDisc = ({ src, title, diameter, style }) => (
+  <div
+    style={{
+      position: "relative",
+      width: diameter,
+      height: diameter,
+      boxSizing: "border-box",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: C.inkDeep,
+      border: `1px solid ${C.inkLine}`,
+      borderRadius: "50%",
+      ...style,
+    }}
+  >
+    <img
+      src={src}
+      alt=""
+      title={title}
+      style={{ width: "72%", height: "72%", objectFit: "contain", pointerEvents: "none" }}
+    />
+  </div>
+);
+
+const IconRow = ({ language, color, size = 16, gap = 4 }) => {
+  const icons = getIconList(language, color);
+  if (!icons.length) return null;
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap, flexShrink: 0 }}>
+      {icons.map((icon) => (
+        <img
+          key={icon.key}
+          src={icon.src}
+          alt=""
+          title={icon.name}
+          style={{ width: size, height: size, objectFit: "contain" }}
+        />
+      ))}
+    </div>
+  );
+};
+
+const LangBadge = ({
+  language,
+  color,
+  size,
+  scale = 0.4,
+  offset = 0.08,
+  overlap = 0.45,
+  max = 2,
+}) => {
+  const icons = getIconList(language, color).slice(0, max);
+  if (!icons.length) return null;
+
+  const d = size * scale;
+
   return (
     <div
       style={{
         position: "absolute",
         bottom: -size * offset,
         right: -size * offset,
-        width: size * scale,
-        height: size * scale,
         display: "flex",
+        flexDirection: "row-reverse",
         alignItems: "center",
-        justifyContent: "center",
-        background: C.inkDeep,
-        border: `1px solid ${C.inkLine}`,
-        borderRadius: "50%",
         zIndex: 3,
+        pointerEvents: "none",
       }}
     >
-      <img
-        src={src}
-        alt=""
-        style={{ width: "75%", height: "75%", objectFit: "contain", pointerEvents: "none" }}
-      />
+      {icons.map((icon, i) => (
+        <IconDisc
+          key={icon.key}
+          src={icon.src}
+          title={icon.name}
+          diameter={d}
+          style={{ marginRight: i === 0 ? 0 : -d * overlap, zIndex: icons.length - i }}
+        />
+      ))}
     </div>
   );
 };
@@ -188,8 +242,6 @@ export const StatusNode = ({ data, selected }) => {
       isGroupValidated = validatedCount > 0;
     }
 
-    const groupIcon = getIconUrl(data.language, data.logoColor);
-
     return (
       <div
         style={{
@@ -247,19 +299,12 @@ export const StatusNode = ({ data, selected }) => {
             {data.label}
           </div>
 
-          {groupIcon && (
-            <img
-              src={groupIcon}
-              alt=""
-              style={{ width: 16, height: 16, objectFit: "contain", flexShrink: 0 }}
-            />
-          )}
+          <IconRow language={data.language} color={data.logoColor} size={16} />
         </div>
         
         {data.subProjects.map((sub, i) => {
           const subId = sub.id || sub;
           const subLabel = sub.label || sub;
-          const subIcon = getIconUrl(sub.lang, sub.logoColor);
           const subStatus = data.subProjectStatuses?.[subId] || "available";
           const moduleProgress = data.subProjectModules?.[subId];
           
@@ -300,13 +345,7 @@ export const StatusNode = ({ data, selected }) => {
               className="hover:bg-slate-800/50 transition-colors"
             >
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                {subIcon && (
-                  <img
-                    src={subIcon}
-                    alt=""
-                    style={{ width: 12, height: 12, objectFit: "contain", flexShrink: 0 }}
-                  />
-                )}
+                <IconRow language={sub.lang} color={sub.logoColor} size={12} gap={3} />
                 <span>{subLabel}</span>
                 {moduleProgress && (
                   <span style={{ fontSize: 10, color: C.vellumDim }}>
@@ -402,8 +441,9 @@ export const StatusNode = ({ data, selected }) => {
           language={data.language}
           color={data.logoColor}
           size={size}
-          scale={0.42}
+          scale={0.34}
           offset={0.1}
+          max={3}
         />
 
         <Handle type="source" position={Position.Bottom} style={{ opacity: 0, pointerEvents: "none" }} />

@@ -1,4 +1,4 @@
-import { getIconUrl } from "../graph/iconUrl";
+import { getIconList } from "../graph/iconUrl";
 import { useSubjects, resolveSubject, intraFallback } from "../data/subjects";
 
 const STATUS_LABEL = {
@@ -30,8 +30,6 @@ const STATUS_BORDER = {
 };
 
 export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
-  // Hook appelé inconditionnellement : le garde sur `node` vient après,
-  // sinon React lève une erreur d'ordre des hooks à la fermeture du panneau.
   const subjectsMap = useSubjects();
 
   if (!node) return null;
@@ -40,6 +38,7 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
   const pdfLang = node.data.langPdf || "en";
 
   const subject = resolveSubject(node.data, node.id, subjectsMap, pdfLang);
+  const icons = getIconList(node.data.language, node.data.logoColor);
   const subjectHref = subject?.href || null;
   const fallbackHref = subject?.kind === "pdf" ? intraFallback(node.id) : null;
 
@@ -101,12 +100,23 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
               {node.data.mark}/100
             </span>
           )}
-          {node.data.language && (
-            <img
-              src={getIconUrl(node.data.language, node.data.logoColor)}
-              alt={node.data.language}
-              className="w-5 h-5"
-            />
+          {icons.length > 0 && (
+            <div className="flex items-center gap-1.5 ml-auto">
+              {icons.map((icon) => (
+                <span
+                  key={icon.key}
+                  title={icon.name}
+                  className="flex items-center justify-center w-6 h-6"
+                  style={{
+                    border: `1px solid ${STATUS_BORDER[status]}`,
+                    background: STATUS_BG[status],
+                    borderRadius: 1,
+                  }}
+                >
+                  <img src={icon.src} alt={icon.name} className="w-4 h-4 object-contain" />
+                </span>
+              ))}
+            </div>
           )}
         </div>
       </div>

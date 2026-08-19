@@ -1015,6 +1015,13 @@
         "href": "https://cdn.intra.42.fr/pdf/pdf/217888/en.subject.pdf"
       }
     ],
+    "datomic": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224585/en.subject.pdf"
+      }
+    ],
     "fly-in": [
       {
         "lang": "en",
@@ -1384,6 +1391,13 @@
         "lang": "en",
         "name": "subject.pdf",
         "href": "https://cdn.intra.42.fr/pdf/pdf/211049/en.subject.pdf"
+      }
+    ],
+    "tokenzwap": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224502/en.subject.pdf"
       }
     ],
     "unleashthebox": [

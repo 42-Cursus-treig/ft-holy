@@ -35,6 +35,10 @@ if (params.get("from") === "path" && rawLogin) {
 export const SELF = API_ENABLED && (params.has("me") || rawLogin === "me");
 export const LOGIN = API_ENABLED && rawLogin !== "me" ? rawLogin : null;
 
+export const isValidLogin = (value) => LOGIN_RE.test(value || "");
+export const holyUrl = (login) => (login ? `${BASE}${encodeURIComponent(login)}` : BASE);
+export const searchUrl = (query) => `${API_BASE}/api/search/${encodeURIComponent(query)}`;
+
 export const GRAPH_PARAM = params.get("graph");
 export const COMPACT = params.has("compact");
 

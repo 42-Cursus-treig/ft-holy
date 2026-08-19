@@ -129,6 +129,8 @@ export const activeProjects = [
     "ft_lgtm",
     "Inception of context",
     "Inception of wisdom",
+    "Datomic",
+    "TokenZwap",
 
     "Rush00",
     "Rush01",

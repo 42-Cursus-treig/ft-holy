@@ -26,3 +26,7 @@ api/.wrangler
 tools/bookmarklet.txt
 tools/bookmarklet.html
 tools/console-snippet.js
+
+.dev.vars*
+!.dev.vars.example
+!.env.example

@@ -2,25 +2,155 @@ import { Panel, useReactFlow } from "@xyflow/react";
 import { toPng } from "html-to-image";
 import { LS_POSITIONS_PREFIX, positionsKey } from "../config";
 
+// Planches à layout manuel : seules celles-ci ont des `position` dans leur
+// source. Les troncs communs sont en layout radial (positions calculées),
+// il n'y a rien à réinjecter.
+// Les chemins doivent rester littéraux : Vite analyse statiquement `import()`.
+const SOURCES = {
+  cursus: {
+    file: "src/data/projectDB.js",
+    load: () => import("../data/projectDB.js?raw"),
+  },
+  pool: {
+    file: "src/data/poolDB.js",
+    load: () => import("../data/poolDB.js?raw"),
+  },
+};
+
+const POSITION_RE = /position:\s*\{\s*x:\s*-?[\d.]+\s*,\s*y:\s*-?[\d.]+\s*\}/;
+
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * Bornes de la définition de premier niveau `"<id>": { … }`.
+ * On compte les accolades en ignorant celles contenues dans des chaînes :
+ * une regex non-greedy casserait sur les `subProjects` et `modules` imbriqués.
+ */
+const findBlock = (text, id) => {
+  const opener = new RegExp(`"${escapeRe(id)}"\\s*:\\s*\\{`).exec(text);
+  if (!opener) return null;
+
+  const start = opener.index;
+  let depth = 0;
+  let inString = false;
+  let quote = "";
+
+  for (let i = text.indexOf("{", start); i < text.length; i++) {
+    const ch = text[i];
+
+    if (inString) {
+      if (ch === "\\") i++;
+      else if (ch === quote) inString = false;
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === "`") {
+      inString = true;
+      quote = ch;
+      continue;
+    }
+    if (ch === "{") depth++;
+    else if (ch === "}" && --depth === 0) return { start, end: i + 1 };
+  }
+  return null;
+};
+
+/** Réinjecte les positions du localStorage dans le texte source. */
+const applyPositions = (raw, stored) => {
+  let text = raw;
+  const applied = [];
+  const inserted = [];
+  const unknown = [];
+
+  const jobs = [];
+  for (const [id, pos] of Object.entries(stored)) {
+    if (!pos || typeof pos.x !== "number" || typeof pos.y !== "number") continue;
+    const block = findBlock(text, id);
+    if (block) jobs.push({ id, pos, block });
+    else unknown.push(id);
+  }
+
+  // De la fin vers le début : réécrire un bloc décale tous les offsets suivants.
+  jobs.sort((a, b) => b.block.start - a.block.start);
+
+  for (const { id, pos, block } of jobs) {
+    const body = text.slice(block.start, block.end);
+    const line = `position: { x: ${Math.round(pos.x)}, y: ${Math.round(pos.y)} }`;
+    let next;
+
+    if (POSITION_RE.test(body)) {
+      next = body.replace(POSITION_RE, line);
+      applied.push(id);
+    } else {
+      // Nœud sans position dans le fichier : on en insère une.
+      const lineStart = text.lastIndexOf("\n", block.start) + 1;
+      const indent = text.slice(lineStart, block.start) + "    ";
+      const brace = body.indexOf("{");
+      next = `${body.slice(0, brace + 1)}\n${indent}${line},${body.slice(brace + 1)}`;
+      inserted.push(id);
+    }
+
+    text = text.slice(0, block.start) + next + text.slice(block.end);
+  }
+
+  return { text, applied, inserted, unknown };
+};
+
 function DevToolbar({ worldId }) {
   const { fitView } = useReactFlow();
 
   if (!import.meta.env.DEV) return null;
 
-  const logPositions = () => {
+  const dumpSource = async () => {
+    const source = SOURCES[worldId];
+    if (!source) {
+      console.warn(
+        `[ft_holy] La planche "${worldId}" est en layout radial : ses positions sont ` +
+          `calculées, il n'y a pas de source à régénérer.`
+      );
+      alert(`Planche "${worldId}" : layout automatique, rien à exporter.`);
+      return;
+    }
+
     try {
-      const current = localStorage.getItem(positionsKey(worldId));
-      console.log(`=== POSITIONS — planche "${worldId}" ===`);
-      console.log(JSON.stringify(current ? JSON.parse(current) : {}, null, 2));
+      const stored = JSON.parse(localStorage.getItem(positionsKey(worldId)) || "{}");
+      const { default: raw } = await source.load();
+      const { text, applied, inserted, unknown } = applyPositions(raw, stored);
+
+      console.log(`=== ${source.file} — positions à jour ===`);
+      console.log(text);
+
+      const count = applied.length + inserted.length;
+      console.log(
+        `${count} position(s) réinjectée(s)` +
+          (inserted.length ? ` — dont ${inserted.length} ajoutée(s) : ${inserted.join(", ")}` : "")
+      );
+      if (unknown.length) {
+        console.warn(
+          `${unknown.length} id(s) sans définition de premier niveau (modules ou ` +
+            `sous-graphes, non réinjectés) : ${unknown.join(", ")}`
+        );
+      }
 
       const others = Object.keys(localStorage)
         .filter((k) => k.startsWith(LS_POSITIONS_PREFIX) && k !== positionsKey(worldId))
         .map((k) => k.slice(LS_POSITIONS_PREFIX.length));
       if (others.length) console.log("Autres planches enregistrées :", others.join(", "));
 
-      alert(`Positions de la planche "${worldId}" affichées dans la console.`);
+      let copied = false;
+      try {
+        await navigator.clipboard.writeText(text);
+        copied = true;
+      } catch {
+        // Clipboard indisponible hors contexte sécurisé : la console suffit.
+      }
+
+      alert(
+        `${source.file} régénéré (${count} position(s)).\n` +
+          (copied ? "Copié dans le presse-papier." : "Disponible dans la console.")
+      );
     } catch (e) {
-      console.error("Lecture des positions impossible", e);
+      console.error("Régénération impossible", e);
+      alert("Régénération impossible — voir la console.");
     }
   };
 
@@ -64,7 +194,11 @@ function DevToolbar({ worldId }) {
         className="hud-bar overflow-hidden"
         style={{ width: "var(--hud-bar-width)" }}
       >
-        <button onClick={logPositions} className={btnClass} title="Log des positions dans la console">
+        <button
+          onClick={dumpSource}
+          className={btnClass}
+          title="Régénérer le fichier source avec les positions à jour"
+        >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
             <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
