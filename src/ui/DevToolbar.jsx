@@ -1,11 +1,8 @@
 import { Panel, useReactFlow } from "@xyflow/react";
 import { toPng } from "html-to-image";
 import { LS_POSITIONS_PREFIX, positionsKey } from "../config";
+import { useTheme } from "../theme";
 
-// Planches à layout manuel : seules celles-ci ont des `position` dans leur
-// source. Les troncs communs sont en layout radial (positions calculées),
-// il n'y a rien à réinjecter.
-// Les chemins doivent rester littéraux : Vite analyse statiquement `import()`.
 const SOURCES = {
   cursus: {
     file: "src/data/projectDB.js",
@@ -21,11 +18,6 @@ const POSITION_RE = /position:\s*\{\s*x:\s*-?[\d.]+\s*,\s*y:\s*-?[\d.]+\s*\}/;
 
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-/**
- * Bornes de la définition de premier niveau `"<id>": { … }`.
- * On compte les accolades en ignorant celles contenues dans des chaînes :
- * une regex non-greedy casserait sur les `subProjects` et `modules` imbriqués.
- */
 const findBlock = (text, id) => {
   const opener = new RegExp(`"${escapeRe(id)}"\\s*:\\s*\\{`).exec(text);
   if (!opener) return null;
@@ -54,7 +46,6 @@ const findBlock = (text, id) => {
   return null;
 };
 
-/** Réinjecte les positions du localStorage dans le texte source. */
 const applyPositions = (raw, stored) => {
   let text = raw;
   const applied = [];
@@ -69,7 +60,6 @@ const applyPositions = (raw, stored) => {
     else unknown.push(id);
   }
 
-  // De la fin vers le début : réécrire un bloc décale tous les offsets suivants.
   jobs.sort((a, b) => b.block.start - a.block.start);
 
   for (const { id, pos, block } of jobs) {
@@ -81,7 +71,6 @@ const applyPositions = (raw, stored) => {
       next = body.replace(POSITION_RE, line);
       applied.push(id);
     } else {
-      // Nœud sans position dans le fichier : on en insère une.
       const lineStart = text.lastIndexOf("\n", block.start) + 1;
       const indent = text.slice(lineStart, block.start) + "    ";
       const brace = body.indexOf("{");
@@ -97,6 +86,7 @@ const applyPositions = (raw, stored) => {
 
 function DevToolbar({ worldId }) {
   const { fitView } = useReactFlow();
+  const { c } = useTheme();
 
   if (!import.meta.env.DEV) return null;
 
@@ -141,7 +131,7 @@ function DevToolbar({ worldId }) {
         await navigator.clipboard.writeText(text);
         copied = true;
       } catch {
-        // Clipboard indisponible hors contexte sécurisé : la console suffit.
+        //
       }
 
       alert(
@@ -172,7 +162,7 @@ function DevToolbar({ worldId }) {
     uiElements.forEach((el) => (el.style.opacity = "0"));
 
     try {
-      const dataUrl = await toPng(element, { backgroundColor: "#05060A", pixelRatio: 4 });
+      const dataUrl = await toPng(element, { backgroundColor: c.inkDeep, pixelRatio: 4 });
       const link = document.createElement("a");
       link.download = `ft_holy_${worldId}.png`;
       link.href = dataUrl;
@@ -206,7 +196,7 @@ function DevToolbar({ worldId }) {
           </svg>
         </button>
 
-        <div className="w-px my-2" style={{ background: "var(--ink-line)" }} />
+        <div className="w-px my-2" style={{ background: c.inkLine }} />
 
         <button onClick={takeScreenshot} className={btnClass} title="Capture d'écran HD">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -215,7 +205,7 @@ function DevToolbar({ worldId }) {
           </svg>
         </button>
 
-        <div className="w-px my-2" style={{ background: "var(--ink-line)" }} />
+        <div className="w-px my-2" style={{ background: c.inkLine }} />
 
         <button onClick={clearStorageAndRefresh} className={btnClass} title="Vider le LocalStorage">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -1,24 +1,11 @@
 import { Handle, Position } from "@xyflow/react";
 import { getIconList } from "./iconUrl";
+import { useTheme } from "../theme";
+import { alpha, slugColor } from "../theme/color";
 
-const C = {
-  inkDeep: "#05060A",
-  ink: "#0A0C14",
-  inkSoft: "#11141E",
-  inkLine: "#1C2030",
-  vellum: "#F4F1E8",
-  vellumDim: "#B8B3A0",
-  vellumMute: "#6D6A5C",
-  gold: "#D4AF37",
-  goldSoft: "#8A7223",
-  rust: "#A63D2A",
-  rustSoft: "#6B281C",
-  azure: "#4A90D9",
-  azureSoft: "#2C5A8A",
-};
-
-const IconDisc = ({ src, title, diameter, style }) => (
+const IconDisc = ({ src, title, diameter, background, border, style }) => (
   <div
+    title={title}
     style={{
       position: "relative",
       width: diameter,
@@ -27,8 +14,8 @@ const IconDisc = ({ src, title, diameter, style }) => (
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: C.inkDeep,
-      border: `1px solid ${C.inkLine}`,
+      background,
+      border: `1px solid ${border}`,
       borderRadius: "50%",
       ...style,
     }}
@@ -36,7 +23,6 @@ const IconDisc = ({ src, title, diameter, style }) => (
     <img
       src={src}
       alt=""
-      title={title}
       style={{ width: "72%", height: "72%", objectFit: "contain", pointerEvents: "none" }}
     />
   </div>
@@ -67,8 +53,9 @@ const LangBadge = ({
   scale = 0.4,
   offset = 0.08,
   overlap = 0.45,
-  max = 2,
+  max = 3,
 }) => {
+  const { theme } = useTheme();
   const icons = getIconList(language, color).slice(0, max);
   if (!icons.length) return null;
 
@@ -84,7 +71,6 @@ const LangBadge = ({
         flexDirection: "row-reverse",
         alignItems: "center",
         zIndex: 3,
-        pointerEvents: "none",
       }}
     >
       {icons.map((icon, i) => (
@@ -93,6 +79,8 @@ const LangBadge = ({
           src={icon.src}
           title={icon.name}
           diameter={d}
+          background={theme.node.badgeBackground}
+          border={theme.node.borderColor}
           style={{ marginRight: i === 0 ? 0 : -d * overlap, zIndex: icons.length - i }}
         />
       ))}
@@ -101,14 +89,15 @@ const LangBadge = ({
 };
 
 export const FrameNode = ({ data }) => {
+  const { c, theme } = useTheme();
   return (
     <div
       style={{
         width: data.width,
         height: data.height,
-        border: `1px solid ${C.inkLine}`,
+        border: `1px solid ${theme.node.borderColor}`,
         borderRadius: 4,
-        background: "rgba(17, 20, 30, 0.35)",
+        background: alpha(c.inkSoft, 0.35),
         pointerEvents: "none",
         position: "relative",
       }}
@@ -118,10 +107,10 @@ export const FrameNode = ({ data }) => {
           position: "absolute",
           top: 8,
           left: 12,
-          fontFamily: '"JetBrains Mono", monospace',
+          fontFamily: "var(--font-mono)",
           fontSize: 11,
           letterSpacing: "0.25em",
-          color: C.vellumMute,
+          color: c.vellumMute,
           textTransform: "uppercase",
         }}
       >
@@ -134,7 +123,7 @@ export const FrameNode = ({ data }) => {
 const Halo = ({ width, height, color, opacity }) => {
   const haloW = width * 2.4;
   const haloH = height * 2.4;
-  const idSuffix = color.replace("#", "");
+  const idSuffix = slugColor(color);
   return (
     <svg
       width={haloW}
@@ -163,22 +152,20 @@ const Halo = ({ width, height, color, opacity }) => {
 const RECT_RATIO = { w: 1.6, h: 0.62 };
 
 export const StatusNode = ({ data, selected }) => {
+  const { c, theme, statusOf } = useTheme();
+
   const size = data.size || 60;
   const isLocked = data.locked === true;
   const isGroup = data.subProjects && data.subProjects.length > 0;
   const isPiscine =
     !isLocked && data.label && data.label.toLowerCase().includes("piscine");
   const status = data.status || "available";
+  const tone = statusOf(status);
 
   if (isLocked) {
     return (
       <div
-        style={{
-          position: "relative",
-          width: size,
-          height: size,
-          pointerEvents: "none",
-        }}
+        style={{ position: "relative", width: size, height: size, pointerEvents: "none" }}
       >
         <Handle type="target" position={Position.Top} style={{ opacity: 0 }} />
         <svg
@@ -192,18 +179,11 @@ export const StatusNode = ({ data, selected }) => {
             cy="50"
             r="48"
             fill="none"
-            stroke={C.vellumDim}
+            stroke={c.vellumDim}
             strokeWidth="0.15"
             strokeDasharray="0.6 0.8"
           />
-          <circle
-            cx="50"
-            cy="50"
-            r="46"
-            fill="none"
-            stroke={C.goldSoft}
-            strokeWidth="0.08"
-          />
+          <circle cx="50" cy="50" r="46" fill="none" stroke={c.goldSoft} strokeWidth="0.08" />
         </svg>
         <div
           style={{
@@ -214,8 +194,8 @@ export const StatusNode = ({ data, selected }) => {
             textAlign: "center",
             whiteSpace: "nowrap",
             opacity: 0.45,
-            color: C.vellumMute,
-            fontFamily: '"JetBrains Mono", monospace',
+            color: c.vellumMute,
+            fontFamily: "var(--font-mono)",
             fontSize: size / 45,
             letterSpacing: "0.2em",
             textTransform: "uppercase",
@@ -237,25 +217,33 @@ export const StatusNode = ({ data, selected }) => {
         const subId = sub.id || sub;
         return data.subProjectStatuses[subId] === "validated";
       }).length;
-      
+
       progressText = `${validatedCount} / ${data.subProjects.length}`;
       isGroupValidated = validatedCount > 0;
     }
+
+    const done = statusOf("validated");
 
     return (
       <div
         style={{
           position: "relative",
           minWidth: size * 1.5,
-          background: "rgba(17, 20, 30, 0.92)",
-          border: `1px solid ${selected ? C.gold : isGroupValidated ? C.goldSoft : C.vellumMute}`,
+          background: alpha(c.inkSoft, 0.92),
+          border: `1px solid ${
+            selected ? done.main : isGroupValidated ? done.soft : c.vellumMute
+          }`,
           borderRadius: 2,
           overflow: "visible",
-          boxShadow: selected ? `0 0 0 1px ${C.goldSoft}, 0 0 16px ${C.goldSoft}80` : isGroupValidated ? `0 0 12px ${C.gold}30` : "none",
+          boxShadow: selected
+            ? `0 0 0 1px ${done.soft}, 0 0 16px ${alpha(done.soft, 0.5)}`
+            : isGroupValidated
+            ? `0 0 12px ${alpha(done.main, done.glow)}`
+            : "none",
         }}
       >
         <Handle type="target" position={Position.Top} style={{ opacity: 0, pointerEvents: "none" }} />
-        
+
         {progressText && (
           <div
             style={{
@@ -265,10 +253,10 @@ export const StatusNode = ({ data, selected }) => {
               transform: "translateX(-50%)",
               padding: "2px 6px",
               fontSize: 10,
-              fontFamily: '"JetBrains Mono", monospace',
-              background: C.inkDeep,
-              color: isGroupValidated ? C.gold : C.vellumDim,
-              border: `1px solid ${isGroupValidated ? C.goldSoft : C.inkLine}`,
+              fontFamily: "var(--font-mono)",
+              background: c.inkDeep,
+              color: isGroupValidated ? done.main : c.vellumDim,
+              border: `1px solid ${isGroupValidated ? done.soft : theme.node.borderColor}`,
               borderRadius: 1,
               whiteSpace: "nowrap",
               zIndex: 10,
@@ -281,7 +269,7 @@ export const StatusNode = ({ data, selected }) => {
         <div
           style={{
             padding: "8px 12px",
-            borderBottom: `1px solid ${C.inkLine}`,
+            borderBottom: `1px solid ${theme.node.borderColor}`,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -290,10 +278,10 @@ export const StatusNode = ({ data, selected }) => {
         >
           <div
             style={{
-              fontFamily: '"Cormorant Garamond", serif',
+              fontFamily: "var(--font-serif)",
               fontSize: 16,
               fontWeight: 600,
-              color: isGroupValidated ? C.gold : C.vellum,
+              color: isGroupValidated ? done.main : c.vellum,
             }}
           >
             {data.label}
@@ -301,16 +289,17 @@ export const StatusNode = ({ data, selected }) => {
 
           <IconRow language={data.language} color={data.logoColor} size={16} />
         </div>
-        
+
         {data.subProjects.map((sub, i) => {
           const subId = sub.id || sub;
           const subLabel = sub.label || sub;
           const subStatus = data.subProjectStatuses?.[subId] || "available";
           const moduleProgress = data.subProjectModules?.[subId];
-          
+
           const isSubValidated = subStatus === "validated";
           const isSubFailed = subStatus === "failed";
-          const color = isSubValidated ? C.gold : isSubFailed ? C.rust : C.vellum;
+          const subTone = statusOf(subStatus);
+          const color = isSubValidated || isSubFailed ? subTone.main : c.vellum;
 
           return (
             <div
@@ -332,11 +321,15 @@ export const StatusNode = ({ data, selected }) => {
                 margin: "4px 8px",
                 borderRadius: "2px",
                 fontSize: 12,
-                fontFamily: '"JetBrains Mono", monospace',
-                color: color,
-                border: isSubValidated ? `1px solid ${C.gold}` : "1px solid transparent",
-                borderBottom: !isSubValidated && i < data.subProjects.length - 1 ? `1px solid ${C.inkLine}` : isSubValidated ? `1px solid ${C.gold}` : "1px solid transparent",
-                background: isSubValidated ? "rgba(212, 175, 55, 0.08)" : "transparent",
+                fontFamily: "var(--font-mono)",
+                color,
+                border: isSubValidated ? `1px solid ${done.main}` : "1px solid transparent",
+                borderBottom: !isSubValidated && i < data.subProjects.length - 1
+                  ? `1px solid ${theme.node.borderColor}`
+                  : isSubValidated
+                  ? `1px solid ${done.main}`
+                  : "1px solid transparent",
+                background: isSubValidated ? alpha(done.main, 0.08) : "transparent",
                 cursor: "pointer",
                 display: "flex",
                 justifyContent: "space-between",
@@ -348,14 +341,14 @@ export const StatusNode = ({ data, selected }) => {
                 <IconRow language={sub.lang} color={sub.logoColor} size={12} gap={3} />
                 <span>{subLabel}</span>
                 {moduleProgress && (
-                  <span style={{ fontSize: 10, color: C.vellumDim }}>
-                    [{moduleProgress}]
-                  </span>
+                  <span style={{ fontSize: 10, color: c.vellumDim }}>[{moduleProgress}]</span>
                 )}
               </div>
-              
+
               <div>
-                {isSubFailed && <span style={{ fontSize: 10, color: C.rust }}>✗</span>}
+                {isSubFailed && (
+                  <span style={{ fontSize: 10, color: statusOf("failed").main }}>✗</span>
+                )}
               </div>
             </div>
           );
@@ -368,20 +361,25 @@ export const StatusNode = ({ data, selected }) => {
   if (isPiscine) {
     const w = size * 1.9;
     const h = size * 0.95;
-    const palette =
-      status === "validated"
-        ? { bg: "rgba(212, 175, 55, 0.12)", border: C.gold, text: C.gold }
-        : status === "failed"
-        ? { bg: "rgba(166, 61, 42, 0.12)", border: C.rust, text: C.rust }
-        : status === "in-progress"
-        ? { bg: "rgba(74, 144, 217, 0.12)", border: C.azure, text: C.azure }
-        : { bg: "rgba(28, 32, 48, 0.9)", border: C.vellumMute, text: C.vellum };
+    const isIdle = status === "available";
+    const palette = {
+      bg: isIdle ? alpha(c.inkHairline, 0.9) : alpha(tone.main, 0.12),
+      border: isIdle ? c.vellumMute : tone.main,
+      text: isIdle ? c.vellum : tone.main,
+    };
 
     let progressText = null;
     if (data.modules && data.modules.length > 0 && data.moduleStatuses) {
       const v = data.modules.filter((m) => data.moduleStatuses[m.id] === "validated").length;
       progressText = `${v} / ${data.modules.length}`;
     }
+
+    const corner = (pos) => ({
+      position: "absolute",
+      width: 8,
+      height: 8,
+      ...pos,
+    });
 
     return (
       <div
@@ -396,22 +394,24 @@ export const StatusNode = ({ data, selected }) => {
           alignItems: "center",
           justifyContent: "center",
           color: palette.text,
-          fontFamily: '"JetBrains Mono", monospace',
+          fontFamily: "var(--font-mono)",
           fontSize: Math.max(11, size / 4.5),
           fontWeight: 500,
           letterSpacing: "0.1em",
           textTransform: "uppercase",
           transition: "all 0.3s",
-          boxShadow: selected ? `0 0 0 1px ${palette.border}, 0 0 24px ${palette.border}60` : "none",
+          boxShadow: selected
+            ? `0 0 0 1px ${palette.border}, 0 0 24px ${alpha(palette.border, 0.376)}`
+            : "none",
           overflow: "visible",
         }}
       >
         <Handle type="target" position={Position.Top} style={{ opacity: 0, pointerEvents: "none" }} />
 
-        <span style={{ position: "absolute", top: 0, left: 0, width: 8, height: 8, borderTop: `1px solid ${palette.border}`, borderLeft: `1px solid ${palette.border}` }} />
-        <span style={{ position: "absolute", top: 0, right: 0, width: 8, height: 8, borderTop: `1px solid ${palette.border}`, borderRight: `1px solid ${palette.border}` }} />
-        <span style={{ position: "absolute", bottom: 0, left: 0, width: 8, height: 8, borderBottom: `1px solid ${palette.border}`, borderLeft: `1px solid ${palette.border}` }} />
-        <span style={{ position: "absolute", bottom: 0, right: 0, width: 8, height: 8, borderBottom: `1px solid ${palette.border}`, borderRight: `1px solid ${palette.border}` }} />
+        <span style={corner({ top: 0, left: 0, borderTop: `1px solid ${palette.border}`, borderLeft: `1px solid ${palette.border}` })} />
+        <span style={corner({ top: 0, right: 0, borderTop: `1px solid ${palette.border}`, borderRight: `1px solid ${palette.border}` })} />
+        <span style={corner({ bottom: 0, left: 0, borderBottom: `1px solid ${palette.border}`, borderLeft: `1px solid ${palette.border}` })} />
+        <span style={corner({ bottom: 0, right: 0, borderBottom: `1px solid ${palette.border}`, borderRight: `1px solid ${palette.border}` })} />
 
         <span style={{ textAlign: "center", padding: "0 8px", lineHeight: 1.1, userSelect: "none", pointerEvents: "none" }}>
           {data.label.replace(/^Piscine /i, "")}
@@ -423,10 +423,10 @@ export const StatusNode = ({ data, selected }) => {
               style={{
                 padding: "2px 6px",
                 fontSize: 10,
-                fontFamily: '"JetBrains Mono", monospace',
-                background: C.inkDeep,
-                color: C.vellumDim,
-                border: `1px solid ${C.inkLine}`,
+                fontFamily: "var(--font-mono)",
+                background: c.inkDeep,
+                color: c.vellumDim,
+                border: `1px solid ${theme.node.borderColor}`,
                 borderRadius: 1,
                 whiteSpace: "nowrap",
                 pointerEvents: "auto",
@@ -441,9 +441,8 @@ export const StatusNode = ({ data, selected }) => {
           language={data.language}
           color={data.logoColor}
           size={size}
-          scale={0.34}
+          scale={0.42}
           offset={0.1}
-          max={3}
         />
 
         <Handle type="source" position={Position.Bottom} style={{ opacity: 0, pointerEvents: "none" }} />
@@ -456,23 +455,12 @@ export const StatusNode = ({ data, selected }) => {
   const boxH = isRect ? size * RECT_RATIO.h : size;
 
   const isMainNode = data.label && data.label.toUpperCase() === "TRONC COMMUN";
-  const isValidated = status === "validated";
-  const isFailed = status === "failed";
+  const isIdle = status === "available";
 
-  const isInProgress = status === "in-progress";
-
-  const starBg = isValidated
-    ? C.gold
-    : isFailed
-    ? C.rust
-    : isInProgress
-    ? C.azure
-    : C.inkSoft;
-  const borderColor = isValidated ? C.goldSoft : isFailed ? C.rustSoft
-    : isInProgress ? C.azureSoft : C.vellumMute;
-  const textColor = isValidated || isFailed || isInProgress ? C.inkDeep : C.vellum;
-  const selectionGlow = isValidated ? C.gold : isFailed ? C.rust
-    : isInProgress ? C.azure : C.vellumDim;
+  const starBg = isIdle ? theme.node.idleFill : tone.main;
+  const borderColor = isIdle ? theme.node.idleBorder : tone.soft;
+  const textColor = isIdle ? theme.node.idleText : tone.onMain;
+  const selectionGlow = isIdle ? c.vellumDim : tone.main;
 
   return (
     <div
@@ -486,14 +474,8 @@ export const StatusNode = ({ data, selected }) => {
         transition: "all 0.3s",
       }}
     >
-      {isValidated && !isMainNode && (
-        <Halo width={boxW} height={boxH} color={C.gold} opacity={0.55} />
-      )}
-      {isFailed && !isMainNode && (
-        <Halo width={boxW} height={boxH} color={C.rust} opacity={0.4} />
-      )}
-      {isInProgress && !isMainNode && (
-        <Halo width={boxW} height={boxH} color={C.azure} opacity={0.35} />
+      {tone.halo > 0 && !isMainNode && (
+        <Halo width={boxW} height={boxH} color={tone.main} opacity={tone.halo} />
       )}
 
       <Handle type="target" position={Position.Top} style={{ opacity: 0, pointerEvents: "none" }} />
@@ -510,24 +492,18 @@ export const StatusNode = ({ data, selected }) => {
           background: starBg,
           border: `1px solid ${borderColor}`,
           color: textColor,
-          fontFamily: '"JetBrains Mono", monospace',
+          fontFamily: "var(--font-mono)",
           fontSize: Math.max(9, size / 5.5),
           fontWeight: 500,
           letterSpacing: "0.03em",
           textTransform: "uppercase",
-          animation: isValidated
-            ? "star-pulse 4s ease-in-out infinite"
-            : isFailed
-            ? "star-flicker 5s linear infinite"
-            : "none",
-          boxShadow: isMainNode 
-            ? "none" 
+          animation: tone.animation,
+          boxShadow: isMainNode
+            ? "none"
             : selected
-            ? `0 0 0 1.5px ${selectionGlow}, 0 0 24px ${selectionGlow}90`
-            : isValidated
-            ? `0 0 12px ${C.gold}30`
-            : isInProgress
-            ? `0 0 12px ${C.azure}30`
+            ? `0 0 0 1.5px ${selectionGlow}, 0 0 24px ${alpha(selectionGlow, 0.565)}`
+            : tone.glow > 0
+            ? `0 0 12px ${alpha(tone.main, tone.glow)}`
             : "none",
           zIndex: 2,
           transition: "box-shadow 0.2s",

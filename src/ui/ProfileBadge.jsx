@@ -1,4 +1,9 @@
+import { useTheme } from "../theme";
+import { alpha } from "../theme/color";
+
 export const ProfileBadge = ({ profile, size = 76 }) => {
+  const { c, theme } = useTheme();
+
   if (!profile) return null;
 
   const label = profile.level != null
@@ -16,10 +21,11 @@ export const ProfileBadge = ({ profile, size = 76 }) => {
       style={{
         width: size,
         height: size,
-        background: "rgba(10, 12, 20, 0.85)",
-        border: "1px solid var(--ink-line)",
+        background: theme.surface.hud,
+        border: `1px solid ${c.inkLine}`,
         borderRadius: 2,
         backdropFilter: "blur(12px)",
+        // Ombre portée : neutre, indépendante de la palette.
         boxShadow: "0 12px 32px rgba(0, 0, 0, 0.5)",
       }}
     >
@@ -33,7 +39,7 @@ export const ProfileBadge = ({ profile, size = 76 }) => {
       ) : (
         <div
           className="w-full h-full flex items-center justify-center font-serif text-vellum-mute"
-          style={{ fontSize: size * 0.4, background: "var(--ink-soft)" }}
+          style={{ fontSize: size * 0.4, background: c.inkSoft }}
         >
           {profile.login?.[0]?.toUpperCase() || "?"}
         </div>
@@ -41,7 +47,7 @@ export const ProfileBadge = ({ profile, size = 76 }) => {
 
       <span
         className="absolute inset-x-0 bottom-0 py-1 text-center font-mono text-[10px] text-vellum opacity-0 group-hover:opacity-100 transition-opacity"
-        style={{ background: "rgba(5, 6, 10, 0.85)" }}
+        style={{ background: alpha(c.inkDeep, 0.85) }}
       >
         {profile.login}
       </span>

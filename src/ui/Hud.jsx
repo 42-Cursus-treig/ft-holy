@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { rushList } from "../data/projectDB";
 import { childIdsOf } from "../data/graphs";
+import { useTheme } from "../theme";
 
 export const Hud = ({
   progress,
@@ -17,6 +18,8 @@ export const Hud = ({
   subGraph,
   profile,
 }) => {
+  const { c, theme, statusOf } = useTheme();
+
   const stats = useMemo(() => {
     const childIds = childIdsOf(definitions);
 
@@ -60,9 +63,12 @@ export const Hud = ({
 
   const [confirmingLogout, setConfirmingLogout] = useState(false);
 
+  const accent = statusOf("validated").main;
+  const alert = statusOf("failed").main;
+
   const card = {
-    background: "rgba(10, 12, 20, 0.85)",
-    border: "1px solid var(--ink-line)",
+    background: theme.surface.hud,
+    border: `1px solid ${c.inkLine}`,
     borderRadius: 2,
   };
 
@@ -78,7 +84,11 @@ export const Hud = ({
             {String(stats.validated).padStart(3, "0")}
           </span>
           <span className="text-vellum-mute text-sm">/ {stats.total}</span>
-          {stats.failed > 0 && <span className="text-rust text-xs ml-2">−{stats.failed}</span>}
+          {stats.failed > 0 && (
+            <span className="text-xs ml-2" style={{ color: alert }}>
+              −{stats.failed}
+            </span>
+          )}
         </div>
       </div>
 
@@ -99,14 +109,14 @@ export const Hud = ({
           className="px-4 py-2.5 text-left backdrop-blur-md transition-colors"
           style={{
             ...card,
-            border: `1px solid ${subGraph === "rush" ? "var(--gold)" : "var(--ink-line)"}`,
+            border: `1px solid ${subGraph === "rush" ? accent : c.inkLine}`,
           }}
         >
           <div className="smallcaps text-[9px] mb-1 text-vellum-mute">RUSHES</div>
           <div className="flex items-baseline gap-2 font-mono">
             <span
               className="text-lg font-medium transition-colors"
-              style={{ color: subGraph === "rush" ? "var(--gold)" : "var(--vellum)" }}
+              style={{ color: subGraph === "rush" ? accent : c.vellum }}
             >
               {stats.rushDone}
             </span>
@@ -120,7 +130,7 @@ export const Hud = ({
           className="flex items-center gap-2 px-3 py-2.5 backdrop-blur-md"
           style={{
             ...card,
-            border: `1px solid ${hasLocalDraft ? "var(--gold)" : "var(--ink-line)"}`,
+            border: `1px solid ${hasLocalDraft ? accent : c.inkLine}`,
           }}
         >
           {user?.avatar && <img src={user.avatar} alt="" className="w-6 h-6 rounded-full" />}
@@ -135,8 +145,8 @@ export const Hud = ({
             disabled={!hasLocalDraft || syncing}
             className="smallcaps text-[9px] px-2 py-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             style={{
-              color: hasLocalDraft ? "var(--gold)" : "var(--vellum-mute)",
-              border: `1px solid ${hasLocalDraft ? "var(--gold)" : "var(--ink-line)"}`,
+              color: hasLocalDraft ? accent : c.vellumMute,
+              border: `1px solid ${hasLocalDraft ? accent : c.inkLine}`,
               borderRadius: 1,
             }}
           >
@@ -148,7 +158,8 @@ export const Hud = ({
                 onLogout();
                 setConfirmingLogout(false);
               }}
-              className="smallcaps text-[9px] px-2 py-1 text-rust border border-rust rounded-sm"
+              className="smallcaps text-[9px] px-2 py-1 rounded-sm"
+              style={{ color: alert, border: `1px solid ${alert}` }}
             >
               CONFIRMER
             </button>

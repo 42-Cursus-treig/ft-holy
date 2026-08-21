@@ -6,23 +6,6 @@
 
 :root {
   color-scheme: dark;
-  
-  --ink-deep: #05060A;
-  --ink: #0A0C14;
-  --ink-soft: #11141E;
-  --ink-line: #4A5270;
-  --ink-hairline: #1C2030;
-
-  --vellum: #F4F1E8;
-  --vellum-dim: #C5C1B1;
-  --vellum-mute: #8E8A7A;
-
-  --gold: #D4AF37;
-  --gold-soft: #8A7223;
-  --rust: #A63D2A;
-  --rust-soft: #6B281C;
-  --azure: #4A90D9;
-  --azure-soft: #2C5A8A;
 
   --hud-bar-height: 40px;
   --hud-bar-width: 340px;
@@ -35,8 +18,8 @@
 @layer base {
   body {
     @apply overflow-hidden;
-    background: var(--ink-deep);
-    color: var(--vellum);
+    background: var(--ink-deep, #05060A);
+    color: var(--vellum, #F4F1E8);
     font-family: var(--font-sans);
   }
 
@@ -86,7 +69,7 @@
     background: radial-gradient(
       ellipse at center,
       transparent 70%,
-      rgba(5, 6, 10, 0.45) 100%
+      color-mix(in srgb, var(--ink-deep) 45%, transparent) 100%
     );
   }
 
@@ -98,7 +81,7 @@
     height: var(--hud-bar-height);
     display: flex;
     align-items: stretch;
-    background: rgba(10, 12, 20, 0.85);
+    background: color-mix(in srgb, var(--ink) 85%, transparent);
     border: 1px solid var(--ink-line);
     border-radius: 2px;
     backdrop-filter: blur(12px);

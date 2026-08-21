@@ -9,6 +9,8 @@ import {
   searchUrl,
   isValidLogin,
 } from "../config";
+import { useTheme } from "../theme";
+import { alpha } from "../theme/color";
 
 const SIGIL = "@";
 const MIN_QUERY = 2;
@@ -24,6 +26,7 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
   const inputRef = useRef(null);
   const listRef = useRef(null);
   const { setCenter } = useReactFlow();
+  const { c, theme, statusOf } = useTheme();
 
   const isStudentMode = term.startsWith(SIGIL);
   const query = (isStudentMode ? term.slice(SIGIL.length) : term).trim().toLowerCase();
@@ -197,7 +200,7 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
     });
   };
 
-  const accent = isStudentMode ? "var(--azure)" : "var(--gold)";
+  const accent = isStudentMode ? c.azure : statusOf("validated").main;
 
   const hint = !isStudentMode
     ? null
@@ -214,8 +217,8 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
     : null;
 
   const dropdown = {
-    background: "rgba(10, 12, 20, 0.95)",
-    border: "1px solid var(--ink-line)",
+    background: theme.surface.panel,
+    border: `1px solid ${c.inkLine}`,
     borderRadius: 2,
   };
 
@@ -223,11 +226,11 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
     <div className="relative" style={{ width: "var(--hud-bar-width)" }}>
       <div
         className="hud-bar items-center gap-2 px-3 transition-colors"
-        style={{ border: `1px solid ${isStudentMode ? "var(--azure-soft)" : "var(--ink-line)"}` }}
+        style={{ border: `1px solid ${isStudentMode ? c.azureSoft : c.inkLine}` }}
       >
         <span
           className="smallcaps text-[9px] transition-colors"
-          style={{ color: isStudentMode ? "var(--azure)" : "var(--vellum-mute)" }}
+          style={{ color: isStudentMode ? c.azure : c.vellumMute }}
         >
           {isStudentMode ? "STUDENT" : "PROJET"}
         </span>
@@ -243,7 +246,7 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
           autoComplete="off"
         />
         {searchState === "loading" ? (
-          <span className="font-mono text-[9px] text-azure animate-pulse">···</span>
+          <span className="font-mono text-[9px] animate-pulse" style={{ color: c.azure }}>···</span>
         ) : (
           <div className="flex items-center gap-1">
             <kbd className="font-mono text-[9px] px-1.5 py-0.5 text-vellum-mute bg-ink-deep border border-ink-line rounded-sm">CTRL</kbd>
@@ -265,14 +268,14 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
               onClick={() => handleSelect(r)}
               className="px-3 py-2 cursor-pointer border-b border-ink-line last:border-0 transition-colors flex items-center gap-2.5"
               style={{
-                background: i === activeIndex ? "rgba(212, 175, 55, 0.08)" : undefined,
+                background: i === activeIndex ? alpha(accent, 0.08) : undefined,
                 borderLeft: `2px solid ${i === activeIndex ? accent : "transparent"}`,
               }}
             >
               {r.kind === "student" && (
                 <span
                   className="w-6 h-6 shrink-0 flex items-center justify-center overflow-hidden"
-                  style={{ border: "1px solid var(--ink-line)", borderRadius: "50%" }}
+                  style={{ border: `1px solid ${c.inkLine}`, borderRadius: "50%" }}
                 >
                   {r.avatar ? (
                     <img src={r.avatar} alt="" className="w-full h-full object-cover" />
@@ -286,7 +289,7 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
               <div className="min-w-0 flex-1">
                 <div
                   className={r.kind === "student" ? "font-mono text-xs truncate" : "font-serif text-sm"}
-                  style={{ color: i === activeIndex ? accent : "var(--vellum)" }}
+                  style={{ color: i === activeIndex ? accent : c.vellum }}
                 >
                   {r.primary}
                 </div>

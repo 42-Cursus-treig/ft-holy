@@ -11,12 +11,16 @@ const seeded = (seed) => {
   };
 };
 
-const HALOS = `<defs>
-  <radialGradient id="hv"><stop offset="0" stop-color="#F4F1E8" stop-opacity="0.5"/><stop offset="1" stop-color="#F4F1E8" stop-opacity="0"/></radialGradient>
-  <radialGradient id="hg"><stop offset="0" stop-color="#D4AF37" stop-opacity="0.5"/><stop offset="1" stop-color="#D4AF37" stop-opacity="0"/></radialGradient>
+const halosDefs = (primary, accent) => `<defs>
+  <radialGradient id="hv"><stop offset="0" stop-color="${primary}" stop-opacity="0.5"/><stop offset="1" stop-color="${primary}" stop-opacity="0"/></radialGradient>
+  <radialGradient id="hg"><stop offset="0" stop-color="${accent}" stop-opacity="0.5"/><stop offset="1" stop-color="${accent}" stop-opacity="0"/></radialGradient>
 </defs>`;
 
-const buildTile = ({ seed, tile, count, rMin, rMax, aMin, aMax, gold, halo }) => {
+const buildTile = (
+  { seed, tile, count, rMin, rMax, aMin, aMax, gold, halo },
+  primary,
+  accent
+) => {
   const rand = seeded(seed);
   const margin = rMax * 4;
   const span = tile - margin * 2;
@@ -27,16 +31,16 @@ const buildTile = ({ seed, tile, count, rMin, rMax, aMin, aMax, gold, halo }) =>
     const cy = (margin + rand() * span).toFixed(1);
     const r = rMin + rand() * (rMax - rMin);
     const alpha = aMin + rand() * (aMax - aMin);
-    const isGold = rand() < gold;
-    const fill = isGold ? "#D4AF37" : "#F4F1E8";
+    const isAccent = rand() < gold;
+    const fill = isAccent ? accent : primary;
 
     if (halo) {
-      shapes += `<circle cx="${cx}" cy="${cy}" r="${(r * 4).toFixed(2)}" fill="url(#${isGold ? "hg" : "hv"})" opacity="${(alpha * 0.7).toFixed(2)}"/>`;
+      shapes += `<circle cx="${cx}" cy="${cy}" r="${(r * 4).toFixed(2)}" fill="url(#${isAccent ? "hg" : "hv"})" opacity="${(alpha * 0.7).toFixed(2)}"/>`;
     }
     shapes += `<circle cx="${cx}" cy="${cy}" r="${r.toFixed(2)}" fill="${fill}" opacity="${alpha.toFixed(2)}"/>`;
   }
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${tile}" height="${tile}" viewBox="0 0 ${tile} ${tile}">${halo ? HALOS : ""}${shapes}</svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${tile}" height="${tile}" viewBox="0 0 ${tile} ${tile}">${halo ? halosDefs(primary, accent) : ""}${shapes}</svg>`;
   return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 };
 
@@ -46,25 +50,22 @@ const LAYERS = [
   { seed: 1337, tile: 980, count: 14, rMin: 1.6, rMax: 2.7, aMin: 0.6, aMax: 0.95, gold: 0.25, halo: true, factor: 0.18 },
 ];
 
-export const Starfield = () => {
+export const Starfield = ({ theme }) => {
   const panX = useStore((s) => s.transform[0]);
   const panY = useStore((s) => s.transform[1]);
 
+  const primary = theme?.background?.stars?.primary ?? theme?.colors?.vellum ?? "#F4F1E8";
+  const accent = theme?.background?.stars?.accent ?? theme?.colors?.gold ?? "#D4AF37";
+  const nebula = theme?.background?.nebula ?? "none";
+
   const layers = useMemo(
-    () => LAYERS.map((layer) => ({ ...layer, image: buildTile(layer) })),
-    []
+    () => LAYERS.map((layer) => ({ ...layer, image: buildTile(layer, primary, accent) })),
+    [primary, accent]
   );
 
   return (
     <div className="starfield" aria-hidden="true">
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(112deg, transparent 34%, rgba(190, 200, 235, 0.05) 50%, transparent 66%), radial-gradient(60% 45% at 68% 28%, rgba(120, 145, 200, 0.05), transparent 70%)",
-        }}
-      />
+      <div style={{ position: "absolute", inset: 0, background: nebula }} />
 
       {layers.map((layer) => (
         <div

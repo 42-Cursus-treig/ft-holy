@@ -1,9 +1,14 @@
 import { useState } from "react";
-import { GITHUB_CLIENT_ID, ADMIN_USERNAME } from "../config";
+import { GITHUB_CLIENT_ID } from "../config";
+import { useTheme } from "../theme";
+import { alpha } from "../theme/color";
 
 export const AuthModal = ({ onClose, auth }) => {
   const [pat, setPat] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const { c, statusOf } = useTheme();
+
+  const accent = statusOf("validated");
 
   const submitPAT = async (e) => {
     e.preventDefault();
@@ -16,16 +21,17 @@ export const AuthModal = ({ onClose, auth }) => {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 fade-in"
-      style={{ background: "rgba(5, 6, 10, 0.7)", backdropFilter: "blur(4px)" }}
+      style={{ background: alpha(c.inkDeep, 0.7), backdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
       <div
         className="w-full max-w-md p-6"
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "var(--ink)",
-          border: "1px solid var(--ink-line)",
+          background: c.ink,
+          border: `1px solid ${c.inkLine}`,
           borderRadius: 2,
+          // Ombre portée : volontairement neutre, elle ne dépend pas de la palette.
           boxShadow: "0 24px 64px rgba(0, 0, 0, 0.8)",
         }}
       >
@@ -43,8 +49,13 @@ export const AuthModal = ({ onClose, auth }) => {
               Ouvre l'URL ci-dessous et entre ce code :
             </p>
             <div
-              className="font-mono text-2xl text-gold text-center py-3 tracking-widest"
-              style={{ border: "1px solid var(--gold-soft)", borderRadius: 1, background: "rgba(212, 175, 55, 0.05)" }}
+              className="font-mono text-2xl text-center py-3 tracking-widest"
+              style={{
+                color: accent.main,
+                border: `1px solid ${accent.soft}`,
+                borderRadius: 1,
+                background: alpha(accent.main, 0.05),
+              }}
             >
               {auth.deviceInfo.user_code}
             </div>
@@ -52,7 +63,8 @@ export const AuthModal = ({ onClose, auth }) => {
               href={auth.deviceInfo.verification_uri}
               target="_blank"
               rel="noreferrer"
-              className="block text-center text-azure smallcaps text-[10px] hover:text-vellum"
+              className="block text-center smallcaps text-[10px] hover:text-vellum transition-colors"
+              style={{ color: c.azure }}
             >
               {auth.deviceInfo.verification_uri} ↗
             </a>
@@ -70,10 +82,18 @@ export const AuthModal = ({ onClose, auth }) => {
                 <input
                   type="password"
                   value={pat}
-                  autoComplete="false"
+                  autoComplete="off"
                   onChange={(e) => setPat(e.target.value)}
                   placeholder="ghp_…"
-                  className="w-full px-3 py-2 bg-slate-900 text-white font-mono text-sm border border-slate-600 rounded-sm focus:border-yellow-500 focus:outline-none"                  autoFocus
+                  className="w-full px-3 py-2 font-mono text-sm rounded-sm focus:outline-none transition-colors"
+                  style={{
+                    background: c.inkDeep,
+                    color: c.vellum,
+                    border: `1px solid ${c.inkLine}`,
+                  }}
+                  onFocus={(e) => (e.currentTarget.style.borderColor = accent.main)}
+                  onBlur={(e) => (e.currentTarget.style.borderColor = c.inkLine)}
+                  autoFocus
                 />
               </div>
               <button
@@ -81,9 +101,9 @@ export const AuthModal = ({ onClose, auth }) => {
                 disabled={!pat.trim() || submitting}
                 className="w-full py-2 smallcaps text-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{
-                  background: "var(--gold)",
-                  color: "var(--ink-deep)",
-                  border: "1px solid var(--gold-soft)",
+                  background: accent.main,
+                  color: accent.onMain,
+                  border: `1px solid ${accent.soft}`,
                   borderRadius: 1,
                 }}
               >
@@ -108,7 +128,9 @@ export const AuthModal = ({ onClose, auth }) => {
             )}
 
             {auth.error && (
-              <p className="text-rust text-xs mt-3 font-mono">{auth.error}</p>
+              <p className="text-xs mt-3 font-mono" style={{ color: statusOf("failed").main }}>
+                {auth.error}
+              </p>
             )}
           </>
         )}
