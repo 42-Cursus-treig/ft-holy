@@ -1,7 +1,6 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import {
   ReactFlow,
-  Background,
   Panel,
   useNodesState,
   useEdgesState,
@@ -19,9 +18,9 @@ import { AuthModal } from "./ui/AuthModal";
 import { GraphSwitcher } from "./ui/GraphSwitcher";
 import { NotFound } from "./ui/NotFound";
 import { OrbitRing } from "./graph/OrbitRing";
-import { Starfield } from "./graph/Starfield";
 import DevToolbar from "./ui/DevToolbar";
 
+import { useTheme } from "./theme";
 import { generateId, rushList } from "./data/projectDB";
 import {
   WORLDS,
@@ -36,14 +35,7 @@ import { useGitHubAuth } from "./hooks/useGitHubAuth";
 import { commitProgress } from "./lib/github";
 import { positionsKey, READ_ONLY, COMPACT, GRAPH_PARAM, LOGIN } from "./config";
 
-const EDGE_COLORS = {
-  validated: "#D4AF37",
-  failed: "#A63D2A",
-  "in-progress": "#4A90D9",
-  idle: "#7C86A8",
-};
-
-const styleEdges = (nodes, edges, showArrows) =>
+const styleEdges = (nodes, edges, showArrows, theme) =>
   edges.map((edge) => {
     const sourceNode = nodes.find((n) => n.id === edge.source);
     let status = sourceNode?.data?.status;
@@ -56,30 +48,24 @@ const styleEdges = (nodes, edges, showArrows) =>
       if (isGroupValidated) status = "validated";
     }
 
-    const color = EDGE_COLORS[status] || EDGE_COLORS.idle;
+    const isKnown = Boolean(status) && status !== "available";
+    const color = isKnown ? theme.edge.colorFor(status) : theme.edge.idle;
+    const shape = theme.edge.styleFor(isKnown ? status : "idle");
 
-    const base = {
+    return {
       ...edge,
       type: "floating",
       markerEnd: showArrows
         ? { type: "arrowclosed", width: 18, height: 18, color }
         : undefined,
+      animated: shape.animated,
+      style: {
+        stroke: color,
+        strokeWidth: shape.width,
+        opacity: shape.opacity,
+        ...(shape.dash ? { strokeDasharray: shape.dash } : null),
+      },
     };
-
-    if (status === "validated") {
-      return { ...base, animated: true, style: { stroke: color, strokeWidth: 1.6, opacity: 1 } };
-    }
-    if (status === "failed") {
-      return {
-        ...base,
-        animated: false,
-        style: { stroke: color, strokeWidth: 1.4, strokeDasharray: "4,4", opacity: 0.9 },
-      };
-    }
-    if (status === "in-progress") {
-      return { ...base, animated: true, style: { stroke: color, strokeWidth: 1.6, opacity: 0.9 } };
-    }
-    return { ...base, animated: false, style: { stroke: color, strokeWidth: 1.6, opacity: 0.95 } };
   });
 
 const readPositions = (worldId) => {
@@ -95,7 +81,7 @@ const writePositions = (worldId, positions) => {
   try {
     localStorage.setItem(positionsKey(worldId), JSON.stringify(positions));
   } catch {
-    // localStorage may be unavailable in restricted browser contexts.
+    //
   }
 };
 
@@ -120,6 +106,7 @@ export default function App() {
 
   const progress = useProgress();
   const { getStatus, getMark } = progress;
+  const { theme } = useTheme();
   const auth = useGitHubAuth();
   const isAdmin = auth.isAdmin && !READ_ONLY;
 
@@ -292,6 +279,7 @@ export default function App() {
             description: def.desc,
             size: def.size ?? world.nodeSize,
             shape: def.shape,
+            locked: def.locked,
             pdfUrl: def.pdfUrl,
             url: def.url,
             langPdf: def.langPdf,
@@ -374,7 +362,7 @@ export default function App() {
       }
 
       setNodes(freshNodes);
-      setEdges(styleEdges(freshNodes, freshEdges, showArrows));
+      setEdges(styleEdges(freshNodes, freshEdges, showArrows, theme));
 
       if (shouldFitView) {
         const inset = COMPACT ? 0 : world.topInset ?? 0;
@@ -415,6 +403,7 @@ export default function App() {
       getStatus,
       getMark,
       canEditPositions,
+      theme,
       setNodes,
       setEdges,
       fitView,
@@ -542,18 +531,16 @@ export default function App() {
       ? definitions[subGraph]?.label || subGraph
       : null;
 
-  // ---- Sorties en page 404 ------------------------------------------------
-  // Placées après TOUS les hooks : un retour anticipé plus haut casserait
-  // l'ordre des hooks entre deux rendus.
+  const banner = {
+    background: theme.surface.panel,
+    border: `1px solid ${theme.colors.rustSoft}`,
+    borderRadius: 2,
+  };
 
-  // Login inexistant ou invalide : erreur définitive côté worker.
   if (progress.error?.fatal) {
     return <NotFound login={LOGIN} message={progress.error.message} />;
   }
 
-  // Login valide mais sans cursus consultable (staff, piscine non commencée) :
-  // allowedWorlds renvoie [], worldOrder est vide, et le graphe s'afficherait
-  // entièrement "available". Deuxième source de page blanche, distincte du 404.
   if (READ_ONLY && progress.remoteLoaded && progress.worlds?.length === 0) {
     return (
       <NotFound
@@ -568,7 +555,7 @@ export default function App() {
       ref={paneRef}
       className="w-screen h-screen relative bg-ink-deep parchment-vignette"
     >
-      <Starfield />
+      <theme.Background theme={theme} />
 
       <ReactFlow
         nodes={nodes}
@@ -646,15 +633,10 @@ export default function App() {
 
       {!COMPACT && <ProfileBadge profile={progress.profile} />}
 
-      {/* Erreur passagère : le graphe reste consultable. */}
       {progress.error && !progress.error.fatal && !COMPACT && (
         <div
           className="absolute bottom-32 left-5 max-w-md px-4 py-2 text-xs font-mono text-rust z-20"
-          style={{
-            background: "rgba(10, 12, 20, 0.95)",
-            border: "1px solid var(--rust-soft)",
-            borderRadius: 2,
-          }}
+          style={banner}
         >
           {progress.error.message}
         </div>
@@ -663,11 +645,7 @@ export default function App() {
       {syncError && (
         <div
           className="absolute bottom-20 left-5 max-w-md px-4 py-2 text-xs font-mono text-rust z-20"
-          style={{
-            background: "rgba(10, 12, 20, 0.95)",
-            border: "1px solid var(--rust-soft)",
-            borderRadius: 2,
-          }}
+          style={banner}
         >
           {syncError}
         </div>
