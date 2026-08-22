@@ -179,8 +179,11 @@ export const StatusNode = ({ data, selected }) => {
     data.shape !== "rect" &&
     !(data.label && data.label.toUpperCase() === "TRONC COMMUN");
 
+  // Le masque reste monté le temps de son animation de sortie, sinon valider
+  // puis réinitialiser le ferait disparaître d'un coup.
   const maskPresence = usePresence(isMasked, 400);
   const revealLabel = hovered || selected;
+
 
   if (isLocked) {
     return (
@@ -477,6 +480,10 @@ export const StatusNode = ({ data, selected }) => {
   const isMainNode = data.label && data.label.toUpperCase() === "TRONC COMMUN";
   const isIdle = status === "available";
 
+  // Face masquée : réservée aux nœuds ronds dont le statut est connu. Un projet
+  // vierge garde le disque nu — le masque devient ainsi le signe qu'on y a
+  // touché, avant même de lire la couleur.
+
   const starBg = isIdle ? theme.node.idleFill : tone.main;
   const borderColor = isIdle ? theme.node.idleBorder : tone.soft;
   const textColor = isIdle ? theme.node.idleText : tone.onMain;
@@ -531,7 +538,12 @@ export const StatusNode = ({ data, selected }) => {
           transition: "box-shadow 0.2s",
         }}
       >
-        {maskPresence.mounted && (
+        {/* La condition sur theme.node.mask fait disparaître les masques
+            INSTANTANÉMENT au changement de thème : une sortie animée pendant
+            que la palette a déjà basculé n'aurait aucun sens, et le composant
+            lirait une configuration disparue. L'animation de sortie ne sert
+            qu'aux changements de statut, où le thème ne bouge pas. */}
+        {maskPresence.mounted && theme.node.mask && (
           <MaskFace
             size={boxW}
             tone={tone}
@@ -559,6 +571,8 @@ export const StatusNode = ({ data, selected }) => {
         <LangBadge language={data.language} color={data.logoColor} size={Math.min(boxW, boxH)} />
       </div>
 
+      {/* Les lentilles occupent le centre : le nom se révèle au-dessus du
+          disque, au survol ou à la sélection, et se replie ensuite. */}
       {maskPresence.mounted && (
         <div
           className={`node-reveal${revealLabel ? " is-shown" : ""}`}

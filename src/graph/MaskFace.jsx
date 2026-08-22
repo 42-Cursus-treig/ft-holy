@@ -1,5 +1,17 @@
 import { useId } from "react";
 
+/**
+ * Face de nœud masquée : disque coloré par le statut, toile radiale gravée
+ * dessus, deux lentilles anguleuses.
+ *
+ * Dessin original — le motif est une toile générique et les lentilles sont des
+ * formes géométriques, pas la reprise d'un design déposé.
+ *
+ * Tout est en unités de la viewBox 0..100 : le composant se met à l'échelle
+ * par `size`, donc un nœud de 60px et un de 90px donnent exactement la même
+ * face, sans recalcul.
+ */
+
 const CX = 50;
 const CY = 50;
 const SPOKES = 8;
@@ -9,6 +21,8 @@ const polar = (r, a) => [CX + r * Math.cos(a), CY + r * Math.sin(a)];
 
 const buildWeb = () => {
   const step = (Math.PI * 2) / SPOKES;
+  // Décalage d'un demi-pas : aucun rayon ne part à l'horizontale, ce qui
+  // éviterait qu'un rayon traverse les deux lentilles de part en part.
   const offset = step / 2;
 
   const spokes = [];
@@ -18,6 +32,8 @@ const buildWeb = () => {
     spokes.push(`M ${CX},${CY} L ${x.toFixed(1)},${y.toFixed(1)}`);
   }
 
+  // Entre deux rayons, le fil ne va pas droit : il s'incurve vers le centre.
+  // C'est cette flèche qui fait lire « toile » plutôt que « cible ».
   const arcs = [];
   for (const r of RINGS) {
     let d = "";
@@ -37,15 +53,24 @@ const buildWeb = () => {
   return { spokes, arcs };
 };
 
+// Lentilles : goutte anguleuse, pointe vers le centre. Miroir exact pour que
+// le visage reste symétrique.
 const LENS_LEFT = "M 14,42 C 23,31 39,34 45,45 C 38,58 21,57 14,42 Z";
 const LENS_RIGHT = "M 86,42 C 77,31 61,34 55,45 C 62,58 79,57 86,42 Z";
 const GLINT_LEFT = "M 21,42 C 26,36 34,37 37,42 C 33,47 25,47 21,42 Z";
 const GLINT_RIGHT = "M 79,42 C 74,36 66,37 63,42 C 67,47 75,47 79,42 Z";
 
+// La toile ne dépend d'aucune prop : calculée une fois au chargement du module
+// plutôt qu'à chaque montage de nœud.
 const WEB = buildWeb();
 
 export const MaskFace = ({ size, tone, mask, exiting = false }) => {
   const uid = useId().replace(/:/g, "");
+
+  // Garde-fou : un thème sans configuration de masque ne doit pas faire
+  // exploser le composant. useId est appelé au-dessus, l'ordre des hooks
+  // reste donc stable.
+  if (!mask) return null;
 
   const clipId = `mask-clip-${uid}`;
 
