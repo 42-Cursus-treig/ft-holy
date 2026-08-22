@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { Handle, Position } from "@xyflow/react";
 import { getIconList } from "./iconUrl";
 import { useTheme } from "../theme";
 import { alpha, slugColor } from "../theme/color";
+import { MaskFace } from "./MaskFace";
+import { usePresence } from "./usePresence";
 
 const IconDisc = ({ src, title, diameter, background, border, style }) => (
   <div
@@ -153,6 +156,7 @@ const RECT_RATIO = { w: 1.6, h: 0.62 };
 
 export const StatusNode = ({ data, selected }) => {
   const { c, theme, statusOf } = useTheme();
+  const [hovered, setHovered] = useState(false);
 
   const size = data.size || 60;
   const isLocked = data.locked === true;
@@ -457,6 +461,17 @@ export const StatusNode = ({ data, selected }) => {
   const isMainNode = data.label && data.label.toUpperCase() === "TRONC COMMUN";
   const isIdle = status === "available";
 
+  // Face masquée : réservée aux nœuds ronds dont le statut est connu. Un projet
+  // vierge garde le disque nu — le masque devient ainsi le signe qu'on y a
+  // touché, avant même de lire la couleur.
+  const isMasked =
+    theme.node.shape === "mask" && !isIdle && !isRect && !isMainNode && Boolean(theme.node.mask);
+
+  // Le masque reste monté le temps de son animation de sortie, sinon valider
+  // puis réinitialiser le ferait disparaître d'un coup.
+  const maskPresence = usePresence(isMasked, 400);
+  const revealLabel = hovered || selected;
+
   const starBg = isIdle ? theme.node.idleFill : tone.main;
   const borderColor = isIdle ? theme.node.idleBorder : tone.soft;
   const textColor = isIdle ? theme.node.idleText : tone.onMain;
@@ -464,6 +479,8 @@ export const StatusNode = ({ data, selected }) => {
 
   return (
     <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
         position: "relative",
         width: boxW,
@@ -509,20 +526,60 @@ export const StatusNode = ({ data, selected }) => {
           transition: "box-shadow 0.2s",
         }}
       >
-        <span
-          style={{
-            textAlign: "center",
-            padding: "0 4px",
-            lineHeight: 1.05,
-            userSelect: "none",
-            pointerEvents: "none",
-          }}
-        >
-          {data.label}
-        </span>
+        {maskPresence.mounted && (
+          <MaskFace
+            size={boxW}
+            tone={tone}
+            mask={theme.node.mask}
+            exiting={maskPresence.exiting}
+          />
+        )}
+
+        {!isMasked && (
+          <span
+            className={maskPresence.mounted ? "fade-in" : undefined}
+            style={{
+              textAlign: "center",
+              padding: "0 4px",
+              lineHeight: 1.05,
+              userSelect: "none",
+              pointerEvents: "none",
+              zIndex: 1,
+            }}
+          >
+            {data.label}
+          </span>
+        )}
 
         <LangBadge language={data.language} color={data.logoColor} size={Math.min(boxW, boxH)} />
       </div>
+
+      {/* Les lentilles occupent le centre : le nom se révèle au-dessus du
+          disque, au survol ou à la sélection, et se replie ensuite. */}
+      {maskPresence.mounted && (
+        <div
+          className={`node-reveal${revealLabel ? " is-shown" : ""}`}
+          style={{
+            position: "absolute",
+            bottom: "100%",
+            left: "50%",
+            marginBottom: size * 0.14,
+            textAlign: "center",
+            whiteSpace: "nowrap",
+            fontFamily: "var(--font-mono)",
+            fontSize: Math.max(8, size / 6),
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: c.vellum,
+            textShadow: `0 1px 4px ${c.inkDeep}, 0 0 8px ${c.inkDeep}`,
+            userSelect: "none",
+            pointerEvents: "none",
+            zIndex: 4,
+          }}
+        >
+          {data.label}
+        </div>
+      )}
 
       <Handle type="source" position={Position.Bottom} style={{ opacity: 0, pointerEvents: "none" }} />
     </div>

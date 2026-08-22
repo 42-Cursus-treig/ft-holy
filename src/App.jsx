@@ -19,6 +19,7 @@ import { GraphSwitcher } from "./ui/GraphSwitcher";
 import { NotFound } from "./ui/NotFound";
 import { OrbitRing } from "./graph/OrbitRing";
 import DevToolbar from "./ui/DevToolbar";
+import { ThemeSidebar } from "./ui/ThemeSidebar";
 
 import { useTheme } from "./theme";
 import { generateId, rushList } from "./data/projectDB";
@@ -54,7 +55,7 @@ const styleEdges = (nodes, edges, showArrows, theme) =>
 
     return {
       ...edge,
-      type: "floating",
+      type: "themed",
       markerEnd: showArrows
         ? { type: "arrowclosed", width: 18, height: 18, color }
         : undefined,
@@ -99,14 +100,15 @@ export default function App() {
   const world = getWorld(worldId);
   const definitions = world.definitions;
   const childIds = useMemo(() => childIdsOf(definitions), [definitions]);
-
+  
+  const { theme } = useTheme();
+  
   const { fitView, getViewport, setViewport } = useReactFlow();
-  const edgeTypes = useMemo(() => ({ floating: FloatingEdge }), []);
+  const edgeTypes = useMemo(() => ({ themed: theme.Edge ?? FloatingEdge }), [theme]);
   const nodeTypes = useMemo(() => ({ statusNode: StatusNode, orbitRing: OrbitRing }), []);
 
   const progress = useProgress();
   const { getStatus, getMark } = progress;
-  const { theme } = useTheme();
   const auth = useGitHubAuth();
   const isAdmin = auth.isAdmin && !READ_ONLY;
 
@@ -279,7 +281,6 @@ export default function App() {
             description: def.desc,
             size: def.size ?? world.nodeSize,
             shape: def.shape,
-            locked: def.locked,
             pdfUrl: def.pdfUrl,
             url: def.url,
             langPdf: def.langPdf,
@@ -632,6 +633,7 @@ export default function App() {
       )}
 
       {!COMPACT && <ProfileBadge profile={progress.profile} />}
+      {!COMPACT && <ThemeSidebar />}
 
       {progress.error && !progress.error.fatal && !COMPACT && (
         <div
