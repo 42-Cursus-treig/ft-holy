@@ -166,6 +166,22 @@ export const StatusNode = ({ data, selected }) => {
   const status = data.status || "available";
   const tone = statusOf(status);
 
+  // Calculé ici, avant les retours anticipés des branches verrouillée, groupe
+  // et piscine : usePresence est un hook, son appel ne peut pas être
+  // conditionnel. Les booléens de forme se déduisent de `data` sans attendre.
+  const isMasked =
+    theme.node.shape === "mask" &&
+    Boolean(theme.node.mask) &&
+    status !== "available" &&
+    !isLocked &&
+    !isGroup &&
+    !isPiscine &&
+    data.shape !== "rect" &&
+    !(data.label && data.label.toUpperCase() === "TRONC COMMUN");
+
+  const maskPresence = usePresence(isMasked, 400);
+  const revealLabel = hovered || selected;
+
   if (isLocked) {
     return (
       <div
@@ -461,17 +477,6 @@ export const StatusNode = ({ data, selected }) => {
   const isMainNode = data.label && data.label.toUpperCase() === "TRONC COMMUN";
   const isIdle = status === "available";
 
-  // Face masquée : réservée aux nœuds ronds dont le statut est connu. Un projet
-  // vierge garde le disque nu — le masque devient ainsi le signe qu'on y a
-  // touché, avant même de lire la couleur.
-  const isMasked =
-    theme.node.shape === "mask" && !isIdle && !isRect && !isMainNode && Boolean(theme.node.mask);
-
-  // Le masque reste monté le temps de son animation de sortie, sinon valider
-  // puis réinitialiser le ferait disparaître d'un coup.
-  const maskPresence = usePresence(isMasked, 400);
-  const revealLabel = hovered || selected;
-
   const starBg = isIdle ? theme.node.idleFill : tone.main;
   const borderColor = isIdle ? theme.node.idleBorder : tone.soft;
   const textColor = isIdle ? theme.node.idleText : tone.onMain;
@@ -554,8 +559,6 @@ export const StatusNode = ({ data, selected }) => {
         <LangBadge language={data.language} color={data.logoColor} size={Math.min(boxW, boxH)} />
       </div>
 
-      {/* Les lentilles occupent le centre : le nom se révèle au-dessus du
-          disque, au survol ou à la sélection, et se replie ensuite. */}
       {maskPresence.mounted && (
         <div
           className={`node-reveal${revealLabel ? " is-shown" : ""}`}
