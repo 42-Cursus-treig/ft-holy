@@ -1,12 +1,14 @@
 import { createContext, useContext } from "react";
 import { inkTheme } from "./themes/ink";
+import { spiderTheme } from "./themes/spider";
 import { cssVarName } from "./color";
 
 export const THEMES = {
   ink: inkTheme,
+  spider: spiderTheme,
 };
 
-export const THEME_ORDER = ["ink"];
+export const THEME_ORDER = ["ink", "spider"];
 export const DEFAULT_THEME = "ink";
 
 export const LS_THEME_KEY = "ft_holy:theme";

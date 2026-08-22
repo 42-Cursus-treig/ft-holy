@@ -1,71 +1,15 @@
-import { getStraightPath, useInternalNode } from "@xyflow/react";
-
-const getRectIntersection = (sourceNode, targetNode) => {
-  const sourceW = sourceNode.measured.width / 2;
-  const sourceH = sourceNode.measured.height / 2;
-  const sourceCenterX = sourceNode.position.x + sourceW;
-  const sourceCenterY = sourceNode.position.y + sourceH;
-  const targetCenterX = targetNode.position.x + targetNode.measured.width / 2;
-  const targetCenterY = targetNode.position.y + targetNode.measured.height / 2;
-
-  const dx = targetCenterX - sourceCenterX;
-  const dy = targetCenterY - sourceCenterY;
-
-  if (Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) {
-    return { x: sourceCenterX, y: sourceCenterY };
-  }
-
-  const xx1 = dx / (2 * sourceW) - dy / (2 * sourceH);
-  const yy1 = dx / (2 * sourceW) + dy / (2 * sourceH);
-  const a = 1 / (Math.abs(xx1) + Math.abs(yy1));
-  const xx3 = a * xx1;
-  const yy3 = a * yy1;
-
-  return {
-    x: sourceW * (xx3 + yy3) + sourceCenterX,
-    y: sourceH * (-xx3 + yy3) + sourceCenterY,
-  };
-};
-
-const getCircleIntersection = (sourceNode, targetNode) => {
-  const sourceRadius = sourceNode.measured.width / 2;
-  const sourceCenterX = sourceNode.position.x + sourceRadius;
-  const sourceCenterY = sourceNode.position.y + sourceNode.measured.height / 2;
-  const targetCenterX = targetNode.position.x + targetNode.measured.width / 2;
-  const targetCenterY = targetNode.position.y + targetNode.measured.height / 2;
-
-  const angle = Math.atan2(targetCenterY - sourceCenterY, targetCenterX - sourceCenterX);
-
-  return {
-    x: sourceCenterX + sourceRadius * Math.cos(angle),
-    y: sourceCenterY + sourceRadius * Math.sin(angle),
-  };
-};
-
-const isRectNode = (node) => {
-  if (!node?.data) return false;
-  if (node.data.subProjects && node.data.subProjects.length > 0) return true;
-  if (node.data.label && node.data.label.toLowerCase().includes("piscine")) return true;
-  return false;
-};
+import { getStraightPath } from "@xyflow/react";
+import { useInternalNode } from "@xyflow/react";
+import { edgeEndpoints } from "./edgeGeometry";
 
 const FloatingEdge = ({ id, source, target, markerEnd, style }) => {
   const sourceNode = useInternalNode(source);
   const targetNode = useInternalNode(target);
 
-  if (!sourceNode || !targetNode || !sourceNode.measured || !targetNode.measured) {
-    return null;
-  }
+  const points = edgeEndpoints(sourceNode, targetNode);
+  if (!points) return null;
 
-  const { x: sourceX, y: sourceY } = isRectNode(sourceNode)
-    ? getRectIntersection(sourceNode, targetNode)
-    : getCircleIntersection(sourceNode, targetNode);
-
-  const { x: targetX, y: targetY } = isRectNode(targetNode)
-    ? getRectIntersection(targetNode, sourceNode)
-    : getCircleIntersection(targetNode, sourceNode);
-
-  const [edgePath] = getStraightPath({ sourceX, sourceY, targetX, targetY });
+  const [edgePath] = getStraightPath(points);
 
   return (
     <path

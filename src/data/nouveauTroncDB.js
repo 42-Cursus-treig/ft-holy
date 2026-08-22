@@ -93,8 +93,8 @@ export const nouveauTroncDefinitions = {
       {
         id: "ntc-tree-nity",
         label: "tree_nity",
-        desc: "^_^",
-        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        desc: "Créez un système de file de messages avec producteurs, consommateurs et topics, en gérant la concurrence et les communications asynchrones.",
+        pdfUrl: "subjects/treenity.subject.pdf",
       },
     ],
   },
