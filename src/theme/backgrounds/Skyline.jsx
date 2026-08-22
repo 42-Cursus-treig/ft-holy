@@ -99,22 +99,25 @@ export const Skyline = ({ theme }) => {
   const panY = useStore((s) => s.transform[1]);
 
   const bg = theme?.background ?? {};
-  const fills = bg.skyline ?? {};
+
+  const fillFar = bg.skyline?.far ?? "#0B1020";
+  const fillMid = bg.skyline?.mid ?? "#0B1020";
+  const fillNear = bg.skyline?.near ?? "#0B1020";
+  const edgeColor = bg.skylineEdge ?? null;
   const windowFill = bg.window ?? "#FFD8A0";
 
-  const layers = useMemo(
-    () =>
-      LAYERS.map((layer) => ({
+  const layers = useMemo(() => {
+    const palette = { far: fillFar, mid: fillMid, near: fillNear };
+    return LAYERS.map((layer) => ({
+      ...layer,
+      image: buildSkyline({
         ...layer,
-        image: buildSkyline({
-          ...layer,
-          fill: fills[layer.key] ?? "#0B1020",
-          edge: bg.skylineEdge ?? null,
-          windowFill,
-        }),
-      })),
-    [fills.far, fills.mid, fills.near, bg.skylineEdge, windowFill]
-  );
+        fill: palette[layer.key],
+        edge: edgeColor,
+        windowFill,
+      }),
+    }));
+  }, [fillFar, fillMid, fillNear, edgeColor, windowFill]);
 
   return (
     <div className="starfield" aria-hidden="true">
