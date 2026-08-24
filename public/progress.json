@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-14T21:36:32.791Z",
+  "updatedAt": "2026-08-24T11:14:11.382Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -158,7 +158,11 @@
     "cursus-rush-07": "validated",
     "cursus-rush-03": "validated",
     "cursus-rush-04": "validated",
-    "cursus-rush-08": "validated"
+    "cursus-rush-08": "validated",
+    "ntc-tree-nity": "validated",
+    "nibbler": "validated",
+    "red-tetris": "validated",
+    "ft-script": "validated"
   },
   "marks": {}
 }
