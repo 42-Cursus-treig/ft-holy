@@ -78,7 +78,7 @@ export const nouveauTroncDefinitions = {
   "tc-the-answer-protocol": {
     label: "The Answer Protocol",
     rank: 5,
-    lang: "java",
+    lang: ["java", "zig", "cpp", "c", "go"],
     desc: "Concevoir en équipe un jeu d’aventure textuel multijoueur reposant sur un serveur TCP et un protocole réseau conforme à une RFC, avec des clients en ligne de commande et graphiques, la gestion des joueurs, du chat, des groupes et d’objets uniques dans un monde persistant.",
   },
   "ntc-choix": {
@@ -93,9 +93,9 @@ export const nouveauTroncDefinitions = {
       {
         id: "ntc-tree-nity",
         label: "tree_nity",
-        desc: "Créez un système de file de messages avec producteurs, consommateurs et topics, en gérant la concurrence et les communications asynchrones.",
+        desc: "Créez un système de file de messages avec producteurs, consommateurs et topics, en gérant la concurrence et les communications asynchrones. Brought by Kyfontan.",
         pdfUrl: "subjects/treenity.subject.pdf",
-      },
+      },  
     ],
   },
 };
