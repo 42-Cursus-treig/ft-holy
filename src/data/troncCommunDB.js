@@ -41,7 +41,7 @@ export const commonCoreProjects = {
   },
   "tc-transcendence": {
     label: "ft_transcendence",
-    lang: "typescript",
+    lang: ["typescript", "javascript", "css", "html5", "python"],
     desc: "Concevoir une application web complète autour du jeu Pong, intégrant frontend, backend, authentification, multijoueur et fonctionnalités sociales.",
   },
 };

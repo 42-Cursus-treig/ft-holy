@@ -10,6 +10,7 @@ export const projectDefinitions = {
     "guimp": {
         parents: ["mod1"],
         position: { x: 824, y: 1194 },
+        lang: "c",
         desc: "L'objectif de ce projet sera pour vous de réaliser une librairie d'interface graphique. Vous devrez prouver son bon fonctionnement avec un petit logiciel d'édition d'image 2D.",
     },
     "rt": {
@@ -26,6 +27,7 @@ export const projectDefinitions = {
     "red-tetris": {
         parents: ["piscine-web"],
         position: { x: -355, y: 1024 },
+        lang: "javascript",
         desc: "L’objectif de ce projet est de développer un jeu de tetris multijoueurs en réseau à partir d’une pile logicielle exclusivement Full Stack Javascript",
     },
     "zappy": {
@@ -193,6 +195,7 @@ export const projectDefinitions = {
     "ft-script": {
         parents: ["tronc-commun"],
         position: { x: 835, y: 57 },
+        lang: "c",
         desc: "Recodez la commande script pour comprendre les interactions entre input utilisateur, TTY et pseudo-terminaux."
     },
     "strace": {
@@ -740,6 +743,7 @@ export const projectDefinitions = {
     "nm": {
         parents: ["malloc"],
         position: { x: 1252, y: 710 },
+        lang: "C",
         desc: "Réécrivez les outils nm et otool pour décortiquer le format des exécutables et comprendre comment le kernel lance les binaires - une ouverture essentielle sur la culture UNIX système.",
     },
     "inception-of-things": {
