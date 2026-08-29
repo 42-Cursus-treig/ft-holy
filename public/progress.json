@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-24T11:14:11.382Z",
+  "updatedAt": "2026-08-28T15:15:04.242Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -162,7 +162,8 @@
     "ntc-tree-nity": "validated",
     "nibbler": "validated",
     "red-tetris": "validated",
-    "ft-script": "validated"
+    "ft-script": "validated",
+    "ft-linux": "validated"
   },
   "marks": {}
 }
