@@ -131,14 +131,26 @@ export const activeProjects = [
     "Inception of wisdom",
     "Datomic",
     "TokenZwap",
+    "ft_kleene",
+    "Ecomesh",
 
-    "Rush00",
-    "Rush01",
-    "Rush02",
-    "Rush03",
-    "Rush04",
-    "Rush05",
-    "Rush06",
-    "Rush07",
-    "Rush08",
+    "Rush00", // libunit
+    "Rush01", // Hotrace
+    "Rush02", // Alcu
+    "Rush03", // Wong Kar Wai
+    "Rush04", // Yasl
+    "Rush05", // Wordle
+    "Rush06", // Connect4
+    "Rush07", // Retro-Mfa
+    "Rush08", // ft_shmup
+    "Rush09", // SpinDetect
+    "Rush10", // PromptTrial
+    "Rush11", // LeakLab
+    "Rush12", // InterviewSim
+    "Rush13", // GraphForge
+    "Rush14", // grAff-it
+    "Rush15", // FaceSwap42
+    "Rush16", // CVForge
+    "Rush17", // ChromaCraft
+    "Rush18", // BrickDepth
 ];

@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-08-10T23:14:58.430Z",
+  "generatedAt": "2026-09-01T10:59:14.319Z",
   "source": "projects.intra.42.fr",
-  "requested": 220,
-  "resolved": 194,
+  "requested": 242,
+  "resolved": 216,
   "subjects": {
     "42_collaborative_resume": [
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/220028/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224576/en.subject.pdf"
       }
     ],
     "42cursus-42run": [
@@ -36,7 +36,7 @@
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/221199/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224542/en.subject.pdf"
       }
     ],
     "42cursus-avaj-launcher": [
@@ -60,6 +60,13 @@
         "href": "https://cdn.intra.42.fr/pdf/pdf/221874/en.subject.pdf"
       }
     ],
+    "42cursus-brickdepth": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224806/en.subject.pdf"
+      }
+    ],
     "42cursus-call-me-maybe": [
       {
         "lang": "en",
@@ -72,6 +79,13 @@
         "lang": "en",
         "name": "subject.pdf",
         "href": "https://cdn.intra.42.fr/pdf/pdf/211104/en.subject.pdf"
+      }
+    ],
+    "42cursus-chromacraft": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224807/en.subject.pdf"
       }
     ],
     "42cursus-cloud-1": [
@@ -110,6 +124,13 @@
         "lang": "en",
         "name": "warning.pdf",
         "href": "https://cdn.intra.42.fr/pdf/pdf/210345/en.warning.pdf"
+      }
+    ],
+    "42cursus-cvforge": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224797/en.subject.pdf"
       }
     ],
     "42cursus-darkly": [
@@ -159,6 +180,13 @@
         "lang": "en",
         "name": "subject.pdf",
         "href": "https://cdn.intra.42.fr/pdf/pdf/210325/en.subject.pdf"
+      }
+    ],
+    "42cursus-faceswap42": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224808/en.subject.pdf"
       }
     ],
     "42cursus-famine": [
@@ -329,6 +357,20 @@
         "href": "https://cdn.intra.42.fr/pdf/pdf/208550/en.subject.pdf"
       }
     ],
+    "42cursus-graff-it": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224809/en.subject.pdf"
+      }
+    ],
+    "42cursus-graphforge": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224810/en.subject.pdf"
+      }
+    ],
     "42cursus-guimp": [
       {
         "lang": "en",
@@ -362,6 +404,13 @@
         "lang": "en",
         "name": "subject.pdf",
         "href": "https://cdn.intra.42.fr/pdf/pdf/208782/en.subject.pdf"
+      }
+    ],
+    "42cursus-interviewsim": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224811/en.subject.pdf"
       }
     ],
     "42cursus-kfs-1": [
@@ -441,6 +490,13 @@
         "href": "https://cdn.intra.42.fr/pdf/pdf/211241/en.subject.pdf"
       }
     ],
+    "42cursus-leaklab": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224812/en.subject.pdf"
+      }
+    ],
     "42cursus-lem-ipc": [
       {
         "lang": "en",
@@ -473,7 +529,7 @@
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/213827/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224794/en.subject.pdf"
       }
     ],
     "42cursus-matcha": [
@@ -574,6 +630,13 @@
         "href": "https://cdn.intra.42.fr/pdf/pdf/212417/en.subject.pdf"
       }
     ],
+    "42cursus-promptrial": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224813/en.subject.pdf"
+      }
+    ],
     "42cursus-push_swap": [
       {
         "lang": "en",
@@ -616,6 +679,27 @@
         "href": "https://cdn.intra.42.fr/pdf/pdf/210522/en.subject.pdf"
       }
     ],
+    "42cursus-rushes-alcu": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/208557/en.subject.pdf"
+      }
+    ],
+    "42cursus-rushes-wordle": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/208561/en.subject.pdf"
+      }
+    ],
+    "42cursus-rushes-yasl": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/208560/en.subject.pdf"
+      }
+    ],
     "42cursus-scop": [
       {
         "lang": "en",
@@ -635,6 +719,13 @@
         "lang": "en",
         "name": "subject.pdf",
         "href": "https://cdn.intra.42.fr/pdf/pdf/221871/en.subject.pdf"
+      }
+    ],
+    "42cursus-spindetect": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224814/en.subject.pdf"
       }
     ],
     "42cursus-strace": [
@@ -737,33 +828,33 @@
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/222253/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224851/en.subject.pdf"
       }
     ],
     "abstract_data": [
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/212554/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/225597/en.subject.pdf"
       }
     ],
     "agent-smith": [
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/208485/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224444/en.subject.pdf"
       }
     ],
     "b": [
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/214436/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/225599/en.subject.pdf"
       },
       {
         "lang": null,
         "name": "b.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/214437/b.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/225600/b.pdf"
       }
     ],
     "bgp-at-doors-of-autonomous-systems-is-simple": [
@@ -1022,6 +1113,13 @@
         "href": "https://cdn.intra.42.fr/pdf/pdf/224585/en.subject.pdf"
       }
     ],
+    "ecomesh": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224850/en.subject.pdf"
+      }
+    ],
     "fly-in": [
       {
         "lang": "en",
@@ -1050,6 +1148,13 @@
         "href": "https://cdn.intra.42.fr/pdf/pdf/210151/fr.subject.pdf"
       }
     ],
+    "ft_kleene": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/225567/en.subject.pdf"
+      }
+    ],
     "ft_lex": [
       {
         "lang": "en",
@@ -1061,7 +1166,7 @@
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/221868/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/225593/en.subject.pdf"
       }
     ],
     "ft_malcolm": [
@@ -1096,7 +1201,7 @@
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/213254/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/225601/en.subject.pdf"
       }
     ],
     "ftl_quantum": [
@@ -1117,7 +1222,7 @@
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/221210/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/225588/en.subject.pdf"
       }
     ],
     "inception-of-things": [
@@ -1131,7 +1236,7 @@
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/221214/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/225591/en.subject.pdf"
       }
     ],
     "leaffliction": [
@@ -1159,7 +1264,7 @@
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/215453/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/225598/en.subject.pdf"
       }
     ],
     "matrix": [
@@ -1313,7 +1418,7 @@
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/221912/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/224311/en.subject.pdf"
       }
     ],
     "python-module-09": [
@@ -1348,7 +1453,42 @@
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/221217/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/225586/en.subject.pdf"
+      }
+    ],
+    "rushes-connect4": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/208562/en.subject.pdf"
+      }
+    ],
+    "rushes-ft_shmup": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/208564/en.subject.pdf"
+      }
+    ],
+    "rushes-hotrace": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/208558/en.subject.pdf"
+      }
+    ],
+    "rushes-retro-mfa": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/208563/en.subject.pdf"
+      }
+    ],
+    "rushes-wong-kar-wai": [
+      {
+        "lang": "en",
+        "name": "subject.pdf",
+        "href": "https://cdn.intra.42.fr/pdf/pdf/208559/en.subject.pdf"
       }
     ],
     "so_long": [
@@ -1362,7 +1502,7 @@
       {
         "lang": "en",
         "name": "subject.pdf",
-        "href": "https://cdn.intra.42.fr/pdf/pdf/221216/en.subject.pdf"
+        "href": "https://cdn.intra.42.fr/pdf/pdf/225592/en.subject.pdf"
       }
     ],
     "the-answer-protocol": [
