@@ -91,6 +91,7 @@ const MASTERY = {
   "dr-quine": "42cursus-dr-quine",
   "drivers-and-interrupts": "42cursus-drivers-and-interrupts",
   "dslr": "42cursus-dslr",
+  "ecomesh": "ecomesh",
   "expert-system": "42cursus-expert-system",
   "famine": "42cursus-famine",
   "filesystem": "42cursus-filesystem",
@@ -99,6 +100,7 @@ const MASTERY = {
   "ft-ality": "42cursus-ft_ality",
   "ft-hangouts": "42cursus-ft_hangouts",
   "ft-kalman": "ft_kalman",
+  "ft-kleene": "ft_kleene",
   "ft-lex": "ft_lex",
   "ft-lgtm": "ft_lgtm",
   "ft-linear-regression": "42cursus-ft_linear_regression",
@@ -177,7 +179,7 @@ const MASTERY = {
   "shaderpixel": "42cursus-shaderpixel",
   "snow-crash": "42cursus-snow-crash",
   "strace": "42cursus-strace",
-  "supercharge" : "supercharge",
+  "supercharge": "supercharge",
   "swifty-companion": "42cursus-swifty-companion",
   "swifty-proteins": "42cursus-swifty-proteins",
   "swingy": "42cursus-swingy",
@@ -196,9 +198,34 @@ const MASTERY = {
   "zappy": "42cursus-zappy",
 };
 
+// ─── Rushes ─────────────────────────────────────────────────────────────────
+// Les ids doivent correspondre à ceux de rushList (projectDB.js).
+// cursus-rush-00 (Libunit) n'a pas de page intra : son sujet est servi
+// depuis public/subjects/ via le champ pdfUrl.
+const RUSHES = {
+  "cursus-rush-01": "rushes-hotrace",
+  "cursus-rush-02": "42cursus-rushes-alcu",
+  "cursus-rush-03": "rushes-wong-kar-wai",
+  "cursus-rush-04": "42cursus-rushes-yasl",
+  "cursus-rush-05": "42cursus-rushes-wordle",
+  "cursus-rush-06": "rushes-connect4",
+  "cursus-rush-07": "rushes-retro-mfa",
+  "cursus-rush-08": "rushes-ft_shmup",
+  "cursus-rush-09": "42cursus-spindetect",
+  "cursus-rush-10": "42cursus-promptrial",
+  "cursus-rush-11": "42cursus-leaklab",
+  "cursus-rush-12": "42cursus-interviewsim",
+  "cursus-rush-13": "42cursus-graphforge",
+  "cursus-rush-14": "42cursus-graff-it",
+  "cursus-rush-15": "42cursus-faceswap42",
+  "cursus-rush-16": "42cursus-cvforge",
+  "cursus-rush-17": "42cursus-chromacraft",
+  "cursus-rush-18": "42cursus-brickdepth",
+};
+
 const AGGREGATES = new Set(["tc-cpp-00-04", "tc-cpp-05-09", "tc-python-00-04", "tc-python-05-10"]);
 
-export const FT_SLUGS = { ...POOL, ...COMMON, ...OLD, ...NEW, ...MASTERY };
+export const FT_SLUGS = { ...POOL, ...COMMON, ...OLD, ...NEW, ...MASTERY, ...RUSHES };
 
 const NEW_ONLY = new Set([
   "python-module-00", "a-maze-ing", "codexion", "fly-in", "pac-man", "the-answer-protocol",

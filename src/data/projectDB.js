@@ -26,7 +26,7 @@ export const projectDefinitions = {
     },
     "red-tetris": {
         parents: ["piscine-web"],
-        position: { x: -355, y: 1024 },
+        position: { x: -399, y: 1015 },
         lang: "javascript",
         desc: "L’objectif de ce projet est de développer un jeu de tetris multijoueurs en réseau à partir d’une pile logicielle exclusivement Full Stack Javascript",
     },
@@ -42,7 +42,7 @@ export const projectDefinitions = {
     },
     "expert-system": {
         parents: ["n-puzzle"],
-        position: { x: -352, y: 651 },
+        position: { x: -406, y: 668 },
         lang: "rust",
         desc: "Créez un système expert en calcul des propositions, capable de raisonner sur un ensemble de règles et de faits pour en déduire de nouveaux.",
     },
@@ -91,7 +91,7 @@ export const projectDefinitions = {
     },
     "lem-in": {
         parents: ["n-puzzle"],
-        position: { x: -324, y: 529 },
+        position: { x: -343, y: 538 },
         desc: "Déplacez une colonie de fourmis d'un point à un autre le plus rapidement possible en implémentant des algorithmes de parcours de graphe.",
     },
     "dr-quine": {
@@ -170,16 +170,18 @@ export const projectDefinitions = {
     "snow-crash": {
         parents: ["piscine-cybersecurite"],
         position: { x: 993, y: 123 },
-        desc: "Introduction à la sécurité informatique orientée développeur : trouvez des failles dans des programmes via reverse engineering et manipulation de plusieurs langages."
+        desc: "Introduction à la sécurité informatique orientée développeur : trouvez des failles dans des programmes via reverse engineering et manipulation de plusieurs langages.",
+        lang: ["linux", "bash"],
     },
     "taskmaster": {
         parents: ["tronc-commun"],
         position: { x: 1033, y: 780 },
-        desc: "Réalisez un programme de job control similaire à supervisor, dans le langage de votre choix."
+        desc: "Réalisez un programme de job control similaire à supervisor, dans le langage de votre choix.",
+        lang: "python"
     },
     "rubik": {
         parents: ["n-puzzle"],
-        position: { x: -265, y: 687 },
+        position: { x: -329, y: 679 },
         desc: "Réalisez un résolveur de Rubik's Cube dans le langage de votre choix — un projet d'algorithmie non trivial.",
     },
     "shaderpixel": {
@@ -243,7 +245,8 @@ export const projectDefinitions = {
     "nibbler": {
         parents: ["lem-ipc"],
         position: { x: 1383, y: 741 },
-        desc: "Recodez le jeu Snake en C++ avec plusieurs interfaces graphiques différentes."
+        desc: "Recodez le jeu Snake en C++ avec plusieurs interfaces graphiques différentes.",
+        lang: "cpp"
     },
     "abstract-vm": {
         parents: ["libftpp"],
@@ -268,7 +271,7 @@ export const projectDefinitions = {
     },
     "krpsim": {
         parents: ["n-puzzle"],
-        position: { x: -394, y: 590 },
+        position: { x: -423, y: 601 },
         desc: "Optimisez le rendement d'un graphe de processus avec contraintes de ressources en explorant et choisissant les algorithmes les plus adaptés.",
     },
     "total-perspective-vortex": {
@@ -288,7 +291,7 @@ export const projectDefinitions = {
     },
     "computorv2": {
         parents: ["computorv1"],
-        position: { x: -335, y: 411 },
+        position: { x: -334, y: 378 },
         desc: "Étendez votre résolveur d'équations en une calculatrice complète gérant les matrices, nombres imaginaires et résolution de fonctions."
     },
     "ft-select": {
@@ -299,7 +302,7 @@ export const projectDefinitions = {
     },
     "computorv1": {
         parents: ["tronc-commun"],
-        position: { x: -257, y: 408 },
+        position: { x: -259, y: 402 },
         lang: "go",
         desc: "Recodez un résolveur d'équations mathématiques élémentaires dans le langage de votre choix, socle pour de nombreux autres projets."
     },
@@ -372,7 +375,7 @@ export const projectDefinitions = {
     },
     "gomoku": {
         parents: ["n-puzzle"],
-        position: { x: -381, y: 522 },
+        position: { x: -423, y: 529 },
         desc: "Créez un jeu de Gomoku avec une IA capable de battre un humain, en implémentant un algorithme min-max et des heuristiques adaptées."
     },
     "n-puzzle": {
@@ -426,11 +429,13 @@ export const projectDefinitions = {
         parents: ["tronc-commun"],
         position: { x: 1060, y: 580 },
         desc: "Construisez votre propre distribution Linux (LFS) — premier projet de la branche Kernel.",
+        lang: ["Debian", "Linux"]
     },
     "particle-system": {
         parents: ["humangl"],
         position: { x: 481, y: 1434 },
         desc: "Introduction au GPU via OpenGL et OpenCL : créez un système de particules performant grâce à la parallélisation massive des calculs.",
+        lang: ["cpp", "opengl"]
     },
     "ft-turing": {
         parents: ["piscine-ocaml"],
@@ -705,7 +710,7 @@ export const projectDefinitions = {
     },
     "ft-kalman": {
         parents: ["matrix"],
-        position: { x: -249, y: 519 },
+        position: { x: -266, y: 534 },
         desc: "Implémentez un filtre de Kalman pour suivre les coordonnées d'un véhicule équipé de capteurs défectueux — une introduction au filtrage de signaux et aux opérations matricielles.",
         langPdf: "fr",
     },
@@ -722,7 +727,7 @@ export const projectDefinitions = {
     },
     "ft-malcolm": {
         parents: ["tronc-commun"],
-        position: { x: 202, y: -13 },
+        position: { x: 222, y: -16 },
         desc: "Introduction à la sécurité des réseaux : l'attaque de type 'Man-in-the-middle'",
     },
     "ft-ssl-md5": {
@@ -732,7 +737,7 @@ export const projectDefinitions = {
     },
     "bgp-at-doors-of-autonomous-systems-is-simple": {
         parents: ["tronc-commun"],
-        position: { x: 92, y: 19 },
+        position: { x: 131, y: -31 },
         desc: "Ce projet a pour but d'approfondir vos connaissances apprises par NetPractice. Vous allez devoir simuler plusieurs réseaux dans GNS3.",
     },
     "ft-shield": {
@@ -805,6 +810,16 @@ export const projectDefinitions = {
         position: { x: -313, y: 745 },
         parents: ["tokenizeart"],
         desc: "Découvrez les bases de la DeFi en créant un AMM permettant d’échanger des tokens et d’acheter ou vendre des NFT."
+    },
+    "ft-kleene": {
+        position: { x: -309, y: 466 },
+        parents: ["ready-set-boole"],
+        desc: "Approfondir les mathématiques de l’informatique en découvrant comment sont conçus les langages de programmation et les compilateurs, à travers la théorie des langages et des automates !"
+    },
+    "ecomesh": {
+        position: { x: 59, y: 28 },
+        parents: ["tronc-commun"],
+        desc: "Déployer un réseau de capteurs sans recharge ni maintenance pendant un an. Modéliser son coût carbone selon le standard Software Carbon Intensity, en tenant compte de l’énergie consommée et du carbone lié au matériel. Concevoir une stratégie adaptative pour répartir l’usure et les calculs afin de préserver le réseau, puis tester le tout sur Contiki-NG dans Cooja/MSPSim."
     }
 };
 
@@ -813,46 +828,105 @@ export const rushList = [
         id: "cursus-rush-00",
         label: "Libunit",
         pdfUrl: "subjects/libunit.fr.pdf",
-        desc: "Concevez un micro-framework en langage C dédié aux tests."
+        desc: "Concevez un micro-framework en langage C dédié aux tests.",
+        lang: "C"
     },
     {
         id: "cursus-rush-01",
         label: "Hotrace",
-        desc: "Développez un moteur de recherche capable d'indexer des données et de répondre efficacement aux recherches par mots-clés."
+        desc: "Développez un moteur de recherche capable d'indexer des données et de répondre efficacement aux recherches par mots-clés.",
+        lang: "C"
     },
     {
         id: "cursus-rush-02",
         label: "AlCu",
-        desc: "Développez AlCu, un jeu basé sur des tas, et mettez en œuvre des algorithmes ainsi que des méthodes de programmation efficaces."
+        desc: "Développez AlCu, un jeu basé sur des tas, et mettez en œuvre des algorithmes ainsi que des méthodes de programmation efficaces.",
+        lang: "C"
     },
     {
         id: "cursus-rush-03",
         label: "Wong kar Wai",
-        desc: "Amusez-vous en développant le jeu 2048."
+        desc: "Amusez-vous en développant le jeu 2048.",
+        lang: "C"
     },
     {
         id: "cursus-rush-04",
         label: "yasl",
         desc: "Découvrez un nouveau langage de programmation et mettez à l'épreuve votre capacité d'adaptation.",
+        lang: "bash"
     },
     {
         id: "cursus-rush-05",
         label: "wordle",
-        desc: "Reproduisez le jeu Wordle en développant sa logique de jeu et son système de validation des mots."
+        desc: "Reproduisez le jeu Wordle en développant sa logique de jeu et son système de validation des mots.",
+        lang: "zig"
     },
     {
         id: "cursus-rush-06",
         label: "Connect4",
-        desc: "Développez une version du Puissance 4 intégrant une intelligence artificielle capable de vous affronter."
+        desc: "Développez une version du Puissance 4 intégrant une intelligence artificielle capable de vous affronter.",
+        lang: "C"
     },
     {
         id: "cursus-rush-07",
         label: "Retro-MFA",
-        desc: "Retrouvez des images cachées dans un format de fichier propriétaire en développant les outils nécessaires à leur extraction."
+        desc: "Retrouvez des images cachées dans un format de fichier propriétaire en développant les outils nécessaires à leur extraction.",
+        lang: "C"
     },
     {
         id: "cursus-rush-08",
         label: "ft_shmup",
-        desc: "Le but de ce projet est d’implémenter un jeu simpliste de type shoot'em up dans votre terminal."
+        desc: "Le but de ce projet est d’implémenter un jeu simpliste de type shoot'em up dans votre terminal.",
+        lang: "cpp"
+    },
+    {
+        id: "cursus-rush-09",
+        label: "SpinDetect",
+        desc: "Créer un outil web full-stack montrant comment la formulation d’un prompt influence les réponses d’un LLM. Une même question est posée sous différents biais (positif, négatif, neutre), puis les réponses sont affichées côte à côte pour mettre en évidence leur influence.",
+    },
+    {
+        id: "cursus-rush-10",
+        label: "PromptTrial",
+        desc: "Créer une application web où deux prompts s’affrontent sur une même tâche. Un agent juge évalue leurs résultats selon la précision, la qualité et l’efficacité, puis désigne un gagnant. L’équipe doit également mettre en place une méthode pour limiter les biais du juge basé sur un LLM."
+    },
+    {
+        id: "cursus-rush-11",
+        label: "LeakLab",
+        desc: "Créer deux outils autour du problème de l’injection de prompts : une application de chat protégeant un secret grâce à une défense LLM en plusieurs étapes, et un script d’attaque testant différentes techniques d’injection. Lors de l’évaluation, le script de l’équipe est lancé contre son propre service afin d’analyser le rôle de chaque étape de défense."
+    },
+    {
+        id: "cursus-rush-12",
+        label: "InterviewSim",
+        desc: "Créer une application web simulant un entretien technique mené par un LLM. L’utilisateur choisit parmi au moins trois profils, répond à des questions techniques une par une, puis reçoit un retour structuré à la fin. L’équipe conçoit les profils, le pré-prompt de l’intervieweur et l’ensemble du pipeline web."
+    },
+    {
+        id: "cursus-rush-13",
+        label: "GraphForge",
+        desc: "Exploiter les données des projets de 42 pour créer une visualisation web interactive à l’aide d’outils d’IA. Le « Holy Graph » doit fonctionner dans un navigateur, afficher des données réelles et filtrées, tout en restant interactif et robuste."
+    },
+    {
+        id: "cursus-rush-14",
+        label: "grAff-it",
+        desc: "Créer une application web qui transforme une description textuelle en graffiti grâce à une chaîne d’agents IA spécialisés : Style, Prompt Engineer, Critic et Image Generator."
+    },
+    {
+        id: "cursus-rush-15",
+        label: "FaceSwap42",
+        desc: "Créer une application web qui transforme un portrait importé en œuvre artistique stylisée : un style Pixel Art obligatoire, un style libre défendu par l’équipe et un style aux couleurs de 42. Afficher l’image originale et les versions transformées côte à côte."
+    },
+    {
+        id: "cursus-rush-16",
+        label: "CVForge",
+        desc: "Créer une application web qui transforme un profil 42 et une offre d’emploi en CV et lettre de motivation personnalisés grâce à un LLM. Extraire et mettre en correspondance les expériences pertinentes, structurer les données en JSON avant le rendu, puis exporter des documents prêts à l’emploi tout en respectant les données personnelles (RGPD)."
+    },
+    {
+        id: "cursus-rush-17",
+        label: "ChromaCraft",
+        desc: "Créer une extension Chrome/Firefox qui personnalise l’interface d’intra.42.fr avec au moins trois thèmes distincts et interchangeables, ainsi qu’une interface pour les sélectionner. L’extension doit être développée avec des outils d’IA sans altérer les fonctionnalités d’Intra."
+    },
+    {
+        id: "cursus-rush-18",
+        label: "BrickDepth",
+        desc: "Créer une application web qui transforme une image 2D en mosaïque LEGO® 3D interactive, avec estimation de la profondeur, conversion des couleurs en palette LEGO® et rendu 3D directement dans le navigateur."
     },
 ];
