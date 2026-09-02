@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-01T12:22:02.629Z",
+  "updatedAt": "2026-09-02T19:47:43.088Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -166,7 +166,9 @@
     "ft-linux": "validated",
     "cursus-rush-18": "validated",
     "snow-crash": "validated",
-    "taskmaster": "validated"
+    "taskmaster": "validated",
+    "little-penguin-1": "validated",
+    "call-me-maybe": "validated"
   },
   "marks": {}
 }
