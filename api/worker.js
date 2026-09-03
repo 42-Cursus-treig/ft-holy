@@ -7,6 +7,9 @@ const MAX_PAGES = 4;
 const SEARCH_MIN = 2;
 const SEARCH_LIMIT = 8;
 
+const TOKEN_KEY = "intra:token";
+const TOKEN_SKEW = 300;
+
 const ALLOWED_ORIGINS = [
   "https://tristan-reig.github.io",
   "https://42-cursus-treig.github.io",
@@ -56,9 +59,11 @@ const cachedJson = (request, body, hit) =>
     },
   });
 
-async function getToken(env) {
-  const cached = await env.CACHE.get("intra:token");
-  if (cached) return cached;
+async function requestToken(env) {
+  if (!env.FT_UID || !env.FT_SECRET) {
+    console.log("token_failed: missing FT_UID or FT_SECRET binding");
+    throw new HttpError(502, "intra_missing_credentials");
+  }
 
   const r = await fetch(`${INTRA}/oauth/token`, {
     method: "POST",
@@ -70,12 +75,53 @@ async function getToken(env) {
     }),
   });
 
-  if (!r.ok) throw new HttpError(502, "intra_token_failed");
+  if (!r.ok) {
+    const detail = await r.text().catch(() => "");
+    console.log("token_failed", r.status, detail.slice(0, 200));
+    throw new HttpError(502, r.status === 401 ? "intra_bad_credentials" : "intra_token_failed");
+  }
 
   const data = await r.json();
-  const ttl = Math.max(60, (data.expires_in || 7200) - 300);
-  await env.CACHE.put("intra:token", data.access_token, { expirationTtl: ttl });
+  if (!data.access_token) throw new HttpError(502, "intra_token_failed");
+
+  const now = Math.floor(Date.now() / 1000);
+  const createdAt = typeof data.created_at === "number" ? data.created_at : now;
+  const expiresAt = createdAt + (data.expires_in ?? 7200);
+  const ttl = Math.max(60, expiresAt - now - TOKEN_SKEW);
+
+  await env.CACHE.put(TOKEN_KEY, data.access_token, { expirationTtl: ttl });
   return data.access_token;
+}
+
+async function getToken(env, force = false) {
+  if (!force) {
+    const cached = await env.CACHE.get(TOKEN_KEY);
+    if (cached) return cached;
+  }
+  return requestToken(env);
+}
+
+async function withAuth(env, fn) {
+  const token = await getToken(env);
+
+  try {
+    return await fn(token);
+  } catch (e) {
+    if (!(e instanceof HttpError) || e.code !== "intra_unauthorized") throw e;
+
+    await env.CACHE.delete(TOKEN_KEY);
+    const fresh = await getToken(env, true);
+
+    try {
+      return await fn(fresh);
+    } catch (retryError) {
+      if (retryError instanceof HttpError && retryError.code === "intra_unauthorized") {
+        console.log("still unauthorized after token refresh");
+        throw new HttpError(502, "intra_bad_credentials");
+      }
+      throw retryError;
+    }
+  }
 }
 
 async function intraGet(path, token) {
@@ -83,6 +129,7 @@ async function intraGet(path, token) {
     headers: { Authorization: `Bearer ${token}` },
   });
 
+  if (r.status === 401) throw new HttpError(401, "intra_unauthorized");
   if (r.status === 404) throw new HttpError(404, "login_not_found");
   if (r.status === 429) throw new HttpError(429, "intra_rate_limited");
   if (r.status === 403) throw new HttpError(403, "intra_forbidden");
@@ -157,9 +204,10 @@ async function handleHoly(request, env, login) {
   const cached = await env.CACHE.get(key);
   if (cached) return cachedJson(request, cached, true);
 
-  const token = await getToken(env);
-  const user = await intraGet(`/v2/users/${encodeURIComponent(login)}`, token);
-  const projectsUsers = await fetchProjects(login, token, user.projects_users);
+  const { user, projectsUsers } = await withAuth(env, async (token) => {
+    const u = await intraGet(`/v2/users/${encodeURIComponent(login)}`, token);
+    return { user: u, projectsUsers: await fetchProjects(login, token, u.projects_users) };
+  });
 
   const payload = normalize(user, projectsUsers);
   const body = JSON.stringify(payload);
@@ -176,12 +224,13 @@ async function handleSearch(request, env, raw) {
   const cached = await env.CACHE.get(key);
   if (cached) return cachedJson(request, cached, true);
 
-  const token = await getToken(env);
   const upper = `${q}zzzzzzzz`;
-  const users = await intraGet(
-    `/v2/users?range[login]=${encodeURIComponent(q)},${encodeURIComponent(upper)}` +
-      `&page[size]=${SEARCH_LIMIT}&sort=login`,
-    token
+  const users = await withAuth(env, (token) =>
+    intraGet(
+      `/v2/users?range[login]=${encodeURIComponent(q)},${encodeURIComponent(upper)}` +
+        `&page[size]=${SEARCH_LIMIT}&sort=login`,
+      token
+    )
   );
 
   const results = (Array.isArray(users) ? users : [])
@@ -220,6 +269,7 @@ export default {
         : await handleSearch(request, env, decodeURIComponent(search[1]));
     } catch (e) {
       if (e instanceof HttpError) return json(request, { error: e.code }, e.status);
+      console.log("internal_error", e?.stack || String(e));
       return json(request, { error: "internal_error" }, 500);
     }
   },

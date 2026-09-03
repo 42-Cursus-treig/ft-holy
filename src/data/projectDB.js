@@ -783,7 +783,7 @@ export const projectDefinitions = {
     "supercharge": {
         parents: ["ftl-quantum"],
         position: { x: -296, y: 315 },
-        lang: "react",
+        lang: ["react", "python"],
         desc: "Créer une application web optimisant l’emplacement de bornes de recharge électrique et comparant une résolution classique par force brute à l’algorithme quantique QAOA.",
     },
     "ft-lgtm": {
