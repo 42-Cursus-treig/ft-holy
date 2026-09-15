@@ -49,6 +49,7 @@ export const projectDefinitions = {
     "cloud-1": {
         parents: ["tronc-commun"],
         position: { x: 7, y: 90 },
+        lang: ["ansible", "yaml"],
         desc: "Introduction à la gestion et au déploiement de serveurs dans le cloud.",
     },
     "hypertube": {
@@ -64,7 +65,7 @@ export const projectDefinitions = {
     "swifty-companion": {
         parents: ["piscine-mobile"],
         position: { x: -184, y: 1099 },
-        lang: "flutter",
+        lang: ["flutter", "42"],
         desc: "Développer une application mobile qui récupère et affiche les informations des utilisateurs de l’API 42 avec une interface interactive.",
     },
     "kfs-1": {
@@ -413,6 +414,7 @@ export const projectDefinitions = {
     "little-penguin-1": {
         parents: ["ft-linux"],
         position: { x: 1179, y: 575 },
+        lang: "linux",
         desc: "Série de challenges inspirés du challenge Eudyptula pour aborder de nombreux points du développement kernel."
     },
     "rainfall": {
@@ -634,6 +636,7 @@ export const projectDefinitions = {
     "peace-break": {
         parents: ["swifty-proteins"],
         position: { x: -321, y: 1233 },
+        lang: ["flutter", "supabase"],
         desc: "Inspiré de Brick Breaker, ce projet est une introduction au développement mobile : concevez une interface, gérez des données utilisateur et implémentez les mécaniques de jeu.",
     },
     "ft-lex": {
@@ -645,6 +648,7 @@ export const projectDefinitions = {
     "ft-yacc": {
         parents: ["ft-lex"],
         position: { x: 1105, y: 256 },
+        lang: "gnu",
         desc: "Implémentez l'utilitaire POSIX yacc, un générateur de parsers, en explorant la théorie des automates, les langages formels et la hiérarchie de Chomsky.",
     },
     "cc1": {
@@ -655,6 +659,7 @@ export const projectDefinitions = {
     "b": {
         parents: ["libasm"],
         position: { x: 1108, y: 358 },
+        lang: "gnu",
         desc: "La lettre qui précéde C",
     },
     "darkly": {
@@ -665,7 +670,7 @@ export const projectDefinitions = {
     "ftl-quantum": {
         parents: ["tronc-commun"],
         position: { x: -199, y: 349 },
-        lang: "python",
+        lang: ["python", "qiskit"],
         desc: "Ce projet est une introduction à la programmation quantique. Il vous mettra au défi de créer différents programmes quantiques et de les exécuter sur un véritable ordinateur quantique.",
     },
     "unleashthebox": {
@@ -681,6 +686,7 @@ export const projectDefinitions = {
     "ft-newton": {
         parents: ["humangl"],
         position: { x: 718, y: 1459 },
+        lang: ["rust", "opengl"],
         desc: "Codez un moteur physique basique from scratch, illustré par un jeu inspiré d'Angry Birds, avec détection de collisions, corps rigides et gravité.",
     },
     "very-real-engine": {
@@ -701,6 +707,7 @@ export const projectDefinitions = {
     "tokenizer": {
         parents: ["tronc-commun"],
         position: { x: -154, y: 717 },
+        lang: "bnbchain",
         desc: "Créez et déployez votre propre token fongible sur une blockchain publique",
     },
     "tokenizeart": {
@@ -759,7 +766,7 @@ export const projectDefinitions = {
     "call-me-maybe": {
         parents: ["piscine-data-science"],
         position: { x: -272, y: 232 },
-        lang: "python",
+        lang: ["python", "qwen"],
         desc: "Découvrir le function calling des modèles de langage en transformant des instructions en langage naturel en appels de fonctions structurés, avec des arguments typés et un décodage contraint garantissant la génération de JSON valide et fiable.",
     },
     "rag-against-the-machine": {
