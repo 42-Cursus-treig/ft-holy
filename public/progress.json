@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-15T19:17:07.162Z",
+  "updatedAt": "2026-09-22T21:01:21.268Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -176,7 +176,13 @@
     "woody-woodpacker": "validated",
     "rainfall": "failed",
     "peace-break": "validated",
-    "ft-newton": "validated"
+    "ft-newton": "validated",
+    "abstract-vm": "validated",
+    "ft-kleene": "validated",
+    "inception-of-things": "validated",
+    "ft-lgtm": "validated",
+    "cursus-rush-10": "validated",
+    "cursus-rush-17": "validated"
   },
   "marks": {}
 }
