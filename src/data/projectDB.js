@@ -761,6 +761,7 @@ export const projectDefinitions = {
     "inception-of-things": {
         parents: ["cloud-1"],
         position: { x: -37, y: 26 },
+        lang: ["debian", "vagrant", "k3s", "kubernetes", "bash"],
         desc: "Découvrez Kubernetes côté développeur en déployant des clusters dans Docker et en mettant en place une pipeline d'intégration continue pour vos applications.",
     },
     "call-me-maybe": {
@@ -796,6 +797,7 @@ export const projectDefinitions = {
     "ft-lgtm": {
         parents: ["inception-of-things"],
         position: { x: -75, y: -53 },
+        lang: ["ubuntu", "go", "rust", "docker", "kubernetes", "helm"],
         desc: "Créer une application web exécutant du code non fiable de façon sécurisée avec WASM/WASI, le stockant sur IPFS et supervisée via une stack LGTM sur Kubernetes.",
     },
     "inception-of-context": {
@@ -821,6 +823,7 @@ export const projectDefinitions = {
     "ft-kleene": {
         position: { x: -309, y: 466 },
         parents: ["ready-set-boole"],
+        lang: "rust",
         desc: "Approfondir les mathématiques de l’informatique en découvrant comment sont conçus les langages de programmation et les compilateurs, à travers la théorie des langages et des automates !"
     },
     "ecomesh": {
@@ -835,56 +838,56 @@ export const rushList = [
         id: "cursus-rush-00",
         label: "Libunit",
         pdfUrl: "subjects/libunit.fr.pdf",
+        lang: "C",
         desc: "Concevez un micro-framework en langage C dédié aux tests.",
-        lang: "C"
     },
     {
         id: "cursus-rush-01",
         label: "Hotrace",
+        lang: "C",
         desc: "Développez un moteur de recherche capable d'indexer des données et de répondre efficacement aux recherches par mots-clés.",
-        lang: "C"
     },
     {
         id: "cursus-rush-02",
         label: "AlCu",
+        lang: "C",
         desc: "Développez AlCu, un jeu basé sur des tas, et mettez en œuvre des algorithmes ainsi que des méthodes de programmation efficaces.",
-        lang: "C"
     },
     {
         id: "cursus-rush-03",
         label: "Wong kar Wai",
+        lang: "C",
         desc: "Amusez-vous en développant le jeu 2048.",
-        lang: "C"
     },
     {
         id: "cursus-rush-04",
         label: "yasl",
+        lang: "bash",
         desc: "Découvrez un nouveau langage de programmation et mettez à l'épreuve votre capacité d'adaptation.",
-        lang: "bash"
     },
     {
         id: "cursus-rush-05",
         label: "wordle",
+        lang: "zig",
         desc: "Reproduisez le jeu Wordle en développant sa logique de jeu et son système de validation des mots.",
-        lang: "zig"
     },
     {
         id: "cursus-rush-06",
         label: "Connect4",
+        lang: "C",
         desc: "Développez une version du Puissance 4 intégrant une intelligence artificielle capable de vous affronter.",
-        lang: "C"
     },
     {
         id: "cursus-rush-07",
         label: "Retro-MFA",
+        lang: "C",
         desc: "Retrouvez des images cachées dans un format de fichier propriétaire en développant les outils nécessaires à leur extraction.",
-        lang: "C"
     },
     {
         id: "cursus-rush-08",
         label: "ft_shmup",
+        lang: "cpp",
         desc: "Le but de ce projet est d’implémenter un jeu simpliste de type shoot'em up dans votre terminal.",
-        lang: "cpp"
     },
     {
         id: "cursus-rush-09",
@@ -894,6 +897,7 @@ export const rushList = [
     {
         id: "cursus-rush-10",
         label: "PromptTrial",
+        lang: ["python", "fastapi", "ollama"],
         desc: "Créer une application web où deux prompts s’affrontent sur une même tâche. Un agent juge évalue leurs résultats selon la précision, la qualité et l’efficacité, puis désigne un gagnant. L’équipe doit également mettre en place une méthode pour limiter les biais du juge basé sur un LLM."
     },
     {
