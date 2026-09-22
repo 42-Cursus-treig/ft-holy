@@ -30,3 +30,4 @@ tools/console-snippet.js
 .dev.vars*
 !.dev.vars.example
 !.env.example
+*Zone.Identifier
