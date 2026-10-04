@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-22T21:01:21.268Z",
+  "updatedAt": "2026-10-04T18:51:32.583Z",
   "statuses": {
     "open-project": "validated",
     "matrix": "validated",
@@ -182,7 +182,10 @@
     "inception-of-things": "validated",
     "ft-lgtm": "validated",
     "cursus-rush-10": "validated",
-    "cursus-rush-17": "validated"
+    "cursus-rush-17": "validated",
+    "shaderpixel": "validated",
+    "42sh": "validated",
+    "cursus-rush-16": "validated"
   },
   "marks": {}
 }
