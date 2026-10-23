@@ -39,6 +39,10 @@ export const commonCoreProjects = {
     label: "Collaborative Resume",
     desc: "Mener un entretien croisé en binôme et rédiger le CV de l'autre : conduire l'entretien, structurer l'information recueillie et produire un document professionnel, puis échanger des retours avant la version finale.",
   },
+  "tc-ft-resume": {
+    label: "ft_resume",
+    desc: "Le projet consiste à créer un CV personnalisé répondant à une offre d’emploi en informatique, en valorisant ses compétences, ses expériences et ses projets, puis à le présenter et à défendre ses choix lors d’un entretien simulé.",
+  },
   "tc-transcendence": {
     label: "ft_transcendence",
     lang: ["typescript", "javascript", "css", "html5", "python"],

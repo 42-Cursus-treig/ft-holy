@@ -27,6 +27,8 @@ const COMMON = {
   "tc-inception": "inception",
   "tc-transcendence": "ft_transcendence",
   "tc-collaborative-resume": "42_collaborative_resume",
+  // Même slug intra que Collaborative Resume (ancien tronc).
+  "tc-ft-resume": "42_collaborative_resume",
   "tc-exam-02": ["42next-exam-rank-02", "exam-rank-02"],
   "tc-exam-03": ["42next-exam-rank-03", "exam-rank-03"],
   "tc-exam-04": ["42next-exam-rank-04", "exam-rank-04"],

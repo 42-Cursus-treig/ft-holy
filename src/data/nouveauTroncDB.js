@@ -19,7 +19,7 @@ export const nouveauTroncDefinitions = {
     "tc-inception": 5,
     "tc-exam-05": 5,
 
-    "tc-collaborative-resume": 6,
+    "tc-ft-resume": 6,
     "tc-exam-06": 6,
     "tc-transcendence": 6,
   }),
