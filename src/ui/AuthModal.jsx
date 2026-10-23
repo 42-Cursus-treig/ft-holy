@@ -85,7 +85,7 @@ export const AuthModal = ({ onClose, auth }) => {
                   autoComplete="off"
                   onChange={(e) => setPat(e.target.value)}
                   placeholder="ghp_…"
-                  className="w-full px-3 py-2 font-mono text-sm rounded-sm focus:outline-none transition-colors"
+                  className="w-full px-3 py-2 font-mono text-sm rounded-xs focus:outline-hidden transition-colors"
                   style={{
                     background: c.inkDeep,
                     color: c.vellum,
@@ -120,7 +120,7 @@ export const AuthModal = ({ onClose, auth }) => {
                 </div>
                 <button
                   onClick={auth.loginWithDevice}
-                  className="w-full py-2 smallcaps text-xs text-vellum border border-ink-line rounded-sm hover:border-vellum-dim transition-colors"
+                  className="w-full py-2 smallcaps text-xs text-vellum border border-ink-line rounded-xs hover:border-vellum-dim transition-colors"
                 >
                   Device Flow GitHub
                 </button>
