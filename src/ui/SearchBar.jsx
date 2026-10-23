@@ -241,7 +241,7 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
           value={term}
           onChange={handleTermChange}
           onKeyDown={handleInputKeyDown}
-          className="flex-1 bg-transparent text-vellum font-serif italic text-sm placeholder:text-vellum-mute focus:outline-none"
+          className="flex-1 bg-transparent text-vellum font-serif italic text-sm placeholder:text-vellum-mute focus:outline-hidden"
           spellCheck={false}
           autoComplete="off"
         />
@@ -249,8 +249,8 @@ export const SearchBar = ({ nodes, onSelectNode }) => {
           <span className="font-mono text-[9px] animate-pulse" style={{ color: c.azure }}>···</span>
         ) : (
           <div className="flex items-center gap-1">
-            <kbd className="font-mono text-[9px] px-1.5 py-0.5 text-vellum-mute bg-ink-deep border border-ink-line rounded-sm">CTRL</kbd>
-            <kbd className="font-mono text-[9px] px-1.5 py-0.5 text-vellum-mute bg-ink-deep border border-ink-line rounded-sm">K</kbd>
+            <kbd className="font-mono text-[9px] px-1.5 py-0.5 text-vellum-mute bg-ink-deep border border-ink-line rounded-xs">CTRL</kbd>
+            <kbd className="font-mono text-[9px] px-1.5 py-0.5 text-vellum-mute bg-ink-deep border border-ink-line rounded-xs">K</kbd>
           </div>
         )}
       </div>

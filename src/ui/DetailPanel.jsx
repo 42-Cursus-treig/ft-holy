@@ -170,7 +170,7 @@ export const DetailPanel = ({ node, isAdmin, onUpdateStatus, onClose }) => {
           <button
             onClick={() => onUpdateStatus("available")}
             disabled={status === "available"}
-            className="w-full py-1.5 text-xs smallcaps text-vellum-mute border border-ink-line rounded-sm hover:text-vellum hover:border-vellum-mute transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full py-1.5 text-xs smallcaps text-vellum-mute border border-ink-line rounded-xs hover:text-vellum hover:border-vellum-mute transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Réinitialiser
           </button>

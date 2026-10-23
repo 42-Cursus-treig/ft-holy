@@ -1,18 +1,156 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap')
+layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-:root {
-  color-scheme: dark;
+@theme {
+  --color-ink: var(--ink);
+  --color-ink-deep: var(--ink-deep);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-line: var(--ink-line);
+  --color-ink-hairline: var(--ink-hairline);
 
-  --hud-bar-height: 40px;
-  --hud-bar-width: 340px;
+  --color-vellum: var(--vellum);
+  --color-vellum-dim: var(--vellum-dim);
+  --color-vellum-mute: var(--vellum-mute);
 
-  --font-serif: "Cormorant Garamond", Georgia, serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+
+  --color-rust: var(--rust);
+  --color-rust-soft: var(--rust-soft);
+
+  --color-azure: var(--azure);
+  --color-azure-soft: var(--azure-soft);
+
+  --font-sans: Inter, sans-serif;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--ink-line);
+  }
+}
+
+@utility smallcaps {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+}
+
+@utility rule {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--ink-line) 20%,
+    var(--ink-line) 80%,
+    transparent
+  );
+}
+
+@utility starfield {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+@utility star-twinkle {
+  animation: twinkle 14s ease-in-out infinite;
+}
+
+@utility parchment-vignette {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 70%,
+      color-mix(in srgb, var(--ink-deep) 45%, transparent) 100%
+    );
+  }
+}
+
+@utility fade-in {
+  animation: fade-in 0.35s ease-out both;
+}
+
+@utility hud-bar {
+  height: var(--hud-bar-height);
+  display: flex;
+  align-items: stretch;
+  background: color-mix(in srgb, var(--ink) 85%, transparent);
+  border: 1px solid var(--ink-line);
+  border-radius: 2px;
+  backdrop-filter: blur(12px);
+}
+
+@utility mask-face {
+  transform-origin: 50% 50%;
+  animation: mask-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+  &.is-exiting {
+    animation: mask-out 0.34s cubic-bezier(0.4, 0, 1, 1) both;
+  }
+}
+
+@utility is-exiting {
+  &.mask-face {
+    animation: mask-out 0.34s cubic-bezier(0.4, 0, 1, 1) both;
+  }
+}
+
+@utility node-reveal {
+  opacity: 0;
+  transform: translate(-50%, 6px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.24s cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  &.is-shown {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@utility is-shown {
+  &.node-reveal {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@layer utilities {
+  :root {
+    color-scheme: dark;
+
+    --hud-bar-height: 40px;
+    --hud-bar-width: 340px;
+
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    --font-sans: 'Inter', system-ui, sans-serif;
+  }
 }
 
 @layer base {
@@ -26,85 +164,6 @@
   :focus-visible {
     outline: 1px solid var(--gold);
     outline-offset: 2px;
-  }
-}
-
-@layer components {
-  .smallcaps {
-    font-family: var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    font-weight: 500;
-  }
-
-  .rule {
-    height: 1px;
-    background: linear-gradient(
-      to right,
-      transparent,
-      var(--ink-line) 20%,
-      var(--ink-line) 80%,
-      transparent
-    );
-  }
-
-  .starfield {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-  }
-
-  .star-twinkle {
-    animation: twinkle 14s ease-in-out infinite;
-  }
-
-  .parchment-vignette::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background: radial-gradient(
-      ellipse at center,
-      transparent 70%,
-      color-mix(in srgb, var(--ink-deep) 45%, transparent) 100%
-    );
-  }
-
-  .fade-in {
-    animation: fade-in 0.35s ease-out both;
-  }
-
-  .hud-bar {
-    height: var(--hud-bar-height);
-    display: flex;
-    align-items: stretch;
-    background: color-mix(in srgb, var(--ink) 85%, transparent);
-    border: 1px solid var(--ink-line);
-    border-radius: 2px;
-    backdrop-filter: blur(12px);
-  }
-
-  .mask-face {
-    transform-origin: 50% 50%;
-    animation: mask-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  }
-
-  .mask-face.is-exiting {
-    animation: mask-out 0.34s cubic-bezier(0.4, 0, 1, 1) both;
-  }
-
-  .node-reveal {
-    opacity: 0;
-    transform: translate(-50%, 6px);
-    transition: opacity 0.2s ease, transform 0.24s cubic-bezier(0.34, 1.4, 0.64, 1);
-  }
-
-  .node-reveal.is-shown {
-    opacity: 1;
-    transform: translate(-50%, 0);
   }
 }
 

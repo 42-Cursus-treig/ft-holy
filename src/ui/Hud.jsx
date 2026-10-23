@@ -158,7 +158,7 @@ export const Hud = ({
                 onLogout();
                 setConfirmingLogout(false);
               }}
-              className="smallcaps text-[9px] px-2 py-1 rounded-sm"
+              className="smallcaps text-[9px] px-2 py-1 rounded-xs"
               style={{ color: alert, border: `1px solid ${alert}` }}
             >
               CONFIRMER
