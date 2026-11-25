@@ -11,7 +11,7 @@ const TOKEN_KEY = "intra:token";
 const TOKEN_SKEW = 300;
 
 const ALLOWED_ORIGINS = [
-  "https://tristan-reig.github.io",
+  "https://tristan24217.github.io",
   "https://42-cursus-treig.github.io",
 
   "http://localhost:5173",

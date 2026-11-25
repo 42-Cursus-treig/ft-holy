@@ -41,4 +41,4 @@ npx wrangler deploy
 
 ## Author
 
-Tristan Reig ([@tristan-reig](https://github.com/tristan-reig)), student at 42 Perpignan.
+Tristan Reig ([@tristan24217](https://github.com/tristan24217)), student at 42 Perpignan.
